@@ -88,7 +88,8 @@ jobs:
       # For the audit only: let Mixin skip a broken mixin and keep going, so one run reports every
       # broken injection instead of stopping at the first. The shipped jar keeps them required.
       - name: Make mixins non-fatal for the audit
-        run: sed -i 's/"required": true/"required": false/; s/"defaultRequire": 1/"defaultRequire": 0/' common/src/main/resources/parcool-common.mixins.json
+        run: |
+          sed -i 's/"required": true/"required": false/; s/"defaultRequire": 1/"defaultRequire": 0/' common/src/main/resources/parcool-common.mixins.json
 
       - name: Server audit
         run: |
