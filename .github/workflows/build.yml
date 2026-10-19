@@ -98,9 +98,11 @@ jobs:
           grep -q "PARCOOL_MIXIN_AUDIT_OK server" server.log
 
       - name: Client audit
+        if: always()
         run: |
           timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew :fabric:runClient -PparcoolMixinAudit > client.log 2>&1 || true
           grep -q "PARCOOL_MIXIN_AUDIT_OK client" client.log
+          ! grep -q "Mixin apply for mod parcool failed" server.log client.log
 
       - name: Report audit (1)
         if: always()
