@@ -7,6 +7,10 @@ on:
     paths-ignore:
       - '.github/probe-request.env'
   workflow_dispatch:
+  # Publishing a release on GitHub (with a new tag such as mc26.3-port.1) builds that tag and
+  # attaches the jar to the release.
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -130,10 +134,10 @@ jobs:
         if: always()
         run: .github/scripts/annotate.sh audit.txt 10 "Audit"
 
-  # On a release tag (e.g. mc26.3-port.1), and only if the build and the mixin audit passed:
-  # publish a GitHub release of this repository with the built jar and the notes file for the tag.
+  # When a release is published: only if the build and the mixin audit passed, attach the built jar
+  # and set the title and text from .github/release-notes/<tag>.md (if that file exists).
   release:
-    if: startsWith(github.ref, 'refs/tags/mc')
+    if: github.event_name == 'release'
     needs: [build, mixin-audit]
     runs-on: ubuntu-24.04
     permissions:
@@ -148,13 +152,14 @@ jobs:
           name: parcool-fabric
           path: dist
 
-      - name: Create release
+      - name: Attach jar and notes
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
         run: |
-          tag="${GITHUB_REF_NAME}"
-          notes=".github/release-notes/${tag}.md"
-          test -f "$notes" || { echo "::error title=Release::missing $notes"; exit 1; }
-          title=$(head -1 "$notes" | sed 's/^# //')
-          tail -n +2 "$notes" > body.md
-          gh release create "$tag" dist/*.jar --verify-tag --title "$title" --notes-file body.md
+          gh release upload "$TAG" dist/*.jar --clobber
+          notes=".github/release-notes/${TAG}.md"
+          if [ -f "$notes" ]; then
+            tail -n +2 "$notes" > body.md
+            gh release edit "$TAG" --title "$(head -1 "$notes" | sed 's/^# //')" --notes-file body.md
+          fi

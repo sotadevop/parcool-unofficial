@@ -36,7 +36,7 @@ needs the first command.
 ## CI
 
 - `.github/workflows/build.yml`: builds, checks the jar contents, runs the mixin audit, and on a
-  `mc*-port.*` tag publishes a GitHub release with the jar and the notes from
+  published GitHub release (tag such as `mc26.3-port.1`) attaches the jar and sets the notes from
   `.github/release-notes/<tag>.md`.
 - `.github/workflows/probe.yml`: a porting helper. Pushing a change to `.github/probe-request.env`
   prints signatures of Minecraft, Fabric and Architectury classes of the target version.
