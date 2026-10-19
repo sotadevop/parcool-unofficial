@@ -1,6 +1,7 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.common.handlers.PlayerVisibilityHandler;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +33,8 @@ public class PlayerInteractionVisibilityMixin {
     private static final double HIDDEN_FACTOR = 0.1;
 
     @Inject(method = "getVisibilityPercent", at = @At("RETURN"), cancellable = true)
-    private void parcool$hideFromViewer(Entity target, CallbackInfoReturnable<Double> cir) {
+    // 26.3 added the ServerLevel parameter to getVisibilityPercent.
+    private void parcool$hideFromViewer(ServerLevel level, Entity target, CallbackInfoReturnable<Double> cir) {
         if (!(((Object) this) instanceof Player viewer)) return;
         if (target instanceof Player other && PlayerVisibilityHandler.isHiddenFrom(viewer, other)) {
             cir.setReturnValue(cir.getReturnValue() * HIDDEN_FACTOR);

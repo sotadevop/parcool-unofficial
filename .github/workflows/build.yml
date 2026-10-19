@@ -85,6 +85,11 @@ jobs:
       - name: Install virtual display
         run: sudo apt-get update -q && sudo apt-get install -y -q xvfb mesa-vulkan-drivers libgl1-mesa-dri
 
+      # For the audit only: let Mixin skip a broken mixin and keep going, so one run reports every
+      # broken injection instead of stopping at the first. The shipped jar keeps them required.
+      - name: Make mixins non-fatal for the audit
+        run: sed -i 's/"required": true/"required": false/; s/"defaultRequire": 1/"defaultRequire": 0/' common/src/main/resources/parcool-common.mixins.json
+
       - name: Server audit
         run: |
           ./gradlew :common:build -x test -q
@@ -100,12 +105,7 @@ jobs:
       - name: Report audit (1)
         if: always()
         run: |
-          for f in server.log client.log; do
-            [ -f "$f" ] || continue
-            echo "##### $f"
-            grep -E "PARCOOL_MIXIN_AUDIT|Mixin|mixin|ERROR|Exception|Caused by|at com\.alrex|Error:|FAILED" "$f" \
-              | grep -vE "DEBUG|Mixing |mixin.debug" | head -250
-          done > audit.txt
+          python3 .github/scripts/condense-audit.py server.log client.log > audit.txt
           .github/scripts/annotate.sh audit.txt 0 "Audit"
       - name: Report audit (2)
         if: always()
