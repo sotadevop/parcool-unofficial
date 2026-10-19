@@ -4,6 +4,8 @@ name: Build
 
 on:
   push:
+    paths-ignore:
+      - '.github/probe-request.env'
   workflow_dispatch:
 
 permissions:
@@ -36,18 +38,17 @@ jobs:
 
       # On failure, repeat the important parts of the log as annotations, so they can be read
       # through the GitHub API without downloading the full log.
-      - name: Report build errors
+      - name: Report build errors (1)
         if: failure()
         run: |
-          {
-            sed -n '/What went wrong/,/^\* Try/p' build.log
-            grep -E 'error:|warning: \[removal\]|Exception|Caused by' build.log
-          } | head -400 > report.txt
-          split -l 50 report.txt part_
-          for f in part_*; do
-            msg=$(sed -e 's/%/%25/g' "$f" | awk '{printf "%s%%0A", $0}')
-            echo "::error title=Build log ${f#part_}::${msg}"
-          done
+          python3 .github/scripts/condense-errors.py build.log > report.txt
+          .github/scripts/annotate.sh report.txt 0 "Build log"
+      - name: Report build errors (2)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 10 "Build log"
+      - name: Report build errors (3)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 20 "Build log"
 
       - name: Upload Fabric jar
         uses: actions/upload-artifact@v4
