@@ -1,21 +1,23 @@
 package com.alrex.parcool.client.gui;
 
+import com.alrex.parcool.common.data.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.config.ParCoolConfig;
+import com.mojang.blaze3d.platform.InputConstants;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import com.mojang.blaze3d.platform.InputConstants;
-
-import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 
 public abstract class ParCoolSettingScreen extends Screen {
     private final ScreenSet<?>[] screenList;
@@ -137,9 +139,35 @@ public abstract class ParCoolSettingScreen extends Screen {
 		graphics.fill(0, 0, this.width, this.height, color.getBackground());
 	}
 
+    /**
+     * Screen to return to when the settings are closed, set when they were opened from another
+     * screen (Mod Menu's mod list). Static because switching tabs replaces the screen object.
+     */
+    @Nullable
+    private static Screen returnScreen;
+
+    /**
+     * Opens the settings from another screen, such as Mod Menu. Works without a world loaded: the
+     * client settings are still edited and saved, only the server limitations are unknown.
+     */
+    public static Screen createFromMenu(@Nullable Screen parent) {
+        returnScreen = parent;
+        LocalPlayer player = Minecraft.getInstance().player;
+        Parkourability parkourability = player == null ? null : Parkourability.get(player);
+        ActionInfo info = parkourability == null ? new ActionInfo() : parkourability.getActionInfo();
+        return new SettingActionLimitationScreen(Component.literal("ParCool Setting"), info,
+                ParCoolConfig.Client.getInstance().GUIColorTheme.get());
+    }
+
     @Override
     public void onClose() {
         save();
+        Screen target = returnScreen;
+        if (target != null) {
+            returnScreen = null;
+            Minecraft.getInstance().gui.setScreen(target);
+            return;
+        }
         super.onClose();
     }
 

@@ -22,6 +22,9 @@
     ],
     "client": [
       "com.alrex.parcool.ParCoolFabricClient"
+    ],
+    "modmenu": [
+      "com.alrex.parcool.ParCoolModMenu"
     ]
   },
   "mixins": [
@@ -42,6 +45,7 @@
   },
   "suggests": {
     "patchouli": "*",
-    "shouldersurfing": "*"
+    "shouldersurfing": "*",
+    "modmenu": "*"
   }
 }
