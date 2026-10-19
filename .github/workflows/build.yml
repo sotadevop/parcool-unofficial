@@ -11,13 +11,14 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pinned instead of ubuntu-latest so the build environment only changes when we choose to.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -26,7 +27,24 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build
-        run: ./gradlew build --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew build --stacktrace 2>&1 | tee build.log
+
+      # On failure, repeat the important parts of the log as annotations, so they can be read
+      # through the GitHub API without downloading the full log.
+      - name: Report build errors
+        if: failure()
+        run: |
+          {
+            sed -n '/What went wrong/,/^\* Try/p' build.log
+            grep -E 'error:|warning: \[removal\]|Exception|Caused by' build.log
+          } | head -400 > report.txt
+          split -l 50 report.txt part_
+          for f in part_*; do
+            msg=$(sed -e 's/%/%25/g' "$f" | awk '{printf "%s%%0A", $0}')
+            echo "::error title=Build log ${f#part_}::${msg}"
+          done
 
       - name: Upload Fabric jar
         uses: actions/upload-artifact@v4
