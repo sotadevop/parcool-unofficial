@@ -112,12 +112,12 @@ public class WallSlide extends Action {
     @Override
     public void onWorkingTickInServer(Player player, Parkourability parkourability) {
         if (damageCoolTime <= 0 && damageCount > takenDamageCount++) {
-            int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
+            int invulnerableTime = player.getInvulnerableTime(); // bypass invulnerableTime
             damageCoolTime = 1;
-            player.invulnerableTime = 0;
+            player.setInvulnerableTime(0);
             DamageSource source = PlatformServices.get().createDamageSource(player, DamageSources.WALL_SLIDE);
             if (source != null) player.hurt(source, 0.3f);
-            player.invulnerableTime = invulnerableTime;
+            player.setInvulnerableTime(invulnerableTime);
         } else {
             damageCoolTime--;
         }

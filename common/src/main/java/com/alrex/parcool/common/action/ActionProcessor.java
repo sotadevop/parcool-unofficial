@@ -223,14 +223,14 @@ public class ActionProcessor {
 			if (trialCount < 5) {
 				parkourability.trySyncLimitation(player);
 				if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
-					player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
+					player.sendSystemMessage(Component.translatable("parcool.message.error.limitation.not_synced"));
 				}
 				ParCool.LOGGER.warn( "Detected ParCool Limitation is not synced. Sending synchronization request...");
 			} else if (trialCount >= Parkourability.MAX_SYNCHRONIZE_TRIAL_COUNT) {
 				// The counter saturates at MAX_SYNCHRONIZE_TRIAL_COUNT, so the one-shot failure message
 				// below is posted once and the retry loop after it is the only thing that keeps running.
 				parkourability.resetSynchronizeTrialCount();
-				player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
+				player.sendSystemMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED));
 				ParCool.LOGGER.error( "Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer after checking connection");
 			} else {
 				// Upstream stopped here for good. Keep asking; onTick$watchdog asks again every 10 s.

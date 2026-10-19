@@ -105,7 +105,7 @@ public abstract class LivingEntityMixin extends Entity {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
 			return !state.isCollisionShapeFullBlock(world, pos) && (direction == Direction.UP || direction == Direction.DOWN);
 		}
-		return state.getTags().anyMatch(it -> it.equals(BlockTags.POLE_CLIMBABLE));
+		return state.is(BlockTags.POLE_CLIMBABLE);
 	}
 
 	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)

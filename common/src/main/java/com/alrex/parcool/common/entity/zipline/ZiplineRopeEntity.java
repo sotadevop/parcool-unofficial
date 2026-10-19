@@ -213,7 +213,7 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
 
     @Nonnull
     @Override
-    public InteractionResult interact(Player player, InteractionHand p_19979_) {
+    public InteractionResult interact(Player player, InteractionHand p_19979_, Vec3 location) {
         return player.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 

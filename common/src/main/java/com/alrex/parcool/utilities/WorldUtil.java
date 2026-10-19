@@ -478,7 +478,7 @@ public class WorldUtil {
 	}
 
     public static boolean isHideAbleBlock(BlockState blockState) {
-        return blockState.getTags().anyMatch(it -> it.equals(BlockTags.HIDE_ABLE));
+        return blockState.is(BlockTags.HIDE_ABLE);
     }
 
     private static boolean getHideAbleSpace$isHideAble(Level world, Block block, BlockPos pos) {

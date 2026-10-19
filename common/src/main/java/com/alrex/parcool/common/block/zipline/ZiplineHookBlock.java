@@ -40,7 +40,7 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
     public ZiplineHookBlock(Properties p_i48440_1_) {
         // Was `getPistonPushReaction(BlockState) -> DESTROY`, a NeoForge-only override. Vanilla
         // reads the push reaction from the block properties, so it is declared here instead.
-        super(p_i48440_1_.pushReaction(PushReaction.DESTROY));
+        super(p_i48440_1_.pushReaction(PushReaction.POPPED));
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.UP));
     }
 

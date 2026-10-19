@@ -8,7 +8,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -146,20 +146,20 @@ public abstract class ParCoolSettingScreen extends Screen {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		switch (event.key()) {
-			case GLFW.GLFW_KEY_RIGHT:
+			case InputConstants.KEY_RIGHT:
                 save();
                 Minecraft.getInstance().setScreen(screenList[(currentScreen + 1) % screenList.length].screenSupplier.get());
 				break;
-			case GLFW.GLFW_KEY_LEFT:
+			case InputConstants.KEY_LEFT:
                 save();
                 // floorMod, not %: currentScreen is 0 on the first tab, and (0 - 1) % 4 == -1, which
                 // crashed the game on the first left-arrow press.
                 Minecraft.getInstance().setScreen(screenList[Math.floorMod(currentScreen - 1, screenList.length)].screenSupplier.get());
 				break;
-			case GLFW.GLFW_KEY_UP:
+			case InputConstants.KEY_UP:
 				mouseScrolled(0, 0, 1);
 				break;
-			case GLFW.GLFW_KEY_DOWN:
+			case InputConstants.KEY_DOWN:
 				mouseScrolled(0, 0, -1);
 				break;
 		}

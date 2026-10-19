@@ -5,13 +5,11 @@ import com.alrex.parcool.compat.IKeyMappingDuck;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 
 public class KeyBindings {
 
@@ -36,22 +34,22 @@ public class KeyBindings {
     private static Options options() {
         return Minecraft.getInstance().options;
     }
-    private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, CATEGORY);
-	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, CATEGORY);
-	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.ClingToCliff", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, CATEGORY);
-	private static final KeyMapping keyBindBreakfall = new KeyMapping("key.parcool.Breakfall", GLFW.GLFW_KEY_R, CATEGORY);
-	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.parcool.FastRun", GLFW.GLFW_KEY_LEFT_CONTROL, CATEGORY);
-	private static final KeyMapping keyBindFlipping = new KeyMapping("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
-	private static final KeyMapping keyBindVault = new KeyMapping("key.parcool.Vault", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, CATEGORY);
-	private static final KeyMapping keyBindDodge = new KeyMapping("key.parcool.Dodge", GLFW.GLFW_KEY_R, CATEGORY);
-    private static final KeyMapping keyBindRideZipline = new KeyMapping("key.parcool.RideZipline", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, CATEGORY);
-	private static final KeyMapping keyBindWallJump = new KeyMapping("key.parcool.WallJump", GLFW.GLFW_KEY_SPACE, CATEGORY);
-	private static final KeyMapping keyBindHangDown = new KeyMapping("key.parcool.HangDown", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, CATEGORY);
-	private static final KeyMapping keyBindWallSlide = new KeyMapping("key.parcool.WallSlide", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, CATEGORY);
-    private static final KeyMapping keyBindHideInBlock = new KeyMapping("key.parcool.HideInBlock", GLFW.GLFW_KEY_C, CATEGORY);
-	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, CATEGORY);
-	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
-	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.openSetting", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, CATEGORY);
+    private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", InputConstants.Type.KEYBOARD, InputConstants.KEY_P, CATEGORY);
+	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", InputConstants.KEY_C, CATEGORY);
+	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.ClingToCliff", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, CATEGORY);
+	private static final KeyMapping keyBindBreakfall = new KeyMapping("key.parcool.Breakfall", InputConstants.KEY_R, CATEGORY);
+	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.parcool.FastRun", InputConstants.KEY_LCONTROL, CATEGORY);
+	private static final KeyMapping keyBindFlipping = new KeyMapping("key.parcool.Flipping", InputConstants.UNKNOWN.getValue(), CATEGORY);
+	private static final KeyMapping keyBindVault = new KeyMapping("key.parcool.Vault", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, CATEGORY);
+	private static final KeyMapping keyBindDodge = new KeyMapping("key.parcool.Dodge", InputConstants.KEY_R, CATEGORY);
+    private static final KeyMapping keyBindRideZipline = new KeyMapping("key.parcool.RideZipline", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, CATEGORY);
+	private static final KeyMapping keyBindWallJump = new KeyMapping("key.parcool.WallJump", InputConstants.KEY_SPACE, CATEGORY);
+	private static final KeyMapping keyBindHangDown = new KeyMapping("key.parcool.HangDown", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, CATEGORY);
+	private static final KeyMapping keyBindWallSlide = new KeyMapping("key.parcool.WallSlide", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, CATEGORY);
+    private static final KeyMapping keyBindHideInBlock = new KeyMapping("key.parcool.HideInBlock", InputConstants.KEY_C, CATEGORY);
+	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.HorizontalWallRun", InputConstants.KEY_R, CATEGORY);
+	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.QuickTurn", InputConstants.UNKNOWN.getValue(), CATEGORY);
+	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.openSetting", InputConstants.Type.KEYBOARD, InputConstants.KEY_P, CATEGORY);
 	private static final Vec3 forwardVector = new Vec3(0, 0, 1);
 
     /** All ParCool bindings, in registration order. */
@@ -85,23 +83,26 @@ public class KeyBindings {
      * held. Vanilla has no such notion, so the modifier is sampled from the live window state and
      * combined with the raw physical key state. This keeps the upstream UX identical on both loaders.
      */
+    /** Which modifier {@link #isMetaKeyDown} requires (GLFW's modifier bits no longer exist in 26.3). */
+    private static final int MOD_CONTROL = 1;
+    private static final int MOD_ALT = 2;
+
     private static boolean isMetaKeyDown(KeyMapping mapping, int modifier) {
         InputConstants.Key key = keyOf(mapping);
         if (key.getType() == InputConstants.Type.MOUSE) return false;
         if (!isPollableKeysym(key)) return false;
-        Window window = mc().getWindow();
         boolean modifierDown = switch (modifier) {
-            case GLFW.GLFW_MOD_CONTROL -> InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL);
-            case GLFW.GLFW_MOD_ALT -> InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT);
+            case MOD_CONTROL -> InputConstants.isKeyDown(InputConstants.KEY_LCONTROL);
+            case MOD_ALT -> InputConstants.isKeyDown(InputConstants.KEY_LALT);
             default -> true;
         };
         if (!modifierDown) return false;
-        return InputConstants.isKeyDown(window, key.getValue());
+        return InputConstants.isKeyDown(key.getValue());
     }
 
     /** Ctrl + the enable binding. */
     public static boolean isKeyEnableParCoolDown() {
-        return isMetaKeyDown(keyBindEnable, GLFW.GLFW_MOD_CONTROL);
+        return isMetaKeyDown(keyBindEnable, MOD_CONTROL);
     }
 
     /**
@@ -126,7 +127,7 @@ public class KeyBindings {
      * Whether {@code glfwGetKey} can be handed this keysym.
      *
      * <h2>Why this exists</h2>
-     * An unbound ParCool action - Flipping and QuickTurn default to {@link GLFW#GLFW_KEY_UNKNOWN} -
+     * An unbound ParCool action - Flipping and QuickTurn default to {@code GLFW_KEY_UNKNOWN} -
      * carries the keysym {@code -1}. {@code glfwGetKey} rejects it: GLFW raises
      * {@code GLFW_INVALID_ENUM} ({@code 0x00010003}, which is the {@code 65539} in the log) with the
      * message {@code "Invalid key -1"}, and {@code Window#defaultErrorCallback} turns that into the
@@ -134,28 +135,27 @@ public class KeyBindings {
      * every {@link KeyRecorder#onClientTick()}, so the game printed roughly forty of those blocks a
      * second for as long as a world was loaded.
      *
-     * <p>GLFW's own bounds check rejects anything below {@link GLFW#GLFW_KEY_SPACE} (32) as well, so
+     * <p>GLFW's own bounds check rejects anything below {@code GLFW_KEY_SPACE} (32) as well, so
      * the test is the range GLFW accepts rather than a special case for {@code -1}.
      */
     private static boolean isPollableKeysym(InputConstants.Key key) {
-        return key.getValue() >= GLFW.GLFW_KEY_SPACE;
+        // 26.3 moved input from GLFW to SDL; an unbound key still carries the "unknown" value.
+        return key.getValue() >= 0 && key.getValue() != InputConstants.UNKNOWN.getValue();
     }
 
     public static boolean isDown(KeyMapping mapping) {
         InputConstants.Key key = keyOf(mapping);
-        Window window = mc().getWindow();
         return switch (key.getType()) {
-            case KEYSYM -> isPollableKeysym(key) && InputConstants.isKeyDown(window, key.getValue());
-            case MOUSE -> GLFW.glfwGetMouseButton(window.handle(), key.getValue()) == GLFW.GLFW_PRESS;
-            // A raw scancode binding cannot be polled through the keycode API; fall back to the
-            // mapping's own state, which is correct as long as the key is not shared.
-            case SCANCODE -> mapping.isDown();
+            case KEYBOARD -> isPollableKeysym(key) && InputConstants.isKeyDown(key.getValue());
+            // Since 26.x KeyMapping keeps a list of mappings per physical key, so a mouse binding
+            // shared with vanilla (right click) still receives its own press state.
+            case MOUSE -> mapping.isDown();
         };
     }
 
     /** Alt + the settings binding. */
     public static boolean isKeyOpenSettingsDown() {
-        return isMetaKeyDown(keyBindOpenSettings, GLFW.GLFW_MOD_ALT);
+        return isMetaKeyDown(keyBindOpenSettings, MOD_ALT);
     }
 
 	public static KeyMapping getKeySprint() {
