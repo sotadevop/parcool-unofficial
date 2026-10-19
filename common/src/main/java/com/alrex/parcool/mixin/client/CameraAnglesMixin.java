@@ -3,10 +3,10 @@ package com.alrex.parcool.mixin.client;
 import com.alrex.parcool.client.action.ClientActionProcessor;
 import com.alrex.parcool.common.event.CompatEvents;
 import net.minecraft.client.Camera;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.DeltaTracker;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,21 +29,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Camera.class)
 public abstract class CameraAnglesMixin {
 
-    // Not final: a shadowed field cannot carry a field initialiser, and javac rejects a final field
-    // without one. Mixin only ever reads these.
+    // Not final in Java: a shadowed field cannot carry a field initialiser, and javac rejects a final
+    // field without one. @Final tells Mixin the target field is final; ParCool only mutates the
+    // vectors' contents, never reassigns the fields.
     @Shadow
+    @Final
     private Vector3f up;
 
     @Shadow
+    @Final
     private Vector3f left;
 
     @Shadow
     protected abstract void setRotation(float yRot, float xRot);
 
-    @Inject(method = "setup(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;ZZF)V", at = @At("TAIL"))
-    private void parcool$computeCameraAngles(Level level, Entity entity, boolean detached,
-                                             boolean mirrored, float partialTick, CallbackInfo ci) {
+    // 26.3 replaced Camera#setup(Level, Entity, boolean, boolean, float) with update(DeltaTracker).
+    @Inject(method = "update(Lnet/minecraft/client/DeltaTracker;)V", at = @At("TAIL"))
+    private void parcool$computeCameraAngles(DeltaTracker deltaTracker, CallbackInfo ci) {
         Camera self = (Camera) (Object) this;
+        float partialTick = self.getCameraEntityPartialTicks(deltaTracker);
         CompatEvents.ViewportEvent.ComputeCameraAngles event =
                 new CompatEvents.ViewportEvent.ComputeCameraAngles(
                         self, partialTick, self.yRot(), self.xRot(), 0.0F);

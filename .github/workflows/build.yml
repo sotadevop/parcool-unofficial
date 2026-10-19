@@ -56,6 +56,18 @@ jobs:
         if: failure()
         run: .github/scripts/annotate.sh report.txt 40 "Build log"
 
+      - name: Check the jar contents
+        run: |
+          jar=$(ls fabric/build/libs/*-fabric.jar)
+          unzip -Z1 "$jar" > contents.txt
+          for f in fabric.mod.json parcool-common.mixins.json parcool.accesswidener \
+                   com/alrex/parcool/ParCool.class com/alrex/parcool/ParCoolFabric.class \
+                   META-INF/services/com.alrex.parcool.platform.ParCoolPlatform \
+                   assets/parcool/lang/en_us.json data/parcool/recipe/brewing/potion_awkward_quartz.json; do
+            grep -qx "$f" contents.txt || { echo "::error title=Jar check::missing $f"; exit 1; }
+          done
+          echo "$(wc -l < contents.txt) entries, all required files present"
+
       - name: Upload Fabric jar
         uses: actions/upload-artifact@v4
         with:

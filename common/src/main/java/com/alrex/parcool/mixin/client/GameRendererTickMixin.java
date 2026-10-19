@@ -21,8 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameRenderer.class)
 public abstract class GameRendererTickMixin {
 
-    @Inject(method = "renderLevel(Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"))
-    private void parcool$onRenderFrame(DeltaTracker partialTick, CallbackInfo ci) {
+    // 26.3 split frame rendering into extract(DeltaTracker, boolean) and a no-argument render();
+    // extract is the per-frame entry that still receives the frame's DeltaTracker.
+    @Inject(method = "extract(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("HEAD"))
+    private void parcool$onRenderFrame(DeltaTracker partialTick, boolean renderLevel, CallbackInfo ci) {
         ClientActionProcessor.onRenderFrame(new CompatEvents.RenderFrameEvent.Pre(partialTick));
     }
 }
