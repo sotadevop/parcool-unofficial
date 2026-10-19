@@ -9,7 +9,7 @@ import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.common.network.NetworkRegistries;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -58,7 +58,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
+    protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
         final int offsetX = 40;
         final int boxHeight = 21;
         int contentWidth = width - offsetX * 2;
@@ -76,7 +76,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
             button.setHeight(20);
             button.render(graphics, mouseX, mouseY, partialTick);
             List<String> path = enumConfigList[i + topIndex].configInstance.getPath();
-            graphics.drawString(font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
+            graphics.text(font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
             graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
         }
         graphics.fill(width - offsetX, topOffset, width - offsetX - 1, topOffset + contentHeight, color.getSeparator());

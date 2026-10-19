@@ -76,22 +76,22 @@ public class PlayerModelRotator {
     }
 
 	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
-        stack.mulPose(Axis.XN.rotationDegrees(angleDegree));
+        stack.rotate(Axis.XN.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRollRightward(float angleDegree) {
-        stack.mulPose(Axis.ZN.rotationDegrees(angleDegree));
+        stack.rotate(Axis.ZN.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateYawRightward(float angleDegree) {
-		stack.mulPose(Axis.YN.rotationDegrees(angleDegree));
+		stack.rotate(Axis.YN.rotationDegrees(angleDegree));
 		return this;
 	}
 
     public PlayerModelRotator rotate(float angle, Vector3f axis) {
-        stack.mulPose((new Quaternionf()).rotationAxis(angle, axis));
+        stack.rotate((new Quaternionf()).rotationAxis(angle, axis));
         return this;
     }
 

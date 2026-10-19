@@ -9,7 +9,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.api.event.ParCoolEventBus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
 
@@ -32,7 +32,7 @@ public class StaminaHUDController {
 		staminaHUD.onTick(player);
 	}
 
-	public void render(@Nonnull GuiGraphics graphics, @Nonnull DeltaTracker partialTick) {
+	public void render(@Nonnull GuiGraphicsExtractor graphics, @Nonnull DeltaTracker partialTick) {
 		var player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get()) return;

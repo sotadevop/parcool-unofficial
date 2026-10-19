@@ -8,7 +8,7 @@ import com.alrex.parcool.common.data.Parkourability;
 import com.alrex.parcool.common.data.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
@@ -57,7 +57,7 @@ public class StaminaHUD {
         }
 	}
 
-	public void render(GuiGraphics graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
+	public void render(GuiGraphicsExtractor graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
 		Position position = new Position(
 				ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD.get(),

@@ -6,12 +6,12 @@ import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
@@ -66,7 +66,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity, Zipli
     }
 
     @Override
-    public boolean shouldRender(ZiplineRopeEntity entity, Frustum frustum, double x, double y, double z) {
+    public boolean shouldRender(ZiplineRopeEntity entity, Frustum frustum, double x, double y, double z, float partialTick) {
         return entity.shouldRender(x, y, z);
     }
 
@@ -77,9 +77,9 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity, Zipli
      */
     @Nonnull
     @Override
-    protected AABB getBoundingBoxForCulling(@Nonnull ZiplineRopeEntity entity) {
+    protected AABB getBoundingBoxForCulling(@Nonnull ZiplineRopeEntity entity, float partialTick) {
         AABB culling = entity.getCullingBoundingBox();
-        return culling == null ? super.getBoundingBoxForCulling(entity) : culling;
+        return culling == null ? super.getBoundingBoxForCulling(entity, partialTick) : culling;
     }
 
     @Override
@@ -176,7 +176,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity, Zipli
         for (int i = 0; i < 2; i++) {
             float phase = (float) (currentCount + i) / maxCount;
 
-            int lightLevel = LightTexture.pack((int) Mth.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) Mth.lerp(phase, startSkyBrightness, endSkyBrightness));
+            int lightLevel = LightCoordsUtil.pack((int) Mth.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) Mth.lerp(phase, startSkyBrightness, endSkyBrightness));
             Vec3 midPointD = zipline.getMidPointOffsetFromStart(phase);
             Vector3f midPoint = new Vector3f((float) midPointD.x(), (float) midPointD.y(), (float) midPointD.z());
 
@@ -244,7 +244,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity, Zipli
         for (int i = 0; i < 2; i++) {
             float phase = (float) (currentCount + i) / maxCount;
 
-            lightLevelList[i] = LightTexture.pack((int) Mth.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) Mth.lerp(phase, startSkyBrightness, endSkyBrightness));
+            lightLevelList[i] = LightCoordsUtil.pack((int) Mth.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) Mth.lerp(phase, startSkyBrightness, endSkyBrightness));
             Vec3 midPointD = zipline.getMidPointOffsetFromStart(phase);
             Vector3f midPoint = new Vector3f((float) midPointD.x(), (float) midPointD.y(), (float) midPointD.z());
 

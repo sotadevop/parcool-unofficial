@@ -8,7 +8,7 @@ import com.alrex.parcool.common.data.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.player.LocalPlayer;
 
@@ -76,10 +76,10 @@ public class LightStaminaHUD {
 		oldValue = newValue;
 	}
 
-	public void render(GuiGraphics graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
+	public void render(GuiGraphicsExtractor graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
 		var player = Minecraft.getInstance().player;
 		if (player == null) return;
-		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE);
+		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE.asHolder());
 		final boolean exhausted = stamina.isExhausted();
 
 		if (!showStatus) {

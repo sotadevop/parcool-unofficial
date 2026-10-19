@@ -2,7 +2,7 @@ package com.alrex.parcool.client.gui;
 
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class SettingShowLimitationsScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
+    protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
         final int offsetX = 40;
         int contentHeight = height - topOffset - bottomOffset;
         int itemHeight = font.lineHeight * 2;
@@ -41,14 +41,14 @@ public class SettingShowLimitationsScreen extends ParCoolSettingScreen {
         viewableItemCount = contentHeight / itemHeight;
         for (int i = 0; i < viewableItemCount && i + topIndex < infoList.length; i++) {
             InfoSet item = infoList[topIndex + i];
-            graphics.drawString(
+            graphics.text(
                     font,
                     item.name,
                     offsetX + 5,
                     topOffset + itemHeight * i + itemHeight / 2 - font.lineHeight / 2,
                     color.getText()
             );
-            graphics.drawString(
+            graphics.text(
                     font,
                     item.value,
                     width - offsetX - 5 - valueWidth,

@@ -6,7 +6,7 @@ import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 
 public class HUDManager {
@@ -28,7 +28,7 @@ public class HUDManager {
      * already positions itself from the screen size and the vanilla right-column height, so the
      * drawing is unchanged; only the z-order of overlapping elements differs.
      */
-    public void renderHud(GuiGraphics graphics, DeltaTracker partialTick) {
+    public void renderHud(GuiGraphicsExtractor graphics, DeltaTracker partialTick) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         if (ParCoolDataKeys.getParkourability(player) == null) return;

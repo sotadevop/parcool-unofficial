@@ -8,7 +8,7 @@ import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.common.network.NetworkRegistries;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -39,7 +39,7 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
+    protected void renderContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
         final int offsetX = 40;
         int contentWidth = width - offsetX * 2;
         int contentHeight = height - topOffset - bottomOffset;
