@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.util.Tuple;
+import com.alrex.parcool.utilities.Tuple;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -84,7 +84,7 @@ public class PlayerDamageHandler {
 						&& !ParCoolEventBus.post(new ParCoolActionEvent.TryToStartEvent(player, hideInBlock)).isCanceled()
 						&& !ParCoolEventBus.post(new ParCoolActionEvent.TryToStart(player, hideInBlock)).isCanceled()
 				) {
-					Tuple<BlockPos, BlockPos> area = WorldUtil.getHideAbleSpace(player, new BlockPos(player.blockPosition().below()));
+					Tuple<BlockPos, BlockPos> area = WorldUtil.getHideAbleSpace(player, player.blockPosition().below().immutable());
 					if (area != null) {
 						boolean stand = player.getBbHeight() < (Math.abs(area.getB().getY() - area.getA().getY()) + 1);
 						if (!stand) {

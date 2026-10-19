@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
+import com.alrex.parcool.utilities.Tuple;
 
 public class StaminaHUD {
 	public static final Identifier STAMINA = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/stamina_bar.png");

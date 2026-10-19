@@ -1,6 +1,6 @@
 package com.alrex.parcool.client.hud;
 
-import net.minecraft.util.Tuple;
+import com.alrex.parcool.utilities.Tuple;
 
 public class Position {
 	public static final Position DEFAULT = new Position(Horizontal.Left, Vertical.Top, 0, 0);
