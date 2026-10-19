@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 # Emits a text file as GitHub error annotations, so it can be read through the API without the log.
 # Usage: annotate.sh <file> <first-chunk> <title>
-# GitHub keeps at most 10 error annotations per step, so each call emits chunks first..first+9.
+# An annotation message holds at most 4096 characters and GitHub keeps at most 10 error annotations
+# per step, so the file is cut into chunks of under 4000 characters and each call emits 10 of them.
 set -euo pipefail
-file="$1"; first="$2"; title="$3"
-lines_per_chunk=120
-total=$(wc -l < "$file")
-for i in $(seq "$first" $((first + 9))); do
-  start=$((i * lines_per_chunk + 1))
-  [ "$start" -gt "$total" ] && break
-  msg=$(sed -n "${start},$((start + lines_per_chunk - 1))p" "$file" | sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}')
-  echo "::error title=${title} $(printf '%02d' "$i")::${msg}"
-done
+python3 - "$@" <<'PY'
+import sys
+path, first, title = sys.argv[1], int(sys.argv[2]), sys.argv[3]
+chunks, cur = [], ""
+for line in open(path, encoding="utf-8", errors="replace"):
+    line = line.rstrip("\n")[:3900] + "\n"
+    if len(cur) + len(line) > 3950:
+        chunks.append(cur)
+        cur = ""
+    cur += line
+if cur:
+    chunks.append(cur)
+for i in range(first, min(first + 10, len(chunks))):
+    msg = chunks[i].replace("%", "%25").replace("\r", "").replace("\n", "%0A")
+    print(f"::error title={title} {i:02d}::{msg}")
+PY

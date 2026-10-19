@@ -49,6 +49,12 @@ jobs:
       - name: Report build errors (3)
         if: failure()
         run: .github/scripts/annotate.sh report.txt 20 "Build log"
+      - name: Report build errors (4)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 30 "Build log"
+      - name: Report build errors (5)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 40 "Build log"
 
       - name: Upload Fabric jar
         uses: actions/upload-artifact@v4
