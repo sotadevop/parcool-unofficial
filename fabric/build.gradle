@@ -47,7 +47,7 @@ loom {
 // The access widener and the mixin config live in :common so both loaders ship the same copy; the
 // Fabric module only needs them present in its own jar, because fabric.mod.json references them.
 processResources {
-	// neoforge.mods.toml points LicenseFile at the LGPL text, so it has to be inside both jars.
+	// Ship the LGPL text inside the jar.
 	from(rootProject.file('LICENSE'))
 }
 
@@ -59,13 +59,12 @@ tasks.named('processResources') {
 			mod_license        : project.mod_license,
 			mod_authors        : project.mod_authors,
 			minecraft_version  : project.minecraft_version,
-			neo_version        : project.neo_version,
 	]
 	inputs.properties props
 	filesMatching('fabric.mod.json') { expand props }
 }
 
-// mixin.debug makes the dev log list every applied ParCool mixin (see neoforge/build.gradle).
+// mixin.debug makes the dev log list every applied ParCool mixin .
 ['runClient', 'runClient2', 'runServer'].each { runTask ->
 	tasks.named(runTask) {
 		it.jvmArgs '-Dmixin.debug=true', '-Dmixin.debug.verbose=true'

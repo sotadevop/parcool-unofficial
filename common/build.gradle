@@ -6,8 +6,8 @@ plugins {
 architectury {
 	minecraft = project.minecraft_version
 	// Declares :common as the shared module and the platforms it is consumed from. architectury-plugin
-	// creates the `transformProductionFabric` / `transformProductionForge` artifacts from this.
-	common('fabric', 'neoforge')
+	// creates the `transformProductionFabric` artifact from this.
+	common('fabric')
 }
 
 group = project.maven_group
