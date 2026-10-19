@@ -3,15 +3,16 @@
   "id": "parcool",
   "version": "${version}",
   "name": "ParCool!",
-  "description": "This enable us act like parkour players. Enjoy Minecraft with cool actions!",
+  "description": "Unofficial Fabric port of ParCool! by alRex_U for Minecraft 26.3. Parkour moves: ledge grab, wall run, wall jump, crawl, vault, roll and more.",
   "authors": [
     "alRex_U (original)",
-    "ParCool Architectury API port"
+    "sanufsoii (Architectury port)",
+    "sotadevop (26.3 port)"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/parcool",
-    "sources": "https://github.com/alRex-U/ParCool",
-    "issues": "https://github.com/alRex-U/ParCool/issues"
+    "homepage": "https://github.com/sotadevop/parcool-unofficial",
+    "sources": "https://github.com/sotadevop/parcool-unofficial",
+    "issues": "https://github.com/sotadevop/parcool-unofficial/issues"
   },
   "license": "LGPL-3.0",
   "icon": "parcool_logo.png",

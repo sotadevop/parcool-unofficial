@@ -1,98 +1,100 @@
-# ParCool — Architectury API port
+# ParCool! for Fabric 26.3 (unofficial port)
 
-A multiloader port of the Minecraft mod **ParCool** by **alRex_U** (LGPL-3.0), originally built for
-NeoForge, reworked onto the [Architectury API](https://github.com/architectury/architectury-api) so
-that one codebase ships both a **Fabric** and a **NeoForge** artifact.
+An unofficial port of **ParCool!**, the parkour mod by **alRex_U**, to **Minecraft 26.3** on **Fabric**.
 
-Minecraft **1.21.11**, Java **21**, Gradle **9.4.1**.
+ParCool adds parkour movement to Minecraft: grab ledges and pull yourself up, run along and up walls,
+wall jump, crawl, slide, vault, roll, dodge, flip, ride ziplines and more.
 
-Ported from Minecraft 1.21.1, which is the baseline the loader versions below were moved from. The
-port is functionally complete on both loaders: 27 vanilla mixins, 26 actions, the zipline/hook blocks
-and the full animation set all work, and the four optional NeoForge integrations are wired.
+> This is **not** the official ParCool. The original mod only exists for NeoForge/Forge up to
+> Minecraft 1.21.11. Please report problems with this port **here**, not to alRex_U.
 
-### Packaging
+## Download
 
-The Fabric distributable is built from `:common`'s `remapJar` output, so it ships intermediary
-bytecode and the mixin targets remapped in place. There is deliberately **no refmap**: Loom 1.17
-defaults to `mixinRemapType = static`, and fabric-api 0.141.6 - built with the same Loom - ships none
-either and advertises `Fabric-Loom-Mixin-Remap-Type: static` in its manifest.
-
-The NeoForge distributable ships mojmap-named bytecode, because that is what the NeoForge production
-runtime loads: NeoForge 21.11 has no SRG step in front of a mod jar. `accesstransformer.cfg` is
-written in the same naming. architectury-plugin's `neoForge()` transform is therefore not used; it
-needs a Loom-based NeoForge setup, which cannot merge the Mojang and NeoForge mappings.
-
-**Known limitation:** the ShoulderSurfing integration is NeoForge-only in practice. ShoulderSurfing
-1.21.11 ships a `PluginLoader` for NeoForge and none for Fabric, so the `shouldersurfing_plugin.json`
-in the Fabric jar is simply never read. The decoupled-camera hook is therefore absent on Fabric rather
-than broken there.
-
-> This repository contains a *port*, not alRex_U's original sources. The original project lives at
-> <https://github.com/alRex-U/ParCool> and on CurseForge at
-> <https://www.curseforge.com/minecraft/mc-mods/parcool>. All credit for the mod's design and assets
-> goes to alRex_U; this repository only carries the loader-abstraction work.
-
-## Modules
-
-| Module     | Contents                                                                                                                                                        |
-|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `common`   | The whole mod: registries, `ParCoolData` (replacement for NeoForge's attachment API), the network layer, the JSON config backend, the vanilla mixins, and the platform seam. |
-| `fabric`   | Fabric entrypoints, `FabricParCoolPlatform` / `FabricParCoolNetwork`, and the ServiceLoader binding.                                                                |
-| `neoforge` | NeoForge entrypoints, `NeoForgeParCoolPlatform` / `NeoForgeParCoolNetwork`, plus the optional Paraglider, EpicFight and BetterThirdPerson integrations.           |
-
-There is intentionally **no source-set split**: ParCool is client-authoritative, and NeoForge ships a
-merged jar, so `common` stays a single tree. The two loader modules differ only in their entrypoints
-and their platform implementation.
+Get the jar from the [Releases](../../releases) page.
 
 ## Requirements
 
-* JDK 21 (pinned through the Gradle toolchain in `build.gradle`, no machine-specific path needed)
+| | Version |
+|---|---|
+| Minecraft | 26.3 |
+| Fabric Loader | 0.19.5 or newer |
+| [Fabric API](https://modrinth.com/mod/fabric-api) | any 26.3 version |
+| [Architectury API](https://modrinth.com/mod/architectury-api) | 22.0.0 or newer (26.3) |
+| Java | 25 |
 
-## Building
-
-```bash
-./gradlew :common:build   # once on a fresh checkout, ~15 s
-./gradlew build           # from then on
-```
-
-See [BUILDING.md](BUILDING.md) for the module layout, the dev run tasks
-(`:fabric:runClient`, `:neoforge:runclient`, `:fabric:runServer`, `:neoforge:runserver`) and the
-loader-independence check.
+Optional: [Mod Menu](https://modrinth.com/mod/modmenu) adds a **Configure** button that opens
+ParCool's settings.
 
 ## Installing
 
-Drop the matching jar into `mods/`:
+1. Install Fabric API and Architectury API for 26.3 (for example through your launcher's mod browser).
+2. Put the ParCool jar from Releases into your `mods` folder.
+3. If you use another crawl mod (such as *Crawl*), disable it: ParCool has its own crawl.
 
-* Fabric — `fabric/build/libs/parcool-fabric.jar`
-* NeoForge — `neoforge/build/libs/parcool-neoforge.jar`
+Back up your world before using it in a world you care about.
 
-## Dependencies
+## Controls
 
-**Required**
+All keys can be changed in **Options > Controls > Key Binds > ParCool**.
 
-* Architectury API 19.0.1 or newer
-* Fabric: [Fabric API](https://modrinth.com/mod/fabric-api) 0.141.6+1.21.11
-* NeoForge 21.11.45 or newer
-* MixinExtras 0.4+ — bundled by both loaders, declared as a required dependency in both mod
-  descriptors because `common/…/mixin/common/PlayerMixin` uses `@WrapWithCondition` from it
+| Action | Default |
+|---|---|
+| Grab a ledge / hang | Jump at a wall, hold **right mouse** near the edge |
+| Pull up | **Space** while hanging |
+| Horizontal wall run | Sprint along a wall, jump, hold **R** |
+| Run up a wall | Fast run (**Left Ctrl** while sprinting) straight at a wall at least 3 blocks high, look slightly up, jump and hold **Space** |
+| Wall jump | Back or side to the wall, press **Space** in the air (blocked while facing the wall, and while Creative flight is active) |
+| Crawl / slide | **C** (slide: press it during fast run) |
+| Roll / breakfall | Hold **R** before landing |
+| Dodge | **R** + A/D/S on the ground |
+| Settings | **Alt + P** |
+| Turn ParCool on/off | **Ctrl + P** |
 
-**Optional**
+Vaulting triggers when you sprint at a ~1 block obstacle with free space behind it. If it gets in
+the way (for example on hills), the settings can make it require a key press.
 
-* [Patchouli](https://modrinth.com/mod/patchouli) — in-game guide
-* [ShoulderSurfing](https://www.curseforge.com/minecraft/mc-mods/shouldersurfing)
-* [EpicFight](https://www.curseforge.com/minecraft/mc-mods/epicfight) — NeoForge only. **EpicFight has
-  no 1.21.11 build**, so the integration is compiled against its 1.21.1 API but reports itself absent at
-  runtime (`EpicFightManager#isEpicFightUsable` checks the class is loadable) and ParCool falls back to
-  its own stamina system.
-* BetterThirdPerson — NeoForge only. The newest published build targets 1.21.8; it is compiled against
-  and used the same way, and is reported absent on a client that does not have it.
-* [Paraglider](https://www.curseforge.com/minecraft/mc-mods/paraglider) — NeoForge only, built against
-  `21.11.0-beta.6`, the 1.21.11 line.
+## What is included
 
-## Attribution and license
+Everything from ParCool **3.4.3.3** (the version this port is based on), tested in game on 26.3:
+all parkour actions, animations, stamina, the zipline, the energy drinks, the settings screen.
 
-ParCool was created by **alRex_U** and is licensed under the
-**GNU Lesser General Public License v3.0** — the full text is in [LICENSE](LICENSE).
+Not included: features that only exist in **ParCool 4.0** (grappling hook, skill tree, equipment,
+new animation engine). 4.0 is a rewrite and has no Fabric version.
 
-The Architectury port keeps the same license, mod id, version and project links. Contributions to
-the port itself are welcome under the same terms.
+## Changes compared to the original
+
+- Runs on Fabric (through Architectury API) instead of NeoForge. Fabric only; there is no NeoForge
+  jar.
+- Ported to Minecraft 26.3: new GUI rendering, SDL input, the new rendering pipeline, data-driven
+  brewing (the energy drink recipes are data files now).
+- Fixed: the key binding category was shown untranslated.
+- Added: Mod Menu support.
+- Server-side validation of client packets, from the Architectury port this is based on.
+
+## Credits
+
+- **alRex_U**: ParCool, its design and assets ([original project](https://github.com/alRex-U/ParCool),
+  [CurseForge](https://www.curseforge.com/minecraft/mc-mods/parcool)).
+- **sanufsoii**: the Architectury/Fabric port for 1.21.x this fork builds on
+  ([parcool-unofficial](https://github.com/sanufsoiii/parcool-unofficial)).
+- **sotadevop**: the port to Minecraft 26.3.
+
+## License
+
+GNU Lesser General Public License v3.0, the same as the original. The full text is in
+[LICENSE](LICENSE). The complete source code of every release is in this repository.
+
+## Building
+
+Requires JDK 25. On a fresh checkout `:common` has to be built once first:
+
+```bash
+./gradlew :common:build
+./gradlew build
+# -> fabric/build/libs/parcool-<version>-fabric.jar
+```
+
+Every push is built by GitHub Actions (`.github/workflows/build.yml`). Besides compiling, CI starts a
+dedicated server and a headless client and checks that every mixin applies to the Minecraft
+version, so a changed Minecraft method fails CI instead of crashing a game. See
+[BUILDING.md](BUILDING.md) for details.
