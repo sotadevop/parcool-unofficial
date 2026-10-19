@@ -63,7 +63,7 @@ public abstract class PlayerModelMixin {
                 state.walkAnimationSpeed,
                 state.yRot,
                 state.xRot,
-                state.attackTime,
+                state.swingAnimation,
                 state.leftArmPose,
                 state.rightArmPose
         );

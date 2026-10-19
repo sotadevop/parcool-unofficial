@@ -34,7 +34,6 @@
     "common.PlayerAttributesMixin",
     "common.PlayerForcedPoseMixin",
     "common.PlayerInteractionVisibilityMixin",
-    "common.PlayerMixin",
-    "common.PotionBrewingBuilderMixin"
+    "common.PlayerMixin"
   ]
 }

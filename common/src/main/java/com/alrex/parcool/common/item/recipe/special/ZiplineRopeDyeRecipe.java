@@ -3,13 +3,12 @@ package com.alrex.parcool.common.item.recipe.special;
 import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -20,8 +19,9 @@ import java.util.LinkedList;
 
 public class ZiplineRopeDyeRecipe extends CustomRecipe {
 
-    public ZiplineRopeDyeRecipe(CraftingBookCategory p_252125_) {
-        super(p_252125_);
+    /** 26.3: custom recipes no longer carry a crafting book category of their own. */
+    public ZiplineRopeDyeRecipe() {
+        super();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
             if (stack.getItem().equals(Items.ZIPLINE_ROPE.get())) {
                 if (ziplineRopeFound) return false;
                 else ziplineRopeFound = true;
-            } else if (stack.getItem() instanceof DyeItem) {
+            } else if (stack.has(DataComponents.DYE)) {
                 dyeItemFound = true;
             } else if (!stack.isEmpty()) {
                 return false;
@@ -44,16 +44,17 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
 
     @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull CraftingInput input, @Nonnull HolderLookup.Provider provider) {
+    public ItemStack assemble(@Nonnull CraftingInput input) {
         ItemStack ziplineRope = null;
-        LinkedList<DyeItem> dyeItems = new LinkedList<>();
+        LinkedList<DyeColor> dyeItems = new LinkedList<>();
         for (int i = 0; i < input.size(); i++) {
             ItemStack stack = input.getItem(i);
             Item item = stack.getItem();
             if (item instanceof ZiplineRopeItem) {
                 ziplineRope = stack;
-            } else if (item instanceof DyeItem) {
-                dyeItems.add((DyeItem) item);
+            } else if (stack.has(DataComponents.DYE)) {
+                // 26.3 stores a dye's colour as a data component instead of on DyeItem.
+                dyeItems.add(stack.get(DataComponents.DYE));
             } else if (!stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
@@ -63,8 +64,8 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
         resultZiplineRope.applyComponents(resultZiplineRope.getComponents());
         int r = 0, g = 0, b = 0;
         int dyeSize = dyeItems.size();
-        for (DyeItem dyeItem : dyeItems) {
-            int color = dyeItem.getDyeColor().getTextureDiffuseColor();
+        for (DyeColor dyeColor : dyeItems) {
+            int color = dyeColor.getTextureDiffuseColor();
             r += ARGB.red(color);
             g += ARGB.green(color);
             b += ARGB.blue(color);

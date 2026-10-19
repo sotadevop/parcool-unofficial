@@ -138,7 +138,7 @@ public class FastRunningAnimator extends Animator {
 		float yOffset = 0.145f * (float) Math.pow(Math.cos(limbSwing * 0.6662), 2.);
 		rotator.translateY(yOffset);
 		if (parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableLeanAnimationOfFastRun)) {
-			if (player.isLocalPlayer() && Minecraft.getInstance().screen != null) {
+			if (player.isLocalPlayer() && Minecraft.getInstance().gui.screen() != null) {
 				rotator
 						.startBasedCenter()
 						.rotatePitchFrontward(pitch)

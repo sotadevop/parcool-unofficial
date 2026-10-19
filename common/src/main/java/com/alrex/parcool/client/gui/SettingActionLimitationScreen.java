@@ -69,7 +69,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
             button.setY(contentOffsetY + Checkbox_Item_Height * i);
             button.setWidth(nameColumnWidth - 5);
             button.setHeight(Checkbox_Item_Height - 1);
-            button.render(graphics, mouseX, mouseY, partialTick);
+            button.extractRenderState(graphics, mouseX, mouseY, partialTick);
             graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
             int rowY = contentOffsetY + Checkbox_Item_Height * i + Checkbox_Item_Height / 2;
             boolean permitted = actionList[topIndex + i].serverLimitation.getAsBoolean();

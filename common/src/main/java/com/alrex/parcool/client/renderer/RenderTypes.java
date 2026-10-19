@@ -1,24 +1,26 @@
 package com.alrex.parcool.client.renderer;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
 /**
- * ParCool's own render types.
+ * ParCool's own render types for the zipline rope.
  *
- * <h2>Why two pipelines are built instead of reusing {@code RenderTypes.leash()}</h2>
- * 1.21.11 dropped {@code RenderStateShard} and reduced {@code RenderType} to a named
- * {@link RenderSetup} around a {@link RenderPipeline}, i.e. culling and the vertex format moved into
- * the pipeline. Vanilla's leash pipeline draws {@code POSITION_COLOR_LIGHTMAP} in
- * {@code TRIANGLE_STRIP} with culling off, while the zipline rope emits {@code QUADS} and has a
- * culled and an unculled variant (the {@code Enable3DRenderingForZipline} config switch), so
- * neither vanilla pipeline fits. The shaders are the same
- * {@code core/rendertype_leash} pair the 1.21.1 {@code RENDERTYPE_LEASH_SHADER} shard selected, and
- * the lightmap is still requested through {@code useLightmap()}, so the rope looks the same.
+ * <h2>Why two pipelines are built instead of reusing vanilla's leash pipeline</h2>
+ * Vanilla's leash pipeline draws {@code POSITION_COLOR_LIGHTMAP} as a {@code TRIANGLE_STRIP} with
+ * culling off, while the zipline rope emits {@code QUADS} and has a culled and an unculled variant
+ * (the {@code Enable3DRenderingForZipline} config switch).
+ *
+ * <p>26.3 moved rendering to Mojang's renderpearl library. The two pipelines below mirror how
+ * {@link RenderPipelines} builds {@code LEASH} in 26.3 (same snippet, shaders, lightmap sampler,
+ * vertex format, colour target and depth state); only the topology and culling differ.
  *
  * <p>{@code RenderPipelines#register} is private, but the map it fills is public, so the two
  * pipelines are registered the same way vanilla's are.
@@ -43,9 +45,12 @@ public class RenderTypes {
                 .withLocation(location)
                 .withVertexShader("core/rendertype_leash")
                 .withFragmentShader("core/rendertype_leash")
-                .withSampler("Sampler2")
+                .withBindGroupLayout(BindGroupLayouts.SAMPLER2)
                 .withCull(cull)
-                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, VertexFormat.Mode.QUADS)
+                .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR_LIGHTMAP)
+                .withPrimitiveTopology(PrimitiveTopology.QUADS)
+                .withColorTargetState(ColorTargetState.DEFAULT)
+                .withDepthStencilState(DepthStencilState.DEFAULT)
                 .build();
         RenderPipelines.PIPELINES_BY_LOCATION.put(pipeline.getLocation(), pipeline);
         return pipeline;

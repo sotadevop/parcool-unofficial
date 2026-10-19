@@ -16,7 +16,7 @@ public class OpenSettingsParCoolHandler {
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
-			Minecraft.getInstance().setScreen(new SettingActionLimitationScreen(Component.literal("ParCool Setting"), parkourability.getActionInfo(), ParCoolConfig.Client.getInstance().GUIColorTheme.get()));
+			Minecraft.getInstance().gui.setScreen(new SettingActionLimitationScreen(Component.literal("ParCool Setting"), parkourability.getActionInfo(), ParCoolConfig.Client.getInstance().GUIColorTheme.get()));
 		}
 	}
 }

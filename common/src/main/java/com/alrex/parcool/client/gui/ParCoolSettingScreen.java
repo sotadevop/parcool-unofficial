@@ -148,13 +148,13 @@ public abstract class ParCoolSettingScreen extends Screen {
 		switch (event.key()) {
 			case InputConstants.KEY_RIGHT:
                 save();
-                Minecraft.getInstance().setScreen(screenList[(currentScreen + 1) % screenList.length].screenSupplier.get());
+                Minecraft.getInstance().gui.setScreen(screenList[(currentScreen + 1) % screenList.length].screenSupplier.get());
 				break;
 			case InputConstants.KEY_LEFT:
                 save();
                 // floorMod, not %: currentScreen is 0 on the first tab, and (0 - 1) % 4 == -1, which
                 // crashed the game on the first left-arrow press.
-                Minecraft.getInstance().setScreen(screenList[Math.floorMod(currentScreen - 1, screenList.length)].screenSupplier.get());
+                Minecraft.getInstance().gui.setScreen(screenList[Math.floorMod(currentScreen - 1, screenList.length)].screenSupplier.get());
 				break;
 			case InputConstants.KEY_UP:
 				mouseScrolled(0, 0, 1);
@@ -204,7 +204,7 @@ public abstract class ParCoolSettingScreen extends Screen {
         for (ScreenSet<?> modeSet : screenList) {
 			if (modeSet.isMouseIn(event.x(), event.y()) && event.button() == 0) {
                 save();
-                Minecraft.getInstance().setScreen(modeSet.screenSupplier.get());
+                Minecraft.getInstance().gui.setScreen(modeSet.screenSupplier.get());
 				return true;
 			}
 		}

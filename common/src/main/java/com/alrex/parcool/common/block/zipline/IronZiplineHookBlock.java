@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.common.block.BlockStateProperties;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -47,13 +46,6 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
         return SHAPES[state.getValue(FACING).ordinal()];
     }
 
-    private static final MapCodec<IronZiplineHookBlock> CODEC = simpleCodec(IronZiplineHookBlock::new);
-
-    @Nonnull
-    @Override
-    protected MapCodec<? extends DirectionalBlock> codec() {
-        return CODEC;
-    }
 
     public IronZiplineHookBlock(Properties p_i48440_1_) {
         super(p_i48440_1_);

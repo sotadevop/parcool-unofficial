@@ -84,7 +84,7 @@ public class FastSwimAnimator extends Animator {
 
     @Override
     public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-        if (player.isLocalPlayer() && Minecraft.getInstance().screen != null) {
+        if (player.isLocalPlayer() && Minecraft.getInstance().gui.screen() != null) {
             return;
         }
         float tick = getTick() + rotator.getPartialTick();

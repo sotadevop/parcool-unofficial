@@ -74,7 +74,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
             button.setY(topOffset + boxHeight * i);
             button.setWidth(buttonWidth);
             button.setHeight(20);
-            button.render(graphics, mouseX, mouseY, partialTick);
+            button.extractRenderState(graphics, mouseX, mouseY, partialTick);
             List<String> path = enumConfigList[i + topIndex].configInstance.getPath();
             graphics.text(font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
             graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());

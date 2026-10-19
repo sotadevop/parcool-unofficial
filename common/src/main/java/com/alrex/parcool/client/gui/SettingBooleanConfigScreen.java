@@ -53,7 +53,7 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
             button.setY(topOffset + Checkbox_Item_Height * i);
             button.setWidth(contentWidth);
             button.setHeight(Checkbox_Item_Height - 1);
-            button.render(graphics, mouseX, mouseY, partialTick);
+            button.extractRenderState(graphics, mouseX, mouseY, partialTick);
             graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
             String comment = booleans[i + topIndex].Comment;
             if (comment != null && button.getX() < mouseX && mouseX < button.getX() + contentWidth && button.getY() < mouseY && mouseY < button.getY() + 20) {
