@@ -8,5 +8,6 @@ public class ParCoolFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ParCool.initClient();
+        MixinAudit.runIfRequested("client");
     }
 }

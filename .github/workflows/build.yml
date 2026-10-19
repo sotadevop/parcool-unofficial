@@ -62,3 +62,51 @@ jobs:
           name: parcool-fabric
           path: fabric/build/libs/*-fabric.jar
           if-no-files-found: error
+
+  # Starts a dedicated server and a client (headless) with the mixin audit switched on: every
+  # class ParCool's mixins target is loaded, so a target that changed in this Minecraft version
+  # fails here instead of in the game. Only runs once the build itself passes.
+  mixin-audit:
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install virtual display
+        run: sudo apt-get update -q && sudo apt-get install -y -q xvfb mesa-vulkan-drivers libgl1-mesa-dri
+
+      - name: Server audit
+        run: |
+          ./gradlew :common:build -x test -q
+          mkdir -p fabric/run && echo "eula=true" > fabric/run/eula.txt
+          timeout 900 ./gradlew :fabric:runServer -PparcoolMixinAudit > server.log 2>&1 || true
+          grep -q "PARCOOL_MIXIN_AUDIT_OK server" server.log
+
+      - name: Client audit
+        run: |
+          timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew :fabric:runClient -PparcoolMixinAudit > client.log 2>&1 || true
+          grep -q "PARCOOL_MIXIN_AUDIT_OK client" client.log
+
+      - name: Report audit (1)
+        if: always()
+        run: |
+          for f in server.log client.log; do
+            [ -f "$f" ] || continue
+            echo "##### $f"
+            grep -E "PARCOOL_MIXIN_AUDIT|Mixin|mixin|ERROR|Exception|Caused by|at com\.alrex|Error:|FAILED" "$f" \
+              | grep -vE "DEBUG|Mixing |mixin.debug" | head -250
+          done > audit.txt
+          .github/scripts/annotate.sh audit.txt 0 "Audit"
+      - name: Report audit (2)
+        if: always()
+        run: .github/scripts/annotate.sh audit.txt 10 "Audit"

@@ -13,5 +13,8 @@ public class ParCoolFabric implements ModInitializer {
         // from the common class. On NeoForge the registries are already frozen here and
         // :neoforge's NeoForgeAttributes owns the registration instead - see ParCool#init.
         com.alrex.parcool.api.Attributes.registerAll();
+        if (net.fabricmc.loader.api.FabricLoader.getInstance().getEnvironmentType() == net.fabricmc.api.EnvType.SERVER) {
+            MixinAudit.runIfRequested("server");
+        }
     }
 }
