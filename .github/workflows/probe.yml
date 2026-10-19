@@ -3,7 +3,7 @@
 name: Probe API
 
 # Triggered by pushing a change to .github/probe-request.env, which holds the query
-# (CLASSES, FIND, SCAN_PACKAGE, SCAN_REGEX, MEMBER_FILTER, RESOURCES as shell variables).
+# (CLASSES, FIND, SCAN_PACKAGE, SCAN_REGEX, MEMBER_FILTER, RESOURCES, BYTECODE as shell variables).
 on:
   push:
     paths:
@@ -29,7 +29,7 @@ jobs:
 
       - name: Probe
         run: |
-          CLASSES=""; FIND=""; SCAN_PACKAGE=""; SCAN_REGEX=""; MEMBER_FILTER=""; RESOURCES=""
+          CLASSES=""; FIND=""; SCAN_PACKAGE=""; SCAN_REGEX=""; MEMBER_FILTER=""; RESOURCES=""; BYTECODE=""
           source .github/probe-request.env
           jars=$(find ~/.gradle/caches .gradle -name '*.jar' 2>/dev/null \
             | grep -E 'minecraft|fabric|architectury' | grep -vE 'sources|javadoc' | sort -u)
@@ -55,6 +55,12 @@ jobs:
               else
                 javap -p -cp "$cp" "$c" 2>&1 | grep -v 'static final int' | head -400
               fi
+            done
+            # BYTECODE entries: class::regex - prints the 70 bytecode lines before each match.
+            for entry in $BYTECODE; do
+              c="${entry%%::*}"; re="${entry#*::}"
+              echo "=== bytecode $c / $re"
+              javap -c -p -cp "$cp" "$c" 2>&1 | grep -B70 -E "$re" | grep -vE '^\s*[0-9]+: (aload|astore|iload|istore|dup|pop|return|areturn|iconst|ldc2?_w|nop)\b' | head -150
             done
             if [ -n "$RESOURCES" ]; then
               echo "=== resources matching $RESOURCES"
