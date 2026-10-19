@@ -23,7 +23,6 @@
   },
   "mixins": [
     "common.ArgumentTypeInfosMixin",
-    "common.BlockEntityTypeInvoker",
     "common.EntityMixin",
     "common.LevelChunkMixin",
     "common.LivingEntityFallMixin",

@@ -131,8 +131,11 @@ public class FabricParCoolPlatform implements ParCoolPlatform {
     @Override
     public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(
             String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<Block[]> blocks) {
-        BlockEntityType<T> type = com.alrex.parcool.mixin.common.BlockEntityTypeInvoker.parcool$register(
-                com.alrex.parcool.ParCool.MOD_ID + ":" + name, factory, blocks.get());
+        // 26.3 made the BlockEntityType constructor public again, so no invoker is needed.
+        BlockEntityType<T> type = net.minecraft.core.Registry.register(
+                net.minecraft.core.registries.BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                net.minecraft.resources.Identifier.fromNamespaceAndPath(com.alrex.parcool.ParCool.MOD_ID, name),
+                new BlockEntityType<>(factory, java.util.Set.of(blocks.get())));
         return () -> type;
     }
 }
