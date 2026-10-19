@@ -2,6 +2,9 @@ pluginManagement {
 	repositories {
 		maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
 		maven { name = 'Architectury'; url = 'https://maven.architectury.dev/' }
+		// Architectury Loom itself depends on a few Forge-era tools (mcinjector, DiffPatch) that are
+		// only published here, even for a Fabric-only build.
+		maven { name = 'NeoForged'; url = 'https://maven.neoforged.net/releases/' }
 		mavenCentral()
 		gradlePluginPortal()
 	}
