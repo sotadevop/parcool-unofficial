@@ -1,4 +1,4 @@
-accessWidener v2 named
+accessWidener v2 official
 
 # NeoForge exposes these via patches/ATs; on Fabric they need widening. Verified against the
 # mojmap 1.21.11 jar: LivingEntity#swimAmount / #swimAmountO and Entity#onGround are private there and

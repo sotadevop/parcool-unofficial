@@ -1,6 +1,6 @@
 plugins {
 	id 'architectury-plugin'
-	id 'dev.architectury.loom'
+	id 'dev.architectury.loom-no-remap'
 }
 
 architectury {
@@ -31,9 +31,6 @@ loom {
 	// the common jar and referenced by both platform mod metadata files.
 	accessWidenerPath = file('src/main/resources/parcool.accesswidener')
 
-	mixin {
-		defaultRefmapName = 'parcool-common-refmap.json'
-	}
 
 	mods {
 		"${project.mod_id}" {
@@ -44,10 +41,9 @@ loom {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
 
 	// Architectury common API: events, registries, networking, platform helpers.
-	modImplementation "dev.architectury:architectury:${project.architectury_api_version}"
+	implementation "dev.architectury:architectury:${project.architectury_api_version}"
 
 	// Upstream uses javax.annotation.Nullable/Nonnull throughout; NeoForge puts JSR-305 on the
 	// compile classpath for free, Loom/ModDevGradle do not.

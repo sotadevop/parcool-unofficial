@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '25'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -53,5 +53,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: parcool-fabric
-          path: fabric/build/libs/*.jar
+          path: fabric/build/libs/*-fabric.jar
           if-no-files-found: error
