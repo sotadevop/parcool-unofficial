@@ -3,7 +3,7 @@
 name: Probe API
 
 # Triggered by pushing a change to .github/probe-request.env, which holds the query
-# (CLASSES, FIND, SCAN_PACKAGE, SCAN_REGEX, MEMBER_FILTER as shell variables).
+# (CLASSES, FIND, SCAN_PACKAGE, SCAN_REGEX, MEMBER_FILTER, RESOURCES as shell variables).
 on:
   push:
     paths:
@@ -29,7 +29,7 @@ jobs:
 
       - name: Probe
         run: |
-          CLASSES=""; FIND=""; SCAN_PACKAGE=""; SCAN_REGEX=""; MEMBER_FILTER=""
+          CLASSES=""; FIND=""; SCAN_PACKAGE=""; SCAN_REGEX=""; MEMBER_FILTER=""; RESOURCES=""
           source .github/probe-request.env
           jars=$(find ~/.gradle/caches .gradle -name '*.jar' 2>/dev/null \
             | grep -E 'minecraft|fabric|architectury' | grep -vE 'sources|javadoc' | sort -u)
@@ -56,6 +56,12 @@ jobs:
                 javap -p -cp "$cp" "$c" 2>&1 | grep -v 'static final int' | head -400
               fi
             done
+            if [ -n "$RESOURCES" ]; then
+              echo "=== resources matching $RESOURCES"
+              for r in $(unzip -Z1 "$mc" | grep -E "$RESOURCES" | head -15); do
+                echo "--- $r"; unzip -p "$mc" "$r" | head -60
+              done
+            fi
             if [ -n "$SCAN_PACKAGE" ]; then
               echo "=== scan $SCAN_PACKAGE for $SCAN_REGEX"
               unzip -Z1 "$mc" | grep "^$SCAN_PACKAGE.*\.class$" | sed 's/\.class$//; s|/|.|g' > scan.txt
