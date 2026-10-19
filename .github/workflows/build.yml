@@ -29,7 +29,10 @@ jobs:
       - name: Build
         run: |
           set -o pipefail
-          ./gradlew build --stacktrace 2>&1 | tee build.log
+          # A fresh checkout must build :common first: the loader modules read its jar while
+          # Gradle configures them (documented in BUILDING.md).
+          ./gradlew :common:build --stacktrace 2>&1 | tee build.log
+          ./gradlew build --stacktrace 2>&1 | tee -a build.log
 
       # On failure, repeat the important parts of the log as annotations, so they can be read
       # through the GitHub API without downloading the full log.
