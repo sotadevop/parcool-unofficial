@@ -45,10 +45,13 @@ jobs:
               for j in $jars; do unzip -Z1 "$j" 2>/dev/null; done | grep '\.class$' | sed 's/\.class$//' \
                 | grep -E "$FIND" | sort -u | head -300
             fi
-            for c in $CLASSES; do
+            # Each entry is a class name, optionally followed by ::regex to keep only matching members.
+            for entry in $CLASSES; do
+              c="${entry%%::*}"; filter="$MEMBER_FILTER"
+              [ "$entry" != "$c" ] && filter="${entry#*::}"
               echo "=== $c"
-              if [ -n "$MEMBER_FILTER" ]; then
-                javap -p -cp "$cp" "$c" 2>&1 | grep -E "(class|interface|enum|record) |$MEMBER_FILTER" | head -200
+              if [ -n "$filter" ]; then
+                javap -p -cp "$cp" "$c" 2>&1 | grep -E "(class|interface|enum|record) |$filter" | head -200
               else
                 javap -p -cp "$cp" "$c" 2>&1 | grep -v 'static final int' | head -400
               fi
