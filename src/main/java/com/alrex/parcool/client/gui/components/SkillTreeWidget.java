@@ -7,7 +7,7 @@ import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 @Environment(EnvType.CLIENT)
 public class SkillTreeWidget extends AbstractWidget {
@@ -138,27 +140,27 @@ public class SkillTreeWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         var poseStack = graphics.pose();
         boolean mouseIsOutOfWidget = mouseX < getX() || getX() + width < mouseX || mouseY < getY() || getY() + height < mouseY;
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         {
             GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
             int mouseXScaled = mouseIsOutOfWidget ? -1 : (int) getMouseXInContent(mouseX);
             int mouseYScaled = mouseIsOutOfWidget ? -1 : (int) getMouseYInContent(mouseY);
 
-            poseStack.translate(getX(), getY(), 0);
-            poseStack.scale(scale, scale, 0);
-            poseStack.translate(-scrollX, -scrollY, 0);
+            poseStack.translate((float) (getX()), (float) (getY()));
+            poseStack.scale((float) (scale), (float) (scale));
+            poseStack.translate((float) (-scrollX), (float) (-scrollY));
             for (var widget : connectivities) {
-                widget.render(graphics, mouseXScaled, mouseYScaled, partialTick);
+                widget.extractRenderState(graphics, mouseXScaled, mouseYScaled, partialTick);
             }
             for (var widget : icons) {
-                widget.render(graphics, mouseXScaled, mouseYScaled, partialTick);
+                widget.extractRenderState(graphics, mouseXScaled, mouseYScaled, partialTick);
             }
             RenderSystem.disableScissor();
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     @Override
@@ -166,7 +168,12 @@ public class SkillTreeWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int mouseButton = event.button();
+        double dragX = dragX;
+        double dragY = dragY;
         scrollX -= dragX / scale;
         scrollY -= dragY / scale;
         limitScroll();
@@ -181,15 +188,18 @@ public class SkillTreeWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         if (button == 0) {
             for (var icon : icons) {
                 if (icon.isHoveredOrFocused()) {
-                    return icon.mouseClicked(getMouseXInContent(mouseX), getMouseYInContent(mouseY), button);
+                    return icon.mouseClicked(new MouseButtonEvent(getMouseXInContent(mouseX), getMouseYInContent(mouseY), new MouseButtonInfo(button, 0)), false);
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), false);
     }
 
     private class ConnectivityWidget implements Renderable {
@@ -209,7 +219,7 @@ public class SkillTreeWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void extractRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             int color = root.getSkillTreeEntry().isUnlocked(parkourability) ? 0xFFEEEEEE : 0xAA777777;
             var rootYCenter = root.getY() + root.getHeight() / 2;
             var rootXCenter = root.getX() + root.getWidth() / 2;
@@ -247,13 +257,12 @@ public class SkillTreeWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void extractContents(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             if (entry.isVisible(parkourability)) {
                 if (isHovered)
                     RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
                 else
-                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 graphics.blit(this.getX(), this.getY(), 0, this.width, this.height,
                         ParCoolTextures.guiSprite(entry.isUnlocked(parkourability)
                                 ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED
@@ -264,7 +273,6 @@ public class SkillTreeWidget extends AbstractWidget {
                     RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
                     graphics.blit(this.getX(), this.getY(), 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
                 }
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
                 graphics.blit(this.getX(), this.getY(), 0, this.width, this.height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE));
             }

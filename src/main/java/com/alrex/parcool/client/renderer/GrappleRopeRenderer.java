@@ -73,7 +73,7 @@ public class GrappleRopeRenderer {
         if (paths == null) return;
 
         PoseStack poseStack = event.getPoseStack();
-        Vec3 cameraPosition = camera.getPosition();
+        Vec3 cameraPosition = camera.position();
         VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.GRAPPLE_ROPE);
 
         poseStack.pushPose();
@@ -234,7 +234,7 @@ public class GrappleRopeRenderer {
                 && minecraft.options.getCameraType().isFirstPerson()
                 && camera.getEntity() == player;
         if (firstPerson) {
-            Vec3 position = camera.getPosition();
+            Vec3 position = camera.position();
             Vec3 look = toVec3(camera.getLookVector());
             Vec3 up = toVec3(camera.getUpVector());
             Vec3 right = toVec3(camera.getLeftVector()).reverse();

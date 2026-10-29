@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -36,13 +36,13 @@ public class TextWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         var xOffset = switch (alignment) {
             case START -> getX();
             case END -> getX() + width - messageWidth;
             case CENTER -> getX() + (width - messageWidth) / 2f;
         };
-        graphics.drawString(font, getMessage(), (int) xOffset, getY(), txtColor, shadow);
+        graphics.text(font, getMessage(), (int) xOffset, getY(), txtColor, shadow);
     }
 
     @Override

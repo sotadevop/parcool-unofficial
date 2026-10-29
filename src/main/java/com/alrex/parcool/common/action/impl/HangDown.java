@@ -241,7 +241,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         if (dotOfOrthogonalAndLook < 0) barOrthogonalVec = barOrthogonalVec.reverse();
         var absDotOfOrthogonalAndLook = Mth.abs(dotOfOrthogonalAndLook);
         var input = localPlayer.input;
-        var movementInput = lookVec.scale(input.forwardImpulse).add(lookVec.yRot(Mth.HALF_PI).scale(input.leftImpulse));
+        var movementInput = lookVec.scale(input.getMoveVector().y).add(lookVec.yRot(Mth.HALF_PI).scale(input.getMoveVector().x));
         var inputAcceleration = 0.02f * (float) barOrthogonalVec.dot(movementInput);
         var cosAngle = Mth.cos(angle);
         var sinAngle = Mth.sin(angle);

@@ -2,7 +2,7 @@ package com.alrex.parcool.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -34,7 +34,7 @@ public class ImageBySpriteButton extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (active) {
             if (isHovered) RenderSystem.setShaderColor(0.85f, 0.85f, 0.85f, 0.85f);
             else RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -44,8 +44,7 @@ public class ImageBySpriteButton extends AbstractButton {
         RenderSystem.setShaderTexture(0, texLocation);
         graphics.blit(getX(), getY(), 0, width, height, sprite);
         var message = getMessage();
-        graphics.drawString(font, message, (int) (getX() + (width - font.width(message)) / 2f), (int) (1 + getY() + (height - font.lineHeight) / 2f), txtColor, false);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        graphics.text(font, message, (int) (getX() + (width - font.width(message)) / 2f), (int) (1 + getY() + (height - font.lineHeight) / 2f), txtColor, false);
     }
 
     @Override

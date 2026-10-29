@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -36,7 +36,7 @@ public abstract class AbstractSpriteButton extends AbstractButton {
         this.spriteWhenOnHover = spriteWhenOnHover;
     }
 
-    protected void renderInnerMessage(GuiGraphics graphics, Component message) {
-        graphics.drawString(font, message, getX() + (width - font.width(message)) / 2, 1 + getY() + (height - font.lineHeight) / 2, txtColor, false);
+    protected void renderInnerMessage(GuiGraphicsExtractor graphics, Component message) {
+        graphics.text(font, message, getX() + (width - font.width(message)) / 2, 1 + getY() + (height - font.lineHeight) / 2, txtColor, false);
     }
 }

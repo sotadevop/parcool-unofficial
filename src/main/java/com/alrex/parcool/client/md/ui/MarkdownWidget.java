@@ -11,7 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -41,6 +41,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 @Environment(EnvType.CLIENT)
 public class MarkdownWidget extends AbstractWidget {
@@ -96,9 +98,9 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         var poseStack = graphics.pose();
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         {
             GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
 
@@ -108,19 +110,22 @@ public class MarkdownWidget extends AbstractWidget {
             if (mouseYInContent < 0 || width < mouseYInContent) mouseYInContent = -1;
             else mouseYInContent += (int) scrollY;
 
-            poseStack.translate(getX(), getY() - scrollY, 0);
+            poseStack.translate((float) (getX()), (float) (getY() - scrollY));
             for (var widget : contentRendererWidgets) {
-                widget.render(graphics, mouseXInContent, mouseYInContent, partial);
+                widget.extractRenderState(graphics, mouseXInContent, mouseYInContent, partial);
             }
             RenderSystem.disableScissor();
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int click) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int click = event.button();
         for (var widget : contentRendererWidgets) {
-            if (widget.mouseClicked(mouseX - getX(), mouseY - getY() + scrollY, click)) return true;
+            if (widget.mouseClicked(new MouseButtonEvent(mouseX - getX(), mouseY - getY() + scrollY, new MouseButtonInfo(click, 0)), false)) return true;
         }
         return false;
     }
@@ -152,20 +157,23 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int click) {
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+            double mouseX = event.x();
+            double mouseY = event.y();
+            int click = event.button();
             for (var textWidget : textWidgets) {
                 if (textWidget.getX() < mouseX && mouseX < textWidget.getX() + textWidget.getWidth() && textWidget.getY() < mouseY && mouseY < textWidget.getY() + textWidget.getHeight()) {
-                    if (textWidget.mouseClicked(mouseX, mouseY, click)) return true;
+                    if (textWidget.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(click, 0)), false)) return true;
                 }
             }
             return false;
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             if (isActive()) {
                 for (var widget : textWidgets) {
-                    widget.render(graphics, mouseX, mouseY, partial);
+                    widget.extractRenderState(graphics, mouseX, mouseY, partial);
                 }
             }
         }
@@ -299,7 +307,7 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             int relativeMouseX = mouseX - getX();
             int relativeMouseY = mouseY - getY();
             interactingZone = null;
@@ -310,12 +318,12 @@ public class MarkdownWidget extends AbstractWidget {
                     interactingZone = zone;
             }
             for (var fragment : fragments) {
-                graphics.drawString(font, fragment.text, (int) (getX() + fragment.x), (int) (getY() + fragment.y), ~0, false);
+                graphics.text(font, fragment.text, (int) (getX() + fragment.x), (int) (getY() + fragment.y), ~0, false);
             }
             for (var interaction : interactiveFragments) {
                 var fragment = interaction.getA();
                 var isHovered = interactingZone != null && interactingZone.idx == interaction.getB().idx;
-                graphics.drawString(
+                graphics.text(
                         font, fragment.text, (int) (getX() + fragment.x), (int) (getY() + fragment.y),
                         isHovered ? 0xFFFC9527 : 0xFF6C76FA, false
                 );
@@ -323,7 +331,9 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void onClick(double mouseX, double mouseY) {
+        public void onClick(MouseButtonEvent event, boolean doubleClick) {
+            double mouseX = event.x();
+            double mouseY = event.y();
             if (interactingZone == null) return;
             var zone = interactingZone;
             var relativeMouseX = mouseX - getX();
@@ -357,19 +367,18 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             var poseStack = graphics.pose();
-            poseStack.pushPose();
+            poseStack.pushMatrix();
             {
-                poseStack.translate(getX(), getY(), 0);
-                poseStack.scale(scale, scale, 0);
-                widget.render(graphics, (int) ((mouseX - getX()) / scale), (int) ((mouseY - getY()) / scale), partial);
+                poseStack.translate((float) (getX()), (float) (getY()));
+                poseStack.scale((float) (scale), (float) (scale));
+                widget.extractRenderState(graphics, (int) ((mouseX - getX()) / scale), (int) ((mouseY - getY()) / scale), partial);
             }
-            poseStack.popPose();
+            poseStack.popMatrix();
             if (bottomLine) {
                 RenderSystem.setShaderColor(1f, 1f, 1f, 0.4f);
                 graphics.hLine(getX(), getX() + width, getY() + Mth.ceil(widget.getHeight() * scale), textColor());
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             }
         }
     }
@@ -380,10 +389,9 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             RenderSystem.setShaderColor(1, 1, 1, 0.5f);
             graphics.hLine(getX() + 5, getX() + width - 5, getY() + 1, textColor());
-            RenderSystem.setShaderColor(1, 1, 1, 1f);
         }
     }
 
@@ -404,12 +412,12 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             int i = 0;
             for (var widget : textWidgets) {
-                graphics.drawString(font, (++i) + ".", getX(), widget.getY(), textColor(), false);
+                graphics.text(font, (++i) + ".", getX(), widget.getY(), textColor(), false);
             }
-            super.renderWidget(graphics, mouseX, mouseY, partial);
+            super.extractWidgetRenderState(graphics, mouseX, mouseY, partial);
         }
     }
 
@@ -429,12 +437,12 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             var offset = font.lineHeight / 2;
             for (var widget : textWidgets) {
                 graphics.fill(getX() + offset - 1, widget.getY() + offset - 1, getX() + offset + 1, widget.getY() + offset + 1, textColor());
             }
-            super.renderWidget(graphics, mouseX, mouseY, partial);
+            super.extractWidgetRenderState(graphics, mouseX, mouseY, partial);
         }
     }
 
@@ -450,7 +458,7 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             RenderSystem.setShaderTexture(0, ParCoolGuideImageTextureAtlas.TEXTURE_LOCATION);
             graphics.blit(getX(), getY(), 0, width, height, sprite);
         }
@@ -481,15 +489,15 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             var poseStack = graphics.pose();
-            poseStack.pushPose();
+            poseStack.pushMatrix();
             {
-                poseStack.translate(getX(), getY(), 0);
-                poseStack.scale(scale, scale, 1);
+                poseStack.translate((float) (getX()), (float) (getY()));
+                poseStack.scale((float) (scale), (float) (scale));
                 graphics.blit(CRAFTING_TABLE_LOCATION, 0, 0, 28, 15, 118, 56);
             }
-            poseStack.popPose();
+            poseStack.popMatrix();
             var time = Util.getMillis() / 1000;
             if (recipe != null) {
                 var recipeValue = recipe.value();
@@ -555,16 +563,16 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             var poseStack = graphics.pose();
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-            poseStack.pushPose();
+            poseStack.pushMatrix();
             {
-                poseStack.translate(getX(), getY(), 0);
-                poseStack.scale(scale, scale, 1);
+                poseStack.translate((float) (getX()), (float) (getY()));
+                poseStack.scale((float) (scale), (float) (scale));
                 graphics.blit(0, 0, 0, 127, 20, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BREWING_RECIPE_BOX));
             }
-            poseStack.popPose();
+            poseStack.popMatrix();
             var time = Util.getMillis() / 1000;
             if (recipes.isEmpty()) return;
             int idx = (int) (time % recipes.size());

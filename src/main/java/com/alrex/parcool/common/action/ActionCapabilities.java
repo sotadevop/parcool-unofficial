@@ -103,14 +103,14 @@ public class ActionCapabilities {
     }
 
     public void readFromTag(ActionRegistry registry, CompoundTag tag) {
-        for (var groupName : tag.getAllKeys()) {
+        for (var groupName : tag.keySet()) {
             var cap = capabilities.get(groupName);
             if (cap == null) continue;
             var actionGroup = registry.getRegisteredGroups().get(groupName);
             if (actionGroup == null) continue;
             if (!(tag.get(groupName) instanceof CompoundTag groupTag)) continue;
             Arrays.fill(cap, false);
-            for (var actionName : groupTag.getAllKeys()) {
+            for (var actionName : groupTag.keySet()) {
                 var actionCap = groupTag.getBoolean(actionName);
                 actionGroup
                         .actions()

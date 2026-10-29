@@ -149,7 +149,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
                 Mth.floor(playerPos.y + 0.1),
                 Mth.floor(playerPos.z + wallDirection.asVec().z * playerHalfWidth)
         );
-        if (wallBlockPos.getY() < level.getMinBuildHeight() || level.getMaxBuildHeight() < wallBlockPos.getY())
+        if (wallBlockPos.getY() < level.getMinY() || level.getMaxY() < wallBlockPos.getY())
             return false;
         if (!level.isLoaded(wallBlockPos)) return false;
         var blockState = level.getBlockState(wallBlockPos);
@@ -160,7 +160,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
             var collisionProperties = new BooleanProperty[]{CrossCollisionBlock.EAST, CrossCollisionBlock.WEST, CrossCollisionBlock.SOUTH, CrossCollisionBlock.NORTH};
             for (int i = 0; i < playerHeight; i++) {
                 var pos = wallBlockPos.above(i);
-                if (level.getMaxBuildHeight() < pos.getY()) return false;
+                if (level.getMaxY() < pos.getY()) return false;
                 blockState = level.getBlockState(pos);
                 if (!(blockState.getBlock() instanceof CrossCollisionBlock))
                     return false;
@@ -185,7 +185,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
         if (block instanceof ChainBlock) {
             for (int i = 0; i < playerHeight; i++) {
                 var pos = wallBlockPos.above(i);
-                if (level.getMaxBuildHeight() < pos.getY()) return false;
+                if (level.getMaxY() < pos.getY()) return false;
                 blockState = level.getBlockState(pos);
                 if (!(blockState.getBlock() instanceof ChainBlock)) return false;
                 if (blockState.getValue(ChainBlock.AXIS) != Direction.Axis.Y) return false;

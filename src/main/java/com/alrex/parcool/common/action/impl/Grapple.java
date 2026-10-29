@@ -391,7 +391,7 @@ public class Grapple extends ContinuableAction {
                 exitVelocity = exitVelocity.add(0, config.releaseBoost().get(), 0);
             }
             exitVelocity = GrapplePhysics.clampSpeed(exitVelocity, config.maxSpeed().get());
-            if (player.isInFluidType()) {
+            if (player.isInLiquid()) {
                 exitVelocity = exitVelocity.scale(0.25);
             }
             player.setDeltaMovement(exitVelocity);
@@ -570,7 +570,7 @@ public class Grapple extends ContinuableAction {
         Vec3 delta = current.subtract(position);
         double distance = delta.length();
         if (distance > maxSpeed) delta = delta.scale(maxSpeed / distance);
-        if (player.isInFluidType()) {
+        if (player.isInLiquid()) {
             delta = delta.scale(0.25);
         }
 
@@ -613,8 +613,8 @@ public class Grapple extends ContinuableAction {
     @Environment(EnvType.CLIENT)
     private Vec3 steering(LocalPlayer player, ParCoolConfig.Server.GrapplingHook config, Vec3 ropeDirection, Vec3 currentVelocity) {
         Vec3 forward = EntityUtil.getHorizontalLookAngle(player);
-        Vec3 input = forward.scale(player.input.forwardImpulse)
-                .add(forward.yRot(Mth.HALF_PI).scale(player.input.leftImpulse));
+        Vec3 input = forward.scale(player.input.getMoveVector().y)
+                .add(forward.yRot(Mth.HALF_PI).scale(player.input.getMoveVector().x));
         double inputStrength = input.length();
         if (inputStrength < 0.1) return Vec3.ZERO;
         if (inputStrength > 1) {
@@ -679,9 +679,9 @@ public class Grapple extends ContinuableAction {
                     String.format("%.2f", rope.wrappedLength()),
                     unresolvedContacts
             );
-            player.displayClientMessage(net.minecraft.network.chat.Component.literal(
+            player.sendOverlayMessage(net.minecraft.network.chat.Component.literal(
                     "\u00a7cGrapple: rope segment " + i + "/" + (path.size() - 1)
-                            + " through world, " + rope.contactCount() + " contacts"), true);
+                            + " through world, " + rope.contactCount() + " contacts"));
             return;
         }
     }
@@ -705,7 +705,7 @@ public class Grapple extends ContinuableAction {
         if (momentumTicksLeft <= 0) return;
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
         if (isDoing() || player.onGround() || player.horizontalCollision
-                || player.isInFluidType() || player.isFallFlying() || player.getAbilities().flying) {
+                || player.isInLiquid() || player.isFallFlying() || player.getAbilities().flying) {
             momentumTicksLeft = 0;
             return;
         }

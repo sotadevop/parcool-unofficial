@@ -4,7 +4,7 @@ import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,7 @@ public class ExperienceProgressView extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
         graphics.blit(getX(), getY(), 0, width, height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX));
         var sprite = ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX_OVERLAY);
@@ -33,7 +33,7 @@ public class ExperienceProgressView extends AbstractWidget {
         );
         var message = getMessage();
         var messageWidth = font.width(message);
-        graphics.drawString(font, message, getX() + width - 3 - messageWidth, getY() + 1 + (height - font.lineHeight) / 2, ~0, true);
+        graphics.text(font, message, getX() + width - 3 - messageWidth, getY() + 1 + (height - font.lineHeight) / 2, ~0, true);
     }
 
     public void setProgress(float progress) {

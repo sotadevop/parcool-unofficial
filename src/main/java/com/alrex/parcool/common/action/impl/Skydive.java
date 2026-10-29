@@ -106,17 +106,17 @@ public class Skydive extends ContinuableAction implements IRequestable<Skydive.R
             var tmp = propertyMovingLeftTick.get();
             tickMovingLeft = (tmp != null) ? tmp : 0;
         }
-        if (input.forwardImpulse > 1e-4) {
+        if (input.getMoveVector().y > 1e-4) {
             if (tickMovingForward < TRANSITION_TICK) tickMovingForward++;
-        } else if (input.forwardImpulse < -1e-4) {
+        } else if (input.getMoveVector().y < -1e-4) {
             if (tickMovingForward > -TRANSITION_TICK) tickMovingForward--;
         } else {
             if (tickMovingForward > 0) tickMovingForward--;
             else if (tickMovingForward < 0) tickMovingForward++;
         }
-        if (input.leftImpulse > 1e-4) {
+        if (input.getMoveVector().x > 1e-4) {
             if (tickMovingLeft < TRANSITION_TICK) tickMovingLeft++;
-        } else if (input.leftImpulse < -1e-4) {
+        } else if (input.getMoveVector().x < -1e-4) {
             if (tickMovingLeft > -TRANSITION_TICK) tickMovingLeft--;
         } else {
             if (tickMovingLeft > 0) tickMovingLeft--;

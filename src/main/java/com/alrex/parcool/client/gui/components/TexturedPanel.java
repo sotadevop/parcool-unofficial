@@ -3,7 +3,7 @@ package com.alrex.parcool.client.gui.components;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.util.ColorUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -44,15 +44,13 @@ public class TexturedPanel extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (ColorUtil.alphaOf(borderColor) != 0) {
             graphics.fill(getX(), getY() - 1, getX() + width, getY(), borderColor);
             graphics.fill(getX(), getY() + height, getX() + width, getY() + height + 1, borderColor);
             graphics.fill(getX() - 1, getY(), getX(), getY() + height, borderColor);
             graphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, borderColor);
         }
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
         graphics.blit(texLocation, getX(), getY(), 0, 0, 0, width, height, texWidth, texHeight);
     }
 

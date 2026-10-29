@@ -7,6 +7,7 @@ accessWidener v2 official
 accessible field net/minecraft/world/entity/LivingEntity swimAmount F
 accessible field net/minecraft/world/entity/LivingEntity swimAmountO F
 accessible field net/minecraft/world/entity/Entity onGround Z
+accessible field net/minecraft/world/entity/Entity invulnerableTime I
 
 # NeoForge widens these; ParCool calls them directly. 1.21.11 already made LevelResource's constructor
 # public, so only the Player helper still has to be widened.

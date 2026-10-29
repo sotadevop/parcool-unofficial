@@ -133,8 +133,8 @@ public abstract class Action {
 		if (player.isSpectator()) return false;
 		if (!option.availableWhileExhausted() && parkourability.getStamina().isExhausted()) return false;
 		var currentPose = player.getPose();
-		if ((!option.availableInFluid() && player.isInFluidType())
-				|| (!option.availableNotInFluid() && !player.isInFluidType())
+		if ((!option.availableInFluid() && player.isInLiquid())
+				|| (!option.availableNotInFluid() && !player.isInLiquid())
 				|| (!option.availableWithFallFlying() && player.isFallFlying())
 				|| (option.needOnGround() && !player.onGround())
 				|| (option.needNotOnGround() && player.onGround())

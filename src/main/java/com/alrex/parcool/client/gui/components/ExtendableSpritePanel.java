@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
 import com.alrex.parcool.client.gui.GuiRenderUtil;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,7 +24,7 @@ public class ExtendableSpritePanel extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         GuiRenderUtil.renderExtendableSprite(graphics, sprite, getX(), getY(), width, height);
     }
 

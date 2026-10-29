@@ -20,7 +20,7 @@ public class ParCoolModMenu implements ModMenuApi {
             var player = minecraft.player;
             var parkourability = player == null ? null : Parkourability.get(player);
             if (parkourability != null) return new ParCoolSettingScreen(parkourability);
-            return new AlertScreen(() -> minecraft.setScreen(parent),
+            return new AlertScreen(() -> minecraft.gui.setScreen(parent),
                     Component.translatable("parcool.modmenu.title"),
                     Component.translatable("parcool.modmenu.need_world"));
         };

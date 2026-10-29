@@ -119,7 +119,7 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
     @Environment(EnvType.CLIENT)
     @Override
     public void onStopInClient() {
-        if (parkourability.player().isInFluidType()) {
+        if (parkourability.player().isInLiquid()) {
             PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().DIVE_INTO_WATER);
         }
     }

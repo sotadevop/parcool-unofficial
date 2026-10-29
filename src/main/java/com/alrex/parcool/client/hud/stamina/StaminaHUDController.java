@@ -7,7 +7,7 @@ import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.common.Parkourability;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.fabricmc.api.EnvType;
@@ -47,7 +47,7 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 	}
 
 	@Override
-    public void render(@Nonnull GuiGraphics guiGraphics, @Nonnull DeltaTracker deltaTracker) {
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, @Nonnull DeltaTracker deltaTracker) {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
@@ -63,7 +63,7 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 			return;
 
 		if (ParCool.getConfig().client().staminaHud.type().get() == HUDType.Light) {
-            lightStaminaHUD.render(guiGraphics, parkourability, currentContext, oldContext, deltaTracker);
+            lightStaminaHUD.extractRenderState(guiGraphics, parkourability, currentContext, oldContext, deltaTracker);
 		}
 
         ParCoolEventBus.post(new RenderParCoolHUDEvent.Render.Stamina.Post(guiGraphics, deltaTracker.getGameTimeDeltaPartialTick(true), currentContext, oldContext));

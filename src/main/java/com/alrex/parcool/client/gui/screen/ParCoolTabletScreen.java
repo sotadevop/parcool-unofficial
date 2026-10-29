@@ -8,7 +8,7 @@ import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -22,6 +22,8 @@ import net.fabricmc.api.Environment;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 @Environment(EnvType.CLIENT)
 public class ParCoolTabletScreen extends Screen {
@@ -113,35 +115,35 @@ public class ParCoolTabletScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (minecraft == null) return;
         var poseStack = graphics.pose();
-        renderBackground(graphics, mouseX, mouseY, partial);
-        poseStack.pushPose();
+        extractBackground(graphics, mouseX, mouseY, partial);
+        poseStack.pushMatrix();
         {
             renderContent(graphics, mouseX, mouseY, partial);
             if (!fullscreen) {
                 renderFrame(graphics, partial);
-                topBarButton.render(graphics, mouseX, mouseY, partial);
+                topBarButton.extractRenderState(graphics, mouseX, mouseY, partial);
             }
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
-    private void renderFrame(GuiGraphics graphics, float partial) {
+    private void renderFrame(GuiGraphicsExtractor graphics, float partial) {
         var poseStack = graphics.pose();
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         {
             graphics.blit(TEXTURE_LOCATION, frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT);
             GuiRenderUtil.enableScissorTestInGuiCoordinate(frameOffsetX + 22, frameOffsetY + 7, 224, font.lineHeight + 5);
-            graphics.drawString(font, topBarText, frameOffsetX + 23, frameOffsetY + 8, 0x37474F, false);
+            graphics.text(font, topBarText, frameOffsetX + 23, frameOffsetY + 8, 0x37474F, false);
             RenderSystem.disableScissor();
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
-        super.render(graphics, mouseX, mouseY, partial);
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+        super.extractRenderState(graphics, mouseX, mouseY, partial);
     }
 
     protected void setTopBarText(Component text) {
@@ -149,10 +151,13 @@ public class ParCoolTabletScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
         for (var iterator = this.children().listIterator(this.children().size()); iterator.hasPrevious(); ) {
             var listener = iterator.previous();
-            if (listener.mouseClicked(mouseX, mouseY, button)) {
+            if (listener.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), false)) {
                 this.setFocused(listener);
                 if (button == 0) this.setDragging(true);
                 return true;
@@ -173,13 +178,12 @@ public class ParCoolTabletScreen extends Screen {
         }
 
         @Override
-        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void extractContents(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             if (isHovered) {
                 RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 1f);
             }
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             graphics.blit(getX(), getY(), 0, width, height, sprite);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
 
         @Override
@@ -240,7 +244,7 @@ public class ParCoolTabletScreen extends Screen {
         if (confirmed) {
             Util.getPlatform().openUri(uri);
         }
-        if (minecraft != null) minecraft.setScreen(this);
+        if (minecraft != null) minecraft.gui.setScreen(this);
     }
 
     protected void onPressTobBarButton() {

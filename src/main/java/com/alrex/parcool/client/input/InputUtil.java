@@ -9,6 +9,6 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class InputUtil {
     public static Vec3 getInputVectorInWorld(Player player, Input input) {
-        return new Vec3(input.leftImpulse, 0, input.forwardImpulse).yRot((float) Math.toRadians(-player.getYRot()));
+        return new Vec3(input.getMoveVector().x, 0, input.getMoveVector().y).yRot((float) Math.toRadians(-player.getYRot()));
     }
 }

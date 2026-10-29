@@ -12,7 +12,7 @@ import com.alrex.parcool.common.network.RequestUnlockActionPacket;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import com.alrex.parcool.util.ColorUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -108,7 +108,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
                                                                 Component.translatable("parcool.gui.text.open_guide"),
                                                                 () -> {
                                                                     if (selectedSkill != null) {
-                                                                        Minecraft.getInstance().setScreen(
+                                                                        Minecraft.getInstance().gui.setScreen(
                                                                                 new ParCoolGuideScreen(GuideResourceManager.getLocation(selectedSkill.getActionEntry()))
                                                                         );
                                                                     }
@@ -143,12 +143,12 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    public void renderBackground(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBlurredBackground(partialTick);
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        extractBlurredBackground(partialTick);
     }
 
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         graphics.fill(
                 contentOffsetX, contentOffsetY,
                 contentOffsetX + contentWidth, contentOffsetY + contentHeight,
@@ -169,7 +169,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
     @Override
     protected void onPressTobBarButton() {
         if (selectedSkill != null) onSkillSelectionChanged(null);
-        else Minecraft.getInstance().setScreen(null);
+        else Minecraft.getInstance().gui.setScreen(null);
     }
 
     private void updateWidgetVisibility() {

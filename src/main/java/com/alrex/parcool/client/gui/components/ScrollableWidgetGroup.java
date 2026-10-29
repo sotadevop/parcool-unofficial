@@ -2,13 +2,16 @@ package com.alrex.parcool.client.gui.components;
 
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.input.KeyEvent;
 
 @Environment(EnvType.CLIENT)
 public class ScrollableWidgetGroup extends WidgetGroup {
@@ -46,22 +49,25 @@ public class ScrollableWidgetGroup extends WidgetGroup {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
         GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
         var poseStack = graphics.pose();
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         {
-            poseStack.translate(-scrollX, -scrollY, 0);
-            super.renderWidget(graphics, mouseX + scrollX, mouseY + scrollY, partial);
+            poseStack.translate((float) (-scrollX), (float) (-scrollY));
+            super.extractWidgetRenderState(graphics, mouseX + scrollX, mouseY + scrollY, partial);
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
         RenderSystem.disableScissor();
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int click) {
-        return super.mouseClicked(mouseX + scrollX, mouseY + scrollY, click);
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int click = event.button();
+        return super.mouseClicked(new MouseButtonEvent(mouseX + scrollX, mouseY + scrollY, new MouseButtonInfo(click, 0)), false);
     }
 
     @Override
@@ -80,13 +86,19 @@ public class ScrollableWidgetGroup extends WidgetGroup {
     }
 
     @Override
-    public boolean keyPressed(int mouseX, int mouseY, int key) {
-        return super.keyPressed(mouseX + scrollX, mouseY + scrollY, key);
+    public boolean keyPressed(KeyEvent event) {
+        int mouseX = event.key();
+        int mouseY = event.keycode();
+        int key = event.modifiers();
+        return super.keyPressed(new KeyEvent(mouseX + scrollX, mouseY + scrollY, key));
     }
 
     @Override
-    public boolean keyReleased(int mouseX, int mouseY, int key) {
-        return super.keyReleased(mouseX + scrollX, mouseY + scrollY, key);
+    public boolean keyReleased(KeyEvent event) {
+        int mouseX = event.key();
+        int mouseY = event.keycode();
+        int key = event.modifiers();
+        return super.keyReleased(new KeyEvent(mouseX + scrollX, mouseY + scrollY, key));
     }
 
     private void applyScrollLimits() {

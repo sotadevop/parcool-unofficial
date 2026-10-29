@@ -36,9 +36,9 @@ public class GrappleTargetOverlay {
         if (target == null) return;
 
         var camera = event.getCamera();
-        Vec3 cameraPos = camera.getPosition();
+        Vec3 cameraPos = camera.position();
         var poseStack = event.getPoseStack();
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         {
             var cameraRot = camera.rotation();
             poseStack.mulPose(new Quaternionf(-cameraRot.x, -cameraRot.y, -cameraRot.z, cameraRot.w));
@@ -62,15 +62,13 @@ public class GrappleTargetOverlay {
             screenY = (1 - (normalisedY * 0.5f + 0.5f)) * window.getGuiScaledHeight();
             visible = true;
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     public static void onRenderGui(RenderGuiEvent.Post event) {
         if (!visible) return;
         int size = ParCool.getConfig().client().targetIndicatorSize.get();
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
 
         event.getGuiGraphics().blit(
                 TEXTURE,
@@ -79,6 +77,5 @@ public class GrappleTargetOverlay {
                 0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE
         );
 
-        RenderSystem.disableBlend();
     }
 }

@@ -70,8 +70,8 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         }
         var localPlayer = (LocalPlayer) parkourability.player();
         return isCharging()
-                && Mth.abs(localPlayer.input.forwardImpulse) < 1e-4
-                && Mth.abs(localPlayer.input.leftImpulse) < 1e-4;
+                && Mth.abs(localPlayer.input.getMoveVector().y) < 1e-4
+                && Mth.abs(localPlayer.input.getMoveVector().x) < 1e-4;
     }
 
     @Override
@@ -119,8 +119,8 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
     private boolean isInputActive() {
         if (parkourability.player() instanceof LocalPlayer localPlayer) {
             return localPlayer.isShiftKeyDown()
-                    && Mth.abs(localPlayer.input.forwardImpulse) < 1e-4
-                    && Mth.abs(localPlayer.input.leftImpulse) < 1e-4
+                    && Mth.abs(localPlayer.input.getMoveVector().y) < 1e-4
+                    && Mth.abs(localPlayer.input.getMoveVector().x) < 1e-4
                     && ParCoolKeyBinds.SHIFT.state().getPreviousNotPressedDurationTick() > 5;
         }
         return false;

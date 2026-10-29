@@ -13,7 +13,7 @@ import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.util.ColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.minecraft.client.input.MouseButtonEvent;
 
 @Environment(EnvType.CLIENT)
 public class ParCoolSettingScreen extends ParCoolTabletScreen {
@@ -114,7 +115,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                 ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON),
                 ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON_HOVER),
                 ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON),
-                () -> minecraft.setScreen(null))
+                () -> minecraft.gui.setScreen(null))
         );
         settingWidgets = new EnumMap<>(SettingTab.class);
         settingWidgets.put(
@@ -144,8 +145,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    public void renderBackground(@Nullable GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBlurredBackground(partialTick);
+    public void extractBackground(@Nullable GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        extractBlurredBackground(partialTick);
     }
 
     private AbstractWidget createSkillOptions(int x, int y, int width, int height) {
@@ -293,7 +294,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                         new ClickableTextWidget(
                                 font, 0, (rowHeight - font.lineHeight) / 2, width - 16, Component.literal(text),
                                 TextWidget.HorizontalAlignment.END, 0xFF0994E9, 0xFFEB622B,
-                                () -> Minecraft.getInstance().setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, link.getB()), link.getB(), false))
+                                () -> Minecraft.getInstance().gui.setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, link.getB()), link.getB(), false))
                         )
                 )));
                 subWidgetY += rowHeight;
@@ -372,11 +373,11 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         }
 
         @Override
-        protected void renderListBackground(@Nonnull GuiGraphics guiGraphics) {
+        protected void renderListBackground(@Nonnull GuiGraphicsExtractor guiGraphics) {
         }
 
         @Override
-        protected void renderListSeparators(@Nonnull GuiGraphics guiGraphics) {
+        protected void renderListSeparators(@Nonnull GuiGraphicsExtractor guiGraphics) {
         }
 
         @Override
@@ -418,7 +419,10 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
             }
 
             @Override
-            public boolean mouseClicked(double mouseX, double mouseY, int click) {
+            public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+                double mouseX = event.x();
+                double mouseY = event.y();
+                int click = event.button();
                 if (click == 0) {
                     TabSelectionList.this.setSelected(this);
                     return true;
@@ -428,12 +432,12 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
             }
 
             @Override
-            public void render(@Nonnull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
+            public void extractRenderState(@Nonnull GuiGraphicsExtractor graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
                 if (isMouseOver) {
                     graphics.fill(left, top - 1, left + width, top + height + 1, ColorUtil.withAlpha(colors.primary(), 0x20));
                 }
                 graphics.blit(left + 4, top + (height - 9) / 2, 0, 9, 9, sprite);
-                graphics.drawString(font, text, left + 17, 1 + top + (height - font.lineHeight) / 2, colors.onSurface(), false);
+                graphics.text(font, text, left + 17, 1 + top + (height - font.lineHeight) / 2, colors.onSurface(), false);
             }
         }
     }

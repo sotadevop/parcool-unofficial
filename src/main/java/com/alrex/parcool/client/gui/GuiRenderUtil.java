@@ -2,7 +2,7 @@ package com.alrex.parcool.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -24,18 +24,18 @@ public class GuiRenderUtil {
         );
     }
 
-    public static void renderScaledGuiItem(GuiGraphics graphics, ItemStack itemStack, float notScaledX, float notScaledY, int scaledX, int scaledY, float scale) {
+    public static void renderScaledGuiItem(GuiGraphicsExtractor graphics, ItemStack itemStack, float notScaledX, float notScaledY, int scaledX, int scaledY, float scale) {
         var poseStack = graphics.pose();
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         {
-            poseStack.translate(notScaledX, notScaledY, 0);
-            poseStack.scale(scale, scale, 1);
-            graphics.renderItem(itemStack, scaledX, scaledY);
+            poseStack.translate((float) (notScaledX), (float) (notScaledY));
+            poseStack.scale((float) (scale), (float) (scale));
+            graphics.item(itemStack, scaledX, scaledY);
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
-    public static void renderExtendableSprite(GuiGraphics graphics, TextureAtlasSprite sprite, int x, int y, int width, int height) {
+    public static void renderExtendableSprite(GuiGraphicsExtractor graphics, TextureAtlasSprite sprite, int x, int y, int width, int height) {
         int halfWidth = width / 2, halfHeight = height / 2;
         float spriteWidth = sprite.contents().width(), spriteHeight = sprite.contents().height();
 

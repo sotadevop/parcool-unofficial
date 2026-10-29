@@ -12,17 +12,17 @@ import net.minecraft.world.entity.player.Player;
 public class GuiHelper {
     public static void openSkillTreeGui(Player player) {
         var parkourability = Parkourability.get(player);
-        Minecraft.getInstance().setScreen(new ParCoolSkillTreeScreen(
+        Minecraft.getInstance().gui.setScreen(new ParCoolSkillTreeScreen(
                 parkourability, parkourability.getSkillTrees(),
                 player.getInventory().contains(itemStack -> itemStack.is(ParCoolItems.PARCOOL_GUIDE))
         ));
     }
 
     public static void openGuideGui() {
-        Minecraft.getInstance().setScreen(new ParCoolGuideScreen(Identifier.fromNamespaceAndPath("parcool", "welcome.md")));
+        Minecraft.getInstance().gui.setScreen(new ParCoolGuideScreen(Identifier.fromNamespaceAndPath("parcool", "welcome.md")));
     }
 
     public static void openSettingGui(Player player) {
-        Minecraft.getInstance().setScreen(new ParCoolSettingScreen(Parkourability.get(player)));
+        Minecraft.getInstance().gui.setScreen(new ParCoolSettingScreen(Parkourability.get(player)));
     }
 }

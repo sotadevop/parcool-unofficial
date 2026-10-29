@@ -5,7 +5,7 @@ import com.alrex.parcool.client.md.resource.PageEntry;
 import com.alrex.parcool.client.md.resource.PageGroupEntry;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.input.MouseButtonEvent;
 
 @Environment(EnvType.CLIENT)
 public class ParCoolGuidePageList extends AbstractWidget {
@@ -86,45 +87,46 @@ public class ParCoolGuidePageList extends AbstractWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
         if (hoveredItem != null && pageSelectionListener != null) {
             pageSelectionListener.accept(hoveredItem);
         }
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         mouseX -= getX();
         mouseY = (int) (mouseY - getY() + scrollY);
         hoveredItem = null;
         GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
         var poseStack = graphics.pose();
-        poseStack.pushPose();
+        poseStack.pushMatrix();
         {
-            poseStack.translate(getX(), getY() - scrollY, 0);
+            poseStack.translate((float) (getX()), (float) (getY() - scrollY));
             var currentY = 0;
             for (var group : pages) {
-                graphics.drawString(font, group.getA(), 5, (int) (currentY + 1 + (ROW_HEIGHT - font.lineHeight) / 2f), groupColor, false);
+                graphics.text(font, group.getA(), 5, (int) (currentY + 1 + (ROW_HEIGHT - font.lineHeight) / 2f), groupColor, false);
                 graphics.fill(1, currentY - 1 + ROW_HEIGHT / 2, 3, currentY + 1 + ROW_HEIGHT / 2, groupColor);
                 currentY += ROW_HEIGHT;
                 for (var page : group.getB()) {
                     RenderSystem.setShaderColor(1f, 1f, 1f, 0.2f);
                     graphics.hLine(5, width - 10, currentY, lineColor);
-                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                     currentY += 1;
 
                     if (0 < mouseX && mouseX < width && currentY < mouseY && mouseY < currentY + ROW_HEIGHT) {
                         graphics.fill(0, currentY, width, currentY + ROW_HEIGHT, 0x88DDDDDD);
                         hoveredItem = page.getB();
                     }
-                    graphics.drawString(font, page.getA(), 2, (int) (currentY + 1 + (ROW_HEIGHT - font.lineHeight) / 2f), textColor, false);
+                    graphics.text(font, page.getA(), 2, (int) (currentY + 1 + (ROW_HEIGHT - font.lineHeight) / 2f), textColor, false);
                     currentY += ROW_HEIGHT;
                 }
                 graphics.hLine(2, width - 3, currentY, lineColor);
                 currentY += 1;
             }
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
         RenderSystem.disableScissor();
     }
 }

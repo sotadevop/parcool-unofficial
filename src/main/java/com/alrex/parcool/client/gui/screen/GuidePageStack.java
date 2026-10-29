@@ -32,7 +32,7 @@ public class GuidePageStack {
     public void popPage() {
         if (!pageStack.isEmpty()) pageStack.pop();
         if (pageStack.isEmpty()) {
-            Minecraft.getInstance().setScreen(null);
+            Minecraft.getInstance().gui.setScreen(null);
         } else {
             if (onContentChangedListener != null) onContentChangedListener.run();
         }

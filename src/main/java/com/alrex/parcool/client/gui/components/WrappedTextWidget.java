@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -41,7 +41,7 @@ public class WrappedTextWidget extends TextWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
         var iterator = sequences.iterator();
         int textY = getY();
@@ -52,7 +52,7 @@ public class WrappedTextWidget extends TextWidget {
                 case END -> getX() + width - font.width(text);
                 case CENTER -> getX() + (width - font.width(text)) / 2f;
             };
-            graphics.drawString(font, text, (int) xOffset, textY, txtColor, shadow);
+            graphics.text(font, text, (int) xOffset, textY, txtColor, shadow);
             textY += font.lineHeight;
         }
     }

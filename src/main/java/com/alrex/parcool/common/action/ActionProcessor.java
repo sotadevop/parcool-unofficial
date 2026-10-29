@@ -89,10 +89,7 @@ public class ActionProcessor {
 		}
 		if (ParCoolKeyBinds.ENABLE.state().isJustPressed()) {
 			parkourability.setActive(!parkourability.isActive());
-			parkourability.player().displayClientMessage(
-					Component.translatable(parkourability.isActive() ? "parcool.message.enabled" : "parcool.message.disabled"),
-					true
-			);
+			parkourability.player().sendOverlayMessage(Component.translatable(parkourability.isActive() ? "parcool.message.enabled" : "parcool.message.disabled"));
 		}
 	}
 

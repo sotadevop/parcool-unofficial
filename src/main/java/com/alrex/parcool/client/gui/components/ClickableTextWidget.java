@@ -1,10 +1,11 @@
 package com.alrex.parcool.client.gui.components;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nonnull;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class ClickableTextWidget extends TextWidget {
     private final int hoveredTxtColor;
@@ -22,17 +23,19 @@ public class ClickableTextWidget extends TextWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         var xOffset = switch (alignment) {
             case START -> getX();
             case END -> getX() + width - messageWidth;
             case CENTER -> getX() + (width - messageWidth) / 2f;
         };
-        graphics.drawString(font, getMessage(), (int) xOffset, getY(), isHovered ? hoveredTxtColor : txtColor, shadow);
+        graphics.text(font, getMessage(), (int) xOffset, getY(), isHovered ? hoveredTxtColor : txtColor, shadow);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
         if (pressListener != null) pressListener.run();
     }
 }

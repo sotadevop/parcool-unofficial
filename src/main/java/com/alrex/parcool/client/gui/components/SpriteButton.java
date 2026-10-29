@@ -2,7 +2,7 @@ package com.alrex.parcool.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -41,8 +41,7 @@ public class SpriteButton extends AbstractSpriteButton {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+    public void extractContents(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
 
         var sprite = active
                 ? (isHovered ? spriteWhenOnHover : spriteWhenOn)

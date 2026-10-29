@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
 import com.alrex.parcool.util.ColorUtil;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -59,13 +59,13 @@ public class CardPanel extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
         renderShadow(graphics);
         graphics.fill(getX(), getY(), getX() + width, getY() + height, color);
     }
 
-    protected void renderShadow(GuiGraphics graphics) {
+    protected void renderShadow(GuiGraphicsExtractor graphics) {
         if (shadowRight || shadowBottom || shadowTop || shadowLeft) {
             if (ColorUtil.alphaOf(color) == 0xFF) {
                 graphics.fill(

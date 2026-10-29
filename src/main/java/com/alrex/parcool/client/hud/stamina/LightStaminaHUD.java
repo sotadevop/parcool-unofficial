@@ -8,7 +8,7 @@ import com.alrex.parcool.common.Parkourability;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +39,7 @@ public class LightStaminaHUD implements IStaminaHUD {
 	}
 
 	@Override
-    public void render(GuiGraphics guiGraphics, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, DeltaTracker deltaTracker) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, DeltaTracker deltaTracker) {
         var partialTick = deltaTracker.getGameTimeDeltaPartialTick(true);
 		if (!valueChanging && tickValueChangingOrNotChanging > 40 && ParCool.getConfig().client().staminaHud.hideAutomatically().get())
 			return;
@@ -54,7 +54,6 @@ public class LightStaminaHUD implements IStaminaHUD {
 		// TODO: Is it actually needed to show cooldown or other status on hud?
 		// float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
-		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
         final int width = guiGraphics.guiWidth();
         final int height = guiGraphics.guiHeight();

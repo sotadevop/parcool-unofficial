@@ -181,11 +181,11 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         Vec3 offset = ridingZipline.shape().getOffsetFromStartToEnd();
         Vec3 offsetNormalized = new Vec3(offset.x(), 0, offset.z()).normalize();
         var lookAngle = EntityUtil.getHorizontalLookAngle(player);
-        double moveInputScale = lookAngle.scale(player.input.forwardImpulse)
-                .add(lookAngle.yRot(Mth.HALF_PI).scale(player.input.leftImpulse))
+        double moveInputScale = lookAngle.scale(player.input.getMoveVector().y)
+                .add(lookAngle.yRot(Mth.HALF_PI).scale(player.input.getMoveVector().x))
                 .normalize()
                 .dot(offsetNormalized);
-        speed *= player.isInFluidType() ? 0.8 : 0.98;
+        speed *= player.isInLiquid() ? 0.8 : 0.98;
         speed += (ridingZipline.powered() ? 0.04 : 0) * lookAngle.dot(offsetNormalized)
                 + Math.min(moveInputScale * 0.01 * (speedAttr.getValue() / speedAttr.getBaseValue()), 0.08)
                 - gravity * slope * (Mth.invSqrt(slope * slope + 1));

@@ -7,7 +7,7 @@ import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import com.alrex.parcool.client.md.ui.MarkdownWidget;
 import com.alrex.parcool.util.ColorUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -59,7 +59,7 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
                             content,
                             colors.onSurface(),
                             pageStack::pushPage,
-                            (url) -> Minecraft.getInstance().setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, url), url, false))
+                            (url) -> Minecraft.getInstance().gui.setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, url), url, false))
                     )
             );
         }
@@ -106,7 +106,7 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         super.renderContent(graphics, mouseX, mouseY, partial);
     }
 
