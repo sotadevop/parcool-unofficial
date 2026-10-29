@@ -3,7 +3,7 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.Parkourability;
-import net.minecraft.util.Tuple;
+import com.alrex.parcool.util.Tuple;
 
 import javax.annotation.Nonnull;
 import java.util.*;

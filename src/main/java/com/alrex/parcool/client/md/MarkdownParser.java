@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.md;
 
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
+import com.alrex.parcool.util.Tuple;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

@@ -111,7 +111,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         );
         var blockState = player.level().getBlockState(blockPos);
         if (blockState.isAir()) return;
-        var random = player.level().random;
+        var random = player.level().getRandom();
         var particleMove = com.alrex.parcool.client.animation.system.util.EntityUtil.getPositionDifference(player).reverse().scale(0.1).add(direction.asVec().reverse().scale(0.3));
         var particlePos = pos.add(0, player.getBbHeight() + 0.5, 0).add(direction.asVec().scale(player.getBbWidth() * 0.5));
 

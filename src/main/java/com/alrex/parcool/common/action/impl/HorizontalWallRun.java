@@ -162,7 +162,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         );
         var blockState = player.level().getBlockState(blockPos);
         if (blockState.isAir()) return;
-        var random = player.level().random;
+        var random = player.level().getRandom();
         var particleMove = EntityUtil.getPositionDifference(player).reverse().scale(2).add(direction.asVec().reverse().scale(0.3));
         var particlePos = pos.add(direction.asVec().scale(player.getBbWidth() * 0.5));
 

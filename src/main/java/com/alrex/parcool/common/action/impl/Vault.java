@@ -134,7 +134,7 @@ public class Vault extends ContinuableAction {
             this.obstacleDistance = obstacleDistance.normalize().scale(player.getBbWidth() * 1.5);
         }
         this.propertyDuration.set((byte) duration);
-        this.propertyVaultType.set(getVaultType(vaultMovement, player.level().random));
+        this.propertyVaultType.set(getVaultType(vaultMovement, player.level().getRandom()));
         return true;
     }
 

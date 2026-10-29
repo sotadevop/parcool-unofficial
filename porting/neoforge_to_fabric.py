@@ -43,6 +43,8 @@ IMPORTS = {
     'net.neoforged.neoforge.network.PacketDistributor': f'{COMPAT}.network.PacketDistributor',
     'net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent': f'{COMPAT}.network.RegisterPayloadHandlersEvent',
     'net.minecraft.resources.ResourceLocation': 'net.minecraft.resources.Identifier',
+    # Removed from Minecraft in 26.x; same-shaped replacement.
+    'net.minecraft.util.Tuple': 'com.alrex.parcool.util.Tuple',
 }
 # Game and registration events: adapters with the same simple name in COMPAT.event.
 for name in [
@@ -81,6 +83,9 @@ def convert(src: str) -> str:
     src = re.sub(r'@OnlyIn\(\s*(?:value\s*=\s*)?Dist\.DEDICATED_SERVER\s*\)', '@Environment(EnvType.SERVER)', src)
     src = re.sub(r'^[ \t]*@SubscribeEvent(\([^)]*\))?[ \t]*\n', '', src, flags=re.M)
     src = src.replace('NeoForge.EVENT_BUS.post(', 'ParCoolEventBus.post(')
+    # 26.x made these Level fields private/protected; the accessor methods exist on every version.
+    src = re.sub(r'\.isClientSide\b(?!\s*\()', '.isClientSide()', src)
+    src = re.sub(r'\b(level|level\(\)|world|getLevel\(\)|clientLevel)\.random\b', r'\1.getRandom()', src)
     src = re.sub(r'\bResourceLocation\b', 'Identifier', src)
     src = re.sub(r'\s+implements IModBusEvent\b', '', src)
     src = re.sub(r',\s*IModBusEvent\b', '', src)

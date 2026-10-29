@@ -74,7 +74,7 @@ public abstract class Action {
 			if (key != null) input.tick(key);
 		}
 		onTick();
-		if (parkourability.player().level().isClientSide) {
+		if (parkourability.player().level().isClientSide()) {
 			onTickInClient();
 			if (parkourability.player().isLocalPlayer()) {
 				onTickInLocalClient();

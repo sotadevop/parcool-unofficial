@@ -20,7 +20,7 @@ import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
+import com.alrex.parcool.util.Tuple;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.neoforged.neoforge.common.ModConfigSpec;

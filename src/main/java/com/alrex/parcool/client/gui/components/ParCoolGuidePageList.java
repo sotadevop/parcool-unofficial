@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.Tuple;
+import com.alrex.parcool.util.Tuple;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

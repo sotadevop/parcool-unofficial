@@ -26,6 +26,7 @@ loom {
 }
 
 repositories {
+    mavenCentral()
     // Forge Config API Port, from its author's own maven.
     maven { name = 'Fuzs'; url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven/' }
     exclusiveContent {
@@ -39,6 +40,8 @@ dependencies {
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
+    // javax.annotation (@Nullable, @Nonnull): NeoForge ships it, Fabric does not. Annotations only.
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly("maven.modrinth:modmenu:${project.modmenu_version}") { transitive = false }
 }
 

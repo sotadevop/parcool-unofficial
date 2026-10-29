@@ -92,7 +92,7 @@ public class Slide extends ContinuableAction implements IRequestable<Slide.Reque
         var blockPos = player.getBlockPosBelowThatAffectsMyMovement();
         var blockState = player.level().getBlockState(blockPos);
         if (blockState.isAir()) return;
-        var random = player.level().random;
+        var random = player.level().getRandom();
         var particleMove = com.alrex.parcool.client.animation.system.util.EntityUtil.getPositionDifference(player).reverse().scale(0.1).add(0, random.nextDouble() * 0.1, 0);
         var particlePos = pos.add(movingDirection.yRot(Mth.HALF_PI).scale(player.getBbWidth() * (random.nextDouble() - 0.5)));
 

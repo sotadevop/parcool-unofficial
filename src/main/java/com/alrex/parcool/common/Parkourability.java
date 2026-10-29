@@ -125,7 +125,7 @@ public class Parkourability {
 	public void sendActivationPacket() {
 		if (activationDirty) {
 			activationDirty = false;
-			if (player.level().isClientSide) {
+			if (player.level().isClientSide()) {
 				PacketDistributor.sendToServer(new ChangeActivationPacket(player.getUUID(), active, true));
 			} else {
 				PacketDistributor.sendToAllPlayers(new ChangeActivationPacket(player.getUUID(), active, false));
@@ -134,7 +134,7 @@ public class Parkourability {
 	}
 
 	public void sendSkillTreePacketFromServer() {
-		if (player.level().isClientSide) return;
+		if (player.level().isClientSide()) return;
 		if (skillTreeDirty) {
 			if (player instanceof ServerPlayer serverPlayer)
 				PacketDistributor.sendToPlayer(serverPlayer, new SkilltreePacket(skillTrees));

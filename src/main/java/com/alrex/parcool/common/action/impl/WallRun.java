@@ -90,7 +90,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         );
         var blockState = player.level().getBlockState(blockPos);
         if (blockState.isAir()) return;
-        var random = player.level().random;
+        var random = player.level().getRandom();
         var rotatedLookVec = lookVec.yRot(Mth.HALF_PI);
         for (var i = 0; i < 5; i++) {
             var particleMove = lookVec

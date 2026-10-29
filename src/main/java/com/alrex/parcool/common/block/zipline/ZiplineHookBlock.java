@@ -177,7 +177,7 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockEntityType<T> type) {
-        if (!level.isClientSide) return null;
+        if (!level.isClientSide()) return null;
         return type == TileEntities.ZIPLINE_HOOK.get() ? ZiplineHookTileEntity::tick : null;
     }
 }
