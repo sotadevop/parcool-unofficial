@@ -1,0 +1,90 @@
+# Developer helper for the port: prints signatures of Minecraft / Fabric / Architectury classes
+# of the version this branch builds against, as annotations. Builds nothing.
+name: Probe API
+
+# Triggered by pushing a change to .github/probe-request.env, which holds the query
+# (CLASSES, FIND, SCAN_PACKAGE, SCAN_REGEX, MEMBER_FILTER, RESOURCES, BYTECODE as shell variables).
+on:
+  push:
+    paths:
+      - '.github/probe-request.env'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Configuring the project makes Loom download and prepare the Minecraft jar.
+      - name: Prepare Minecraft
+        run: ./gradlew help -q
+
+      - name: Probe
+        run: |
+          CLASSES=""; FIND=""; SCAN_PACKAGE=""; SCAN_REGEX=""; MEMBER_FILTER=""; RESOURCES=""; BYTECODE=""
+          source .github/probe-request.env
+          jars=$(find ~/.gradle/caches .gradle -name '*.jar' 2>/dev/null \
+            | grep -E 'minecraft|fabric|forgeconfigapiport|modmenu' | grep -vE 'sources|javadoc' | sort -u)
+          mc=""
+          for j in $jars; do
+            if unzip -l "$j" 2>/dev/null | grep -q 'net/minecraft/client/Minecraft.class'; then mc="$j"; break; fi
+          done
+          cp=$(echo $jars | tr ' ' ':')
+          {
+            echo "Minecraft jar: $mc"
+            if [ -n "$FIND" ]; then
+              echo "=== classes matching $FIND"
+              for j in $jars; do unzip -Z1 "$j" 2>/dev/null; done | grep '\.class$' | sed 's/\.class$//' \
+                | grep -E "$FIND" | sort -u | head -900
+            fi
+            # Each entry is a class name, optionally followed by ::regex to keep only matching members.
+            for entry in $CLASSES; do
+              c="${entry%%::*}"; filter="$MEMBER_FILTER"
+              [ "$entry" != "$c" ] && filter="${entry#*::}"
+              echo "=== $c"
+              if [ -n "$filter" ]; then
+                javap -p -cp "$cp" "$c" 2>&1 | grep -E "(class|interface|enum|record) |$filter" | head -200
+              else
+                javap -p -cp "$cp" "$c" 2>&1 | grep -v 'static final int' | head -400
+              fi
+            done
+            # BYTECODE entries: class::regex - prints the 70 bytecode lines before each match.
+            for entry in $BYTECODE; do
+              c="${entry%%::*}"; re="${entry#*::}"
+              echo "=== bytecode $c / $re"
+              javap -c -p -cp "$cp" "$c" 2>&1 | grep -B70 -E "$re" | grep -vE '^\s*[0-9]+: (aload|astore|iload|istore|dup|pop|return|areturn|iconst|ldc2?_w|nop)\b' | head -150
+            done
+            if [ -n "$RESOURCES" ]; then
+              echo "=== resources matching $RESOURCES"
+              for r in $(unzip -Z1 "$mc" | grep -E "$RESOURCES" | head -15); do
+                echo "--- $r"; unzip -p "$mc" "$r" | head -60
+              done
+            fi
+            if [ -n "$SCAN_PACKAGE" ]; then
+              echo "=== scan $SCAN_PACKAGE for $SCAN_REGEX"
+              unzip -Z1 "$mc" | grep "^$SCAN_PACKAGE.*\.class$" | sed 's/\.class$//; s|/|.|g' > scan.txt
+              xargs -n 200 javap -p -cp "$cp" < scan.txt 2>/dev/null \
+                | awk -v re="$SCAN_REGEX" '/^(public |protected |private |final |abstract |static |sealed |non-sealed )*(class|interface|enum|record) /{cls=$0} $0 ~ re {print cls " :: " $0}' \
+                | head -400
+            fi
+          } > probe.txt
+          wc -l probe.txt
+
+      - name: Report (1)
+        run: .github/scripts/annotate.sh probe.txt 0 "Probe"
+      - name: Report (2)
+        run: .github/scripts/annotate.sh probe.txt 10 "Probe"
+      - name: Report (3)
+        run: .github/scripts/annotate.sh probe.txt 20 "Probe"
+      - name: Report (4)
+        run: .github/scripts/annotate.sh probe.txt 30 "Probe"
+      - name: Report (5)
+        run: .github/scripts/annotate.sh probe.txt 40 "Probe"

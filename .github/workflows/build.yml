@@ -1,53 +1,159 @@
-name: Build ParCool Mod
+# Builds the mod on every push and keeps the Fabric jar as a downloadable artifact.
+# It never publishes anything: no tokens or secrets are used.
+name: Build
 
 on:
-  pull_request:
-  # Run on all pull requests regardless of target branch
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  push:
+    paths-ignore:
+      - '.github/probe-request.env'
+  workflow_dispatch:
+  # Publishing a release on GitHub (with a new tag such as mc26.3-port.1) builds that tag and
+  # attaches the jar to the release.
+  release:
+    types: [published]
+
+permissions:
+  contents: read
 
 jobs:
-  detect-java:
-    runs-on: ubuntu-latest
-    outputs:
-      java-version: ${{ steps.get-java-version.outputs.java-version }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Determine Java version from build.gradle
-        id: get-java-version
-        run: |
-          # Extract Java version directly from build.gradle using grep and sed
-          JAVA_VERSION=$(grep -o "JavaLanguageVersion.of([0-9]\+)" build.gradle | sed -E 's/JavaLanguageVersion.of\(([0-9]+)\)/\1/g' | head -1)
-          
-          # If no version found, default to Java 8
-          if [ -z "$JAVA_VERSION" ]; then
-            JAVA_VERSION=8
-          fi
-          
-          echo "java-version=$JAVA_VERSION" >> $GITHUB_OUTPUT
-          echo "Detected Java Version: $JAVA_VERSION"
-
   build:
-    needs: detect-java
-    runs-on: ubuntu-latest
-    
+    # Pinned instead of ubuntu-latest so the build environment only changes when we choose to.
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - name: Set up JDK ${{ needs.detect-java.outputs.java-version }}
-        uses: actions/setup-java@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v5
         with:
-          java-version: ${{ needs.detect-java.outputs.java-version }}
-          distribution: 'temurin'  # Use Adoptium's Temurin distribution
-          cache: gradle
+          distribution: temurin
+          java-version: '25'
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+      - name: Build
+        run: |
+          set -o pipefail
+          ./gradlew build --stacktrace 2>&1 | tee build.log
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      # On failure, repeat the important parts of the log as annotations, so they can be read
+      # through the GitHub API without downloading the full log.
+      - name: Report build errors (1)
+        if: failure()
+        run: |
+          python3 .github/scripts/condense-errors.py build.log > report.txt
+          .github/scripts/annotate.sh report.txt 0 "Build log"
+      - name: Report build errors (2)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 10 "Build log"
+      - name: Report build errors (3)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 20 "Build log"
+      - name: Report build errors (4)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 30 "Build log"
+      - name: Report build errors (5)
+        if: failure()
+        run: .github/scripts/annotate.sh report.txt 40 "Build log"
+
+      - name: Check the jar contents
+        run: |
+          jar=$(ls build/libs/parcool-*.jar | grep -v sources)
+          unzip -Z1 "$jar" > contents.txt
+          for f in fabric.mod.json parcool.mixins.json parcool.accesswidener \
+                   com/alrex/parcool/ParCool.class com/alrex/parcool/ParCoolClient.class \
+                   assets/parcool/lang/en_us.json com/alrex/parcool/ParCoolModMenu.class; do
+            grep -qx "$f" contents.txt || { echo "::error title=Jar check::missing $f"; exit 1; }
+          done
+          echo "$(wc -l < contents.txt) entries, all required files present"
+          # The key category label is looked up as key.category.<namespace>.<path>.
+          unzip -p "$jar" assets/parcool/lang/en_us.json | grep -q '"key.category.parcool.parcool"' \
+            || { echo "::error title=Jar check::key category translation missing"; exit 1; }
+
+      - name: Upload Fabric jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: parcool-fabric
+          path: build/libs/parcool-*[0-9].jar
+          if-no-files-found: error
+
+  # Starts a dedicated server and a client (headless) with the mixin audit switched on: every
+  # class ParCool's mixins target is loaded, so a target that changed in this Minecraft version
+  # fails here instead of in the game. Only runs once the build itself passes.
+  mixin-audit:
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install virtual display
+        run: sudo apt-get update -q && sudo apt-get install -y -q xvfb mesa-vulkan-drivers libgl1-mesa-dri
+
+      # For the audit only: let Mixin skip a broken mixin and keep going, so one run reports every
+      # broken injection instead of stopping at the first. The shipped jar keeps them required.
+      - name: Make mixins non-fatal for the audit
+        run: |
+          sed -i 's/"required": true/"required": false/; s/"defaultRequire": 1/"defaultRequire": 0/' src/main/resources/parcool.mixins.json
+
+      - name: Server audit
+        run: |
+          mkdir -p run && echo "eula=true" > run/eula.txt
+          timeout 900 ./gradlew runServer -PparcoolMixinAudit > server.log 2>&1 || true
+          grep -q "PARCOOL_MIXIN_AUDIT_OK server" server.log
+
+      - name: Client audit
+        if: always()
+        run: |
+          timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClient -PparcoolMixinAudit > client.log 2>&1 || true
+          grep -q "PARCOOL_MIXIN_AUDIT_OK client" client.log
+          ! grep -q "Mixin apply for mod parcool failed" server.log client.log
+
+      - name: Report audit (1)
+        if: always()
+        run: |
+          python3 .github/scripts/condense-audit.py server.log client.log > audit.txt
+          .github/scripts/annotate.sh audit.txt 0 "Audit"
+      - name: Report audit (2)
+        if: always()
+        run: .github/scripts/annotate.sh audit.txt 10 "Audit"
+
+  # When a release is published: only if the build and the mixin audit passed, attach the built jar
+  # and set the title and text from .github/release-notes/<tag>.md (if that file exists).
+  release:
+    if: github.event_name == 'release'
+    needs: [build, mixin-audit]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Download jar
+        uses: actions/download-artifact@v4
+        with:
+          name: parcool-fabric
+          path: dist
+
+      - name: Attach jar and notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release upload "$TAG" dist/*.jar --clobber
+          notes=".github/release-notes/${TAG}.md"
+          if [ -f "$notes" ]; then
+            tail -n +2 "$notes" > body.md
+            gh release edit "$TAG" --title "$(head -1 "$notes" | sed 's/^# //')" --notes-file body.md
+          fi

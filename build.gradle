@@ -1,227 +1,71 @@
-import me.modmuss50.mpp.ReleaseType
-
+// ParCool 4.0 for Fabric, Minecraft 26.3. One module; Minecraft is unobfuscated since 26.1, so
+// Loom does no remapping and mod dependencies use the plain `implementation`/`compileOnly`.
 plugins {
-    id 'java'
-    id 'eclipse'
-    id 'idea'
-    id 'net.neoforged.moddev' version '1.+'
-    id "co.uzzu.dotenv.gradle" version '4.+'
-    id 'me.modmuss50.mod-publish-plugin' version '1.+'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+base.archivesName = "${project.mod_id}-${project.minecraft_version}"
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+}
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+    options.encoding = 'UTF-8'
+}
+
+loom {
+    accessWidenerPath = file('src/main/resources/parcool.accesswidener')
+    mods {
+        "${project.mod_id}" { sourceSet sourceSets.main }
+    }
 }
 
 repositories {
-    maven { url = 'https://maven.blamejared.com' }
-    maven { url = 'https://www.cursemaven.com' }
-    maven { url = "https://maven.theillusivec4.top/" }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-
-version = "${minecraft_version}-${mod_version}"
-group = 'com.alrex'
-
-base {
-    archivesName = 'ParCool'
-}
-
-neoForge {
-    version = neoforge_version
-
-    validateAccessTransformers = true
-    accessTransformers.from 'src/main/resources/META-INF/accesstransformer.cfg'
-
-    runs {
-        client {
-            client()
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        server {
-            server()
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        data {
-            data()
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-            logLevel = org.slf4j.event.Level.DEBUG
-        }
+    // Forge Config API Port, from its author's own maven.
+    maven { name = 'Fuzs'; url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven/' }
+    exclusiveContent {
+        forRepositories(maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' })
+        filter { includeGroup 'maven.modrinth' }
     }
-
-    mods {
-        "${mod_id}" {
-            sourceSet sourceSets.main
-        }
-    }
-}
-
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
 }
 
 dependencies {
-    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
-    runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
-
-    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
-    //runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-
-    compileOnly "curse.maven:paraglider-289240:${paraglider_file_id}"
-    runtimeOnly "curse.maven:paraglider-289240:${paraglider_file_id}"
-
-    compileOnly "curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}"
-    compileOnly "curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}"
-
-    compileOnly "curse.maven:EpicFight-405076:${epicfight_file_id}"
-    //runtimeOnly "curse.maven:EpicFight-405076:${epicfight_file_id}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
+    compileOnly("maven.modrinth:modmenu:${project.modmenu_version}") { transitive = false }
 }
 
-tasks.register("minifyJsonResource", MinifyJsonTask) {
-    inputDir = project.file("src/template/resources-minified")
-    outputDir = project.file("src/generated/resources-minified-json")
+// 4.0 ships its JSON assets minified (buildSrc/MinifyJsonTask).
+tasks.register('minifyJsonResource', MinifyJsonTask) {
+    inputDir = file('src/template/resources-minified')
+    outputDir = layout.buildDirectory.dir('generated/resources-minified-json')
 }
+sourceSets.main.resources.srcDir tasks.named('minifyJsonResource')
 
-tasks.register("generateModMetadata", ProcessResources) {
-    var properties = [
-            minecraft_version       : minecraft_version,
-            minecraft_version_range : minecraft_version_range,
-            neoforge_version        : neoforge_version,
-            neoforge_version_range  : neoforge_version_range,
-            loader_version_range    : loader_version_range,
-            mod_id                  : mod_id,
-            mod_name                : 'ParCool',
-            mod_license             : 'Lesser General Public License version 3',
-            mod_version             : mod_version,
-            mod_authors             : 'alRex_U',
-            extern_feathers         : [
-                    mod_id       : 'paraglider',
-                    version_range: paraglider_version_range
-            ],
-            extern_shouldersurfing  : [
-                    mod_id: 'shouldersurfing',
-                    version_range: shouldersurfing_version_range
-            ],
-            extern_betterthirdperson: [
-                    mod_id: 'betterthirdperson',
-                    version_range: betterthirdperson_version_range
-            ],
-            extern_epicfight        : [
-                    mod_id: 'epicfight',
-                    version_range: epicfight_version_range
-            ],
-            extern_curios           : [
-                    mod_id       : 'curios',
-                    version_range: curios_version_range
-            ]
+processResources {
+    def props = [
+            version          : project.version,
+            mod_id           : project.mod_id,
+            mod_name         : project.mod_name,
+            mod_license      : project.mod_license,
+            mod_authors      : project.mod_authors,
+            minecraft_version: project.minecraft_version,
     ]
-    inputs.properties properties
-    expand properties
-    with copySpec {
-        from("src/template/resources") {
-            include 'META-INF/neoforge.mods.toml'
-        }
-    }
-    into "src/generated/resources"
+    inputs.properties props
+    filesMatching('fabric.mod.json') { expand props }
+    // Ship the LGPL text inside the jar.
+    from('LICENSE')
 }
 
-sourceSets {
-    main.java {
-        srcDir "src/generated/java"
-    }
-    main.resources {
-        srcDir tasks.named("generateModMetadata")
-        srcDir tasks.named("minifyJsonResource")
+// `-PparcoolMixinAudit` makes a run load every mixin target and exit (see MixinAudit); CI uses it.
+['runClient', 'runServer'].each { runTask ->
+    tasks.named(runTask) {
+        it.jvmArgs '-Dmixin.debug.verbose=true'
+        if (project.hasProperty('parcoolMixinAudit')) it.jvmArgs '-Dparcool.mixinAudit=true'
     }
 }
-
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "ParCool!",
-                "Specification-Vendor" : "alRex-U",
-                "Specification-Version" : "${mod_version}",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version": "${mod_version}",
-                "Implementation-Vendor": "alRex-U",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
-                "MixinConfigs"            : "parcool.mixins.json"
-        ])
-    }
-}
-publishMods {
-    type = ReleaseType.of(release_type)
-    file = jar.archiveFile
-    var changelogText = project.layout.projectDirectory.file("changelog/v_${mod_version}.md").asFile.getText()
-    changelog = changelogText
-    modLoaders.add('neoforge')
-
-    displayName = "${minecraft_version}-${mod_version}"
-    version = "${minecraft_version}-${mod_version}"
-
-    curseforge {
-        projectId = '482378'
-        accessToken = env.fetch("API_TOKEN_PARCOOL_CURSEFORGE")
-        minecraftVersions.add(minecraft_version)
-        projectSlug = 'parcool'
-
-        clientRequired = true
-        serverRequired = true
-
-        optional('parcool-compatibility-addon')
-
-        announcementTitle = 'Download from CurseForge'
-    }
-    modrinth {
-        projectId = 'Fsvx2bdR'
-        accessToken = env.fetch("API_TOKEN_PARCOOL_MODRINTH")
-        minecraftVersions.add(minecraft_version)
-
-        announcementTitle = 'Download from Modrinth'
-    }
-    discord {
-        username.set("Update Notification")
-        avatarUrl.set("https://i.imgur.com/FrxDviN.png")
-        content = """\
-            <@&1074034800849059930>
-            # ParCool: ${minecraft_version}-${mod_version} is released!
-            
-""".stripIndent() + changelogText
-        webhookUrl = env.fetch("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_URL")
-        setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
-        style {
-            look = 'MODERN'
-            thumbnailUrl = 'https://i.imgur.com/pibqOcC.png'
-        }
-    }
-}
-
-tasks.register("addGitTagForRelease") {
-    group = 'publishing'
-    mustRunAfter 'publishMods'
-    doLast {
-        var tagName = "v${mod_version}/${minecraft_version}"
-        var result = exec {
-            executable 'git'
-            args(['tag', '-a', "\"${tagName}\"", '-m', "Release:${minecraft_version}-${mod_version}/state:${release_type}"])
-        }
-        result.assertNormalExitValue()
-        println "Tag:[${tagName}] is applied to current commit"
-    }
-}
-
-tasks.register("releaseModVersion") {
-    group = 'publishing'
-    dependsOn('publishMods', 'addGitTagForRelease')
-}
-
