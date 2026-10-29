@@ -4,9 +4,9 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
+import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
 
 public class TileEntities {
     private static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ParCool.MOD_ID);

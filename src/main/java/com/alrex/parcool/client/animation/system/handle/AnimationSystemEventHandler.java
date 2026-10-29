@@ -2,16 +2,14 @@ package com.alrex.parcool.client.animation.system.handle;
 
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderFrameEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ClientTickEvent;
+import com.alrex.parcool.fabric.compat.event.RenderFrameEvent;
+import com.alrex.parcool.fabric.compat.event.ViewportEvent;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationSystemEventHandler {
-    @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
@@ -22,7 +20,6 @@ public class AnimationSystemEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onRenderTick(RenderFrameEvent.Pre event) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
@@ -33,7 +30,6 @@ public class AnimationSystemEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onSetupCamera(ViewportEvent.ComputeCameraAngles event) {
         if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
         if (event.getCamera().getEntity() instanceof IPlayerAnimatorHolder holder) {

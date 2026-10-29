@@ -9,15 +9,15 @@ import com.alrex.parcool.client.animation.system.registration.ID;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationProcessor {
     private record WorkingAnimationEntry(AnimationSets.Entry registration, WorkingAnimationSet animator) {
     }

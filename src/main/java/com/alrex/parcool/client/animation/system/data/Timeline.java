@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.animation.system.data;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.TreeMap;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class Timeline {
     private final TreeMap<Float, Transition> transitions = new TreeMap<>();
 

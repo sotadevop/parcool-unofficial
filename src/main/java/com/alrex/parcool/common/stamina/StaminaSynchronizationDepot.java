@@ -3,7 +3,7 @@ package com.alrex.parcool.common.stamina;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.network.MultiStaminaPacket;
 import com.alrex.parcool.common.network.StaminaPacket;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import java.util.TreeMap;
 import java.util.UUID;

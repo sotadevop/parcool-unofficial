@@ -15,7 +15,7 @@ import com.alrex.parcool.common.stamina.StaminaTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;

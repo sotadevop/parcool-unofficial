@@ -15,9 +15,9 @@ import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.LivingDamageEvent;
 
 import javax.annotation.Nullable;
 
@@ -43,7 +43,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         return dataHolder;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
@@ -80,7 +80,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         return getDoingTick() < 12;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         switch (propertyAnimationType.getOrDefaultIfNull(AnimationType.FRONT)) {
@@ -102,7 +102,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         var player = parkourability.player();

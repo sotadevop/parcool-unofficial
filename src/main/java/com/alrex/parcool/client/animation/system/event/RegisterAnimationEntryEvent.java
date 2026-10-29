@@ -4,13 +4,12 @@ import com.alrex.parcool.client.animation.system.registration.AnimationProgresse
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.registration.BlendingFactors;
 import com.alrex.parcool.client.animation.system.registration.CodedAnimationComponents;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.Event;
-import net.neoforged.fml.event.IModBusEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.Event;
 
-@OnlyIn(Dist.CLIENT)
-public class RegisterAnimationEntryEvent extends Event implements IModBusEvent {
+@Environment(EnvType.CLIENT)
+public class RegisterAnimationEntryEvent extends Event {
     public RegisterAnimationEntryEvent() {
     }
 

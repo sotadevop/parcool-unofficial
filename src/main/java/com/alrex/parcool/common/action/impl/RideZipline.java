@@ -24,9 +24,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.InputEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.InputEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -69,7 +69,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         );
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
@@ -110,7 +110,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
                 && 0 <= currentT && currentT <= 1;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (ridingZipline == null) {
@@ -135,14 +135,14 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         currentAngleRadian = oldAngleRadian = 0;
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().RIDE_ZIPLINE);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         var player = parkourability.player();
@@ -160,7 +160,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         if (ridingZipline == null) return;
@@ -209,7 +209,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void rideNewZipline(Zipline zipline, double t, Vec3 deltaMovement) {
         ridingZipline = zipline;
         var shape = zipline.shape();
@@ -244,7 +244,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         return Mth.lerp(partial, oldAngleRadian, currentAngleRadian);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void updateAngle() {
         oldAngleRadian = currentAngleRadian;
         double acceleration = propertyAcceleration.getOrDefaultIfNull(0f);

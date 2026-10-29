@@ -5,10 +5,10 @@ import com.alrex.parcool.common.grapple.GrapplePhase;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GrappleSwingSoundInstance extends ActionLoopSoundInstance<Grapple> {
     private static final double FULL_VOLUME_SPEED = 1.4;
     private static final float MAX_VOLUME = 0.7f;

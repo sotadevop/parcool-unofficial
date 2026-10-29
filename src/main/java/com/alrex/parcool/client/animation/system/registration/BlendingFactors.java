@@ -7,15 +7,15 @@ import com.alrex.parcool.client.animation.system.SimpleBlendFactor;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.client.animation.system.resource.Argument;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFactors.RegistrationEntry> {
     public interface BlendingFactorFactory {
         IBlendingFactor newInstance(Argument args, BlendMethod method);
@@ -32,14 +32,14 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
     BlendingFactors() {
     }
 
-    public record RegistrationEntry(ResourceLocation name, BlendingFactorFactory factorFactory) {
+    public record RegistrationEntry(Identifier name, BlendingFactorFactory factorFactory) {
     }
 
     private ID<IBlendingFactor> register(String subName, BlendingFactorFactory factor) {
         return register(ParCool.resourceLocation(subName), factor);
     }
 
-    public ID<IBlendingFactor> register(ResourceLocation name, BlendingFactorFactory factor) {
+    public ID<IBlendingFactor> register(Identifier name, BlendingFactorFactory factor) {
         return registerItem(name, new RegistrationEntry(name, factor));
     }
 
@@ -51,7 +51,7 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
     }
 
     @Nullable
-    public IBlendingFactor newInstance(ResourceLocation name, Argument argument, BlendMethod method) {
+    public IBlendingFactor newInstance(Identifier name, Argument argument, BlendMethod method) {
         var id = getID(name);
         if (id == null) return null;
         return newInstance(id, argument, method);

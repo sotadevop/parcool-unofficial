@@ -1,55 +1,65 @@
 package com.alrex.parcool.registrar;
 
-import com.alrex.parcool.client.GrappleCameraHandler;
-import com.alrex.parcool.client.GrappleTargetOverlay;
 import com.alrex.parcool.client.animation.AnimationRegistries;
-import com.alrex.parcool.client.animation.PassiveAnimationProcessor;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
-import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHandler;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
-import com.alrex.parcool.client.renderer.GrappleRopeRenderer;
 import com.alrex.parcool.client.renderer.GrapplingHookItemRenderer;
+import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.alrex.parcool.client.textures.ParCoolTextures;
-import com.alrex.parcool.common.handlers.InputHandler;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import com.alrex.parcool.common.item.ParCoolItems;
+import com.alrex.parcool.extern.AdditionalMods;
+import com.alrex.parcool.fabric.FabricClientEventBridge;
+import com.alrex.parcool.fabric.MixinAudit;
+import com.alrex.parcool.fabric.compat.event.EntityRenderersEvent;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
+import com.alrex.parcool.fabric.compat.event.RegisterClientReloadListenersEvent;
+import com.alrex.parcool.fabric.compat.event.RegisterGuiLayersEvent;
+import com.alrex.parcool.fabric.compat.event.RegisterKeyMappingsEvent;
+import com.alrex.parcool.fabric.compat.network.ClientPayloads;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.neoforged.fml.config.ModConfig;
 
+/**
+ * Fabric port: upstream's client mod-loading listeners, run in the same order at client init,
+ * followed by what upstream did in {@code FMLClientSetupEvent}.
+ */
+@Environment(EnvType.CLIENT)
 public class ClientRegistrar {
-    @OnlyIn(Dist.CLIENT)
-    public static void registerModLoadingEvent(IEventBus bus) {
-        bus.addListener(ParCoolKeyBinds::registerAll);
-        bus.addListener(HUDRegistry.getInstance()::onSetup);
-        bus.addListener(AnimationRegistries::register);
-        bus.addListener(ParCoolModelLayers::register);
-        bus.addListener(ParCoolTextures::init);
-        bus.addListener(AnimationResourceManager::register);
-        bus.addListener(GuideResourceManager::register);
-        bus.addListener(GrapplingHookItemRenderer::registerModels);
+    public static void init() {
+        ParCoolKeyBinds.registerAll(RegisterKeyMappingsEvent.INSTANCE);
+        HUDRegistry.getInstance().onSetup(RegisterGuiLayersEvent.INSTANCE);
+        ParCoolModelLayers.register(EntityRenderersEvent.RegisterLayerDefinitions.INSTANCE);
+        ParCoolTextures.init(RegisterClientReloadListenersEvent.INSTANCE);
+        AnimationResourceManager.register(RegisterClientReloadListenersEvent.INSTANCE);
+        GuideResourceManager.register(RegisterClientReloadListenersEvent.INSTANCE);
+        GrapplingHookItemRenderer.registerModels();
+
         var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
-        bus.post(registerAnimationEntryEvent);
+        AnimationRegistries.register(registerAnimationEntryEvent);
+        ParCoolEventBus.post(registerAnimationEntryEvent);
         registerAnimationEntryEvent.finish();
         AnimationSystemConfig.init(AnimationSets.getInstance());
-        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, AnimationSystemConfig.getInstance().getBuiltConfig(), "parcool-animation.toml");
-    }
+        ConfigRegistry.INSTANCE.register(com.alrex.parcool.ParCool.MOD_ID, ModConfig.Type.CLIENT,
+                AnimationSystemConfig.getInstance().getBuiltConfig(), "parcool-animation.toml");
 
-    @OnlyIn(Dist.CLIENT)
-    public static void registerGameEvent(IEventBus bus) {
-        bus.addListener(ParCoolKeyBinds::onTick);
-        bus.addListener(GrappleRopeRenderer::onRenderLevel);
-        bus.addListener(HUDRegistry.getInstance()::onTick);
-        bus.register(GrappleCameraHandler.class);
-        bus.register(GrappleTargetOverlay.class);
-        bus.register(InputHandler.class);
-        bus.register(AnimationSystemEventHandler.class);
-        bus.register(new PassiveAnimationProcessor());
+        ClientPayloads.registerReceivers();
+        FabricClientEventBridge.init();
+
+        // Upstream's FMLClientSetupEvent and FMLLoadCompleteEvent work.
+        Renderers.register();
+        ParCoolItems.registerColors();
+        AnimationSets.getInstance().freeze();
+        AdditionalMods.initInClient();
+
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> MixinAudit.runIfRequested("client"));
     }
 }

@@ -5,7 +5,7 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.alrex.parcool.fabric.compat.network.IPayloadContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.animation.system;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public enum AnimatableProperty {
     TRANSLATE_X(0),
     TRANSLATE_Y(0),

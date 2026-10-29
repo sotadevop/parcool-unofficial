@@ -25,9 +25,9 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.WallSide;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.InputEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.InputEvent;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -92,7 +92,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         );
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
@@ -140,7 +140,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -165,7 +165,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         );
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         oldAngularSpeed = 0;
@@ -176,7 +176,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInClient() {
         if (propertyJumpOff.getOrDefaultIfNull(false)) {
@@ -189,7 +189,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInLocalClient() {
         var player = parkourability.player();
@@ -224,7 +224,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         var player = parkourability.player();
@@ -275,7 +275,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         oldAngle = propertyBodySwingAngleInRad.getOrDefaultIfNull(0f);

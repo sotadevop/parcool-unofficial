@@ -9,8 +9,8 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
 import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,7 +42,7 @@ public class Castaway extends ContinuableAction implements IRequestable<Castaway
         return player.level().noCollision(player.getBoundingBox().deflate(0.1).expandTowards(0, -2, 0));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (hangState == null) return;

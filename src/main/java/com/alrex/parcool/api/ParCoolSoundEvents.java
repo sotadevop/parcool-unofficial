@@ -3,9 +3,9 @@ package com.alrex.parcool.api;
 import com.alrex.parcool.ParCool;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
+import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
 
 public class ParCoolSoundEvents {
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, ParCool.MOD_ID);

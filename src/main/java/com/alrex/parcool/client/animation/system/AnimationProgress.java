@@ -3,10 +3,10 @@ package com.alrex.parcool.client.animation.system;
 import com.alrex.parcool.client.animation.system.resource.Argument;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public abstract class AnimationProgress {
     protected AnimationProgress(boolean loop, float rangeMin, float rangeMax) {
         if (rangeMin < rangeMax) {

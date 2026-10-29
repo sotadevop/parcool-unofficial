@@ -6,11 +6,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GuiRenderUtil {
     public static void enableScissorTestInGuiCoordinate(double x, double y, double width, double height) {
         var window = Minecraft.getInstance().getWindow();

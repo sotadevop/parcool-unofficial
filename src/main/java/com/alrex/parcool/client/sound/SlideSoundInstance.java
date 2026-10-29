@@ -5,10 +5,10 @@ import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.alrex.parcool.common.action.impl.Slide;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class SlideSoundInstance extends ActionLoopSoundInstance<Slide> {
     public SlideSoundInstance(LocalPlayer player, Slide action) {
         super(player, action, ParCoolSoundEvents.SLIDE.get());

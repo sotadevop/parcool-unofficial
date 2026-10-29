@@ -4,14 +4,14 @@ import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.AnimatableProperty;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record StaticAnimationComponent(
         EnumMap<AnimatableModelPart, EnumMap<AnimatableProperty, Timeline>> animationCurves,
         int duration

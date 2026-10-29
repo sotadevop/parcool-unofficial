@@ -14,18 +14,18 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolTabletScreen extends Screen {
-    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/gui/parcool_screen.png");
+    public static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/gui/parcool_screen.png");
     private static final int FRAME_WIDTH = 256;
     private static final int FRAME_HEIGHT = 160;
     private static final int CONTENT_WIDTH = 246;

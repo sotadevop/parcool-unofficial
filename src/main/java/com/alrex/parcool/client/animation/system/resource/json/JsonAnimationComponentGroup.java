@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.animation.system.resource.json;
 
 import com.alrex.parcool.client.animation.system.resource.Argument;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -29,14 +29,14 @@ public class JsonAnimationComponentGroup {
     }
 
     public static class AnimationComponent {
-        private ResourceLocation name;
+        private Identifier name;
         @Nullable
         private JsonBlendingFactor blend;
         @Nullable
         private Progress progress;
         private boolean mirror = false;
 
-        public ResourceLocation getName() {
+        public Identifier getName() {
             return name;
         }
 
@@ -55,7 +55,7 @@ public class JsonAnimationComponentGroup {
         }
 
         public static class Progress {
-            private ResourceLocation name;
+            private Identifier name;
             @Nullable
             private Argument args;
 
@@ -64,7 +64,7 @@ public class JsonAnimationComponentGroup {
                 return args;
             }
 
-            public ResourceLocation getName() {
+            public Identifier getName() {
                 return name;
             }
         }

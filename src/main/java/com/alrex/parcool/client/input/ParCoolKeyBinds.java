@@ -4,18 +4,19 @@ import com.alrex.parcool.extern.AdditionalMods;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
-import net.neoforged.neoforge.client.settings.KeyModifier;
-import org.lwjgl.glfw.GLFW;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ClientTickEvent;
+import com.alrex.parcool.fabric.compat.event.RegisterKeyMappingsEvent;
+import net.minecraft.resources.Identifier;
+import com.alrex.parcool.ParCool;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolKeyBinds {
     public interface IStateProvider {
         InputState state();
@@ -49,7 +50,7 @@ public class ParCoolKeyBinds {
 		private int previousNotPressedDurationTick = 0;
 
 		private void update(KeyMapping key) {
-            update(key.isDown());
+            update(key.isDown() && isModifierHeld(key));
         }
 
         private void update(boolean keyDown) {
@@ -97,6 +98,22 @@ public class ParCoolKeyBinds {
 	private static final ArrayList<Input> REGISTERED_KEYS = new ArrayList<>();
     private static final ArrayList<LogicalInput> LISTENING_KEYS = new ArrayList<>();
 
+	/**
+	 * Fabric port: NeoForge's KeyModifier (Ctrl+P, Alt+P) does not exist in vanilla. The binding is
+	 * registered without it and only counts as pressed while the modifier key is held.
+	 */
+	private static final Map<KeyMapping, Integer> REQUIRED_MODIFIER = new IdentityHashMap<>();
+
+	private static KeyMapping withModifier(KeyMapping key, int modifierKey) {
+		REQUIRED_MODIFIER.put(key, modifierKey);
+		return key;
+	}
+
+	private static boolean isModifierHeld(KeyMapping key) {
+		var modifier = REQUIRED_MODIFIER.get(key);
+		return modifier == null || InputConstants.isKeyDown(modifier);
+	}
+
 	private static Input register(KeyMapping key) {
 		var input = Input.from(key);
 		REGISTERED_KEYS.add(input);
@@ -109,30 +126,21 @@ public class ParCoolKeyBinds {
 		return input;
 	}
 
-	public static final String KEY_CATEGORY = "key.category.parcool";
+	// 26.3: categories are registered objects; the label is translated from
+	// "key.category.<namespace>.<path>", here key.category.parcool.parcool.
+	public static final KeyMapping.Category KEY_CATEGORY =
+			KeyMapping.Category.register(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "parcool"));
 
-	public static final Input FAST_MOVE = register(new KeyMapping("key.parcool.fast_move", GLFW.GLFW_KEY_LEFT_CONTROL, KEY_CATEGORY));
-	public static final Input CRAWL = register(new KeyMapping("key.parcool.crawl", GLFW.GLFW_KEY_C, KEY_CATEGORY));
-    public static final Input HANG = register(new KeyMapping("key.parcool.hang", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, KEY_CATEGORY));
-	public static final Input SLIDE_DOWN = register(new KeyMapping("key.parcool.slide_down", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, KEY_CATEGORY));
-    public static final Input DODGE = register(new KeyMapping("key.parcool.dodge", GLFW.GLFW_KEY_R, KEY_CATEGORY));
-    public static final Input BREAKFALL = register(new KeyMapping("key.parcool.breakfall", GLFW.GLFW_KEY_R, KEY_CATEGORY));
-	public static final Input HORIZONTAL_WALL_RUN = register(new KeyMapping("key.parcool.horizontal_wall_run", GLFW.GLFW_KEY_R, KEY_CATEGORY));
-    public static final Input HIDE_IN_BLOCK = register(new KeyMapping("key.parcool.hide_in_block", GLFW.GLFW_KEY_C, KEY_CATEGORY));
-    public static final Input OPEN_SETTING_SKILLTREE = register(new KeyMapping(
-            "key.parcool.open_setting_skilltree",
-			KeyConflictContext.UNIVERSAL,
-			KeyModifier.ALT,
-			InputConstants.Type.KEYSYM,
-			GLFW.GLFW_KEY_P, KEY_CATEGORY
-	));
-	public static final Input ENABLE = register(new KeyMapping(
-			"key.parcool.enable",
-			KeyConflictContext.UNIVERSAL,
-			KeyModifier.CONTROL,
-			InputConstants.Type.KEYSYM,
-			GLFW.GLFW_KEY_P, KEY_CATEGORY
-	));
+	public static final Input FAST_MOVE = register(new KeyMapping("key.parcool.fast_move", InputConstants.KEY_LCONTROL, KEY_CATEGORY));
+	public static final Input CRAWL = register(new KeyMapping("key.parcool.crawl", InputConstants.KEY_C, KEY_CATEGORY));
+    public static final Input HANG = register(new KeyMapping("key.parcool.hang", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, KEY_CATEGORY));
+	public static final Input SLIDE_DOWN = register(new KeyMapping("key.parcool.slide_down", InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, KEY_CATEGORY));
+    public static final Input DODGE = register(new KeyMapping("key.parcool.dodge", InputConstants.KEY_R, KEY_CATEGORY));
+    public static final Input BREAKFALL = register(new KeyMapping("key.parcool.breakfall", InputConstants.KEY_R, KEY_CATEGORY));
+	public static final Input HORIZONTAL_WALL_RUN = register(new KeyMapping("key.parcool.horizontal_wall_run", InputConstants.KEY_R, KEY_CATEGORY));
+    public static final Input HIDE_IN_BLOCK = register(new KeyMapping("key.parcool.hide_in_block", InputConstants.KEY_C, KEY_CATEGORY));
+    public static final Input OPEN_SETTING_SKILLTREE = register(withModifier(new KeyMapping("key.parcool.open_setting_skilltree", InputConstants.Type.KEYBOARD, InputConstants.KEY_P, KEY_CATEGORY), InputConstants.KEY_LALT));
+	public static final Input ENABLE = register(withModifier(new KeyMapping("key.parcool.enable", InputConstants.Type.KEYBOARD, InputConstants.KEY_P, KEY_CATEGORY), InputConstants.KEY_LCONTROL));
 
     public static final LogicalInput JUMP = listen(Minecraft.getInstance().options.keyJump::isDown);
     public static final LogicalInput USE_ITEM = listen(Minecraft.getInstance().options.keyUse::isDown);

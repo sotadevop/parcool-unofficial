@@ -10,8 +10,8 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class Skydive extends ContinuableAction implements IRequestable<Skydive.RequestContext> {
 
@@ -57,7 +57,7 @@ public class Skydive extends ContinuableAction implements IRequestable<Skydive.R
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         parkourability.getBehaviorEnforcer().setMarkerEnforcingDeltaMovement(this::isDoing, () -> {
@@ -66,13 +66,13 @@ public class Skydive extends ContinuableAction implements IRequestable<Skydive.R
         });
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().SKYDIVE);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         updateMovementProperties();

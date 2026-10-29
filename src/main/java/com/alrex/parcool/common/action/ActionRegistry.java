@@ -3,25 +3,25 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.ActionGroup;
 import com.alrex.parcool.common.BasicRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class ActionRegistry extends BasicRegistry<String, ActionGroup> {
-    private Map<ResourceLocation, ActionEntry<?>> registeredEntries = new TreeMap<>();
+    private Map<Identifier, ActionEntry<?>> registeredEntries = new TreeMap<>();
     @Nullable
     private List<ActionEntry<?>> processingOrder;
     public Map<String, ActionGroup> getRegisteredGroups() {
         return getRegistry();
     }
 
-    public Map<ResourceLocation, ActionEntry<?>> getRegisteredActions() {
+    public Map<Identifier, ActionEntry<?>> getRegisteredActions() {
         return registeredEntries;
     }
 
     @Nullable
-    public ActionEntry<?> get(ResourceLocation id) {
+    public ActionEntry<?> get(Identifier id) {
         var group = getRegisteredGroups().get(id.getNamespace());
         if (group == null) return null;
         for (var actionEntry : group.actions()) {

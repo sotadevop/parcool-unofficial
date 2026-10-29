@@ -5,27 +5,25 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.RenderGuiEvent;
+import com.alrex.parcool.fabric.compat.event.RenderLevelStageEvent;
 import org.joml.Quaternionf;
 import org.joml.Vector4f;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GrappleTargetOverlay {
-    public static final ResourceLocation TEXTURE = ParCool.resourceLocation("textures/misc/grapple_target.png");
+    public static final Identifier TEXTURE = ParCool.resourceLocation("textures/misc/grapple_target.png");
     private static final int TEXTURE_SIZE = 15;
 
     private static float screenX;
     private static float screenY;
     private static boolean visible = false;
 
-    @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
         visible = false;
@@ -67,7 +65,6 @@ public class GrappleTargetOverlay {
         poseStack.popPose();
     }
 
-    @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         if (!visible) return;
         int size = ParCool.getConfig().client().targetIndicatorSize.get();

@@ -2,12 +2,12 @@ package com.alrex.parcool.client.animation.system.resource.json;
 
 import com.alrex.parcool.client.animation.system.BlendMethod;
 import com.alrex.parcool.client.animation.system.resource.Argument;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 
 public class JsonBlendingFactor {
-    private ResourceLocation name;
+    private Identifier name;
     @Nullable
     private Argument args;
     @Nullable
@@ -23,7 +23,7 @@ public class JsonBlendingFactor {
         return args;
     }
 
-    public ResourceLocation getName() {
+    public Identifier getName() {
         return name;
     }
 }

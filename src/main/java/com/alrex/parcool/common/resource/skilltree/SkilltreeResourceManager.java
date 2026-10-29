@@ -5,11 +5,11 @@ import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import com.alrex.parcool.fabric.compat.event.AddReloadListenerEvent;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
@@ -39,7 +39,7 @@ public class SkilltreeResourceManager extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(@Nonnull Map<ResourceLocation, JsonElement> resourceLocationJsonElementMap, @Nonnull ResourceManager manager, @Nonnull ProfilerFiller profilerFiller) {
+    protected void apply(@Nonnull Map<Identifier, JsonElement> resourceLocationJsonElementMap, @Nonnull ResourceManager manager, @Nonnull ProfilerFiller profilerFiller) {
         var arrayList = new ArrayList<SkillTree>();
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {

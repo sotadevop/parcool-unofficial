@@ -1,10 +1,10 @@
 package com.alrex.parcool.common.action;
 
 import net.minecraft.core.BlockPos;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import com.alrex.parcool.fabric.compat.event.InputEvent;
+import com.alrex.parcool.fabric.compat.event.LivingDamageEvent;
+import com.alrex.parcool.fabric.compat.event.LivingEvent;
+import com.alrex.parcool.fabric.compat.event.LivingFallEvent;
 
 import java.util.List;
 

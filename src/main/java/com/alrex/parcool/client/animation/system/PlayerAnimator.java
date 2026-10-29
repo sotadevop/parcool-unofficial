@@ -6,13 +6,13 @@ import com.alrex.parcool.client.animation.system.event.AnimationUpdateEvent;
 import com.alrex.parcool.client.animation.system.registration.ID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class PlayerAnimator {
     public static PlayerAnimator get(AbstractClientPlayer player) {
         return ((IPlayerAnimatorHolder) player).getParCoolPlayerAnimator();
@@ -47,14 +47,14 @@ public class PlayerAnimator {
         if (firstPersonView && !AnimationSystemConfig.getInstance().enableFPVAnimation.get()) return;
 
         var preEvent = new AnimationUpdateEvent.Pre(animationProcessor.getOwner(), animationProcessor);
-        var cancelled = NeoForge.EVENT_BUS.post(preEvent).isCanceled();
+        var cancelled = ParCoolEventBus.post(preEvent).isCanceled();
         if (preEvent.isAnimationStopped()) currentTransformation = null;
         if (cancelled) return;
 
         if (AnimationSystemConfig.getInstance().enableAnimation.get()) {
             currentTransformation = animationProcessor.getTransformation(firstPersonView, partialTick);
             if (currentTransformation != null) {
-                NeoForge.EVENT_BUS.post(new AnimationUpdateEvent.Post(
+                ParCoolEventBus.post(new AnimationUpdateEvent.Post(
                         animationProcessor.getOwner(),
                         animationProcessor,
                         currentTransformation.transformation()

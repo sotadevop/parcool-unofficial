@@ -19,15 +19,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class ZiplineHookTileEntity extends BlockEntity {
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private class RenderAbleZiplineIterator implements Iterator<Zipline> {
         private RenderAbleZiplineIterator() {
             this.iterator = connections.entrySet().iterator();
@@ -76,7 +76,7 @@ public class ZiplineHookTileEntity extends BlockEntity {
         super(blockEntityType, pos, state);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public Iterator<Zipline> getRenderAbleZiplines() {
         return new RenderAbleZiplineIterator();
     }
@@ -207,7 +207,7 @@ public class ZiplineHookTileEntity extends BlockEntity {
     }
 
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
         if (level instanceof ILoadedZiplineHolderProvider provider && blockEntity instanceof ZiplineHookTileEntity hookTileEntity) {
             var ziplineHolder = provider.getZiplineHolder();

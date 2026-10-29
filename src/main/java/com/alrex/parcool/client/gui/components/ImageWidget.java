@@ -4,21 +4,21 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ImageWidget extends AbstractWidget {
     private final int texX;
     private final int texY;
     private final int texWidth;
     private final int texHeight;
-    private final ResourceLocation textureLocation;
+    private final Identifier textureLocation;
 
-    public ImageWidget(int x, int y, int width, int height, ResourceLocation textureLocation, int texX, int texY, int texWidth, int texHeight) {
+    public ImageWidget(int x, int y, int width, int height, Identifier textureLocation, int texX, int texY, int texWidth, int texHeight) {
         super(x, y, width, height, Component.empty());
         this.textureLocation = textureLocation;
         this.texX = texX;

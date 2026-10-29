@@ -6,7 +6,7 @@ import com.alrex.parcool.common.network.ActionCapabilitiesPacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

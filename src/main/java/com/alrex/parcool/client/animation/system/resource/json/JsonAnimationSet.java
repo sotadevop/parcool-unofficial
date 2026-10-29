@@ -2,17 +2,17 @@ package com.alrex.parcool.client.animation.system.resource.json;
 
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.google.gson.annotations.SerializedName;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class JsonAnimationSet {
-    private ResourceLocation name;
+    private Identifier name;
     private List<AnimationItem> animations;
 
-    public ResourceLocation getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -22,10 +22,10 @@ public class JsonAnimationSet {
 
     public static class AnimationItem {
         @Nullable
-        private ResourceLocation intro;
-        private ResourceLocation main;
+        private Identifier intro;
+        private Identifier main;
         @Nullable
-        private ResourceLocation outro;
+        private Identifier outro;
         @SerializedName("fpv_blend")
         private float fpvBlend = 1f;
         @SerializedName("fade_in_duration")
@@ -41,16 +41,16 @@ public class JsonAnimationSet {
         private JsonBlendingFactor blend;
 
         @Nullable
-        public ResourceLocation getIntro() {
+        public Identifier getIntro() {
             return intro;
         }
 
-        public ResourceLocation getMain() {
+        public Identifier getMain() {
             return main;
         }
 
         @Nullable
-        public ResourceLocation getOutro() {
+        public Identifier getOutro() {
             return outro;
         }
 

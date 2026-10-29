@@ -6,9 +6,9 @@ import com.alrex.parcool.common.skilltree.SkillTree;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.network.IPayloadContext;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -43,13 +43,13 @@ public record SkilltreePacket(List<SkillTree> skillTrees) implements CustomPacke
             return new SkilltreePacket(list);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
+        @Environment(EnvType.SERVER)
         @Override
         public void handleInLogicalServer(SkilltreePacket packet, IPayloadContext context) {
             throw new UnsupportedOperationException();
         }
 
-        @OnlyIn(Dist.CLIENT)
+        @Environment(EnvType.CLIENT)
         @Override
         public void handleInLogicalClient(SkilltreePacket packet, IPayloadContext context) {
             var player = Minecraft.getInstance().player;

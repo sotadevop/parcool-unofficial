@@ -22,7 +22,7 @@
   "block.parcool.wooden_zipline_hook": "Wooden Zipline Hook",
   "block.parcool.iron_zipline_hook": "Iron Zipline Hook",
 
-  "key.category.parcool": "ParCool",
+  "key.category.parcool.parcool": "ParCool",
   "key.parcool.fast_move": "Fast Run / Fast Swim",
   "key.parcool.crawl": "Crawl",
   "key.parcool.hang": "Hang / Use Zipline",
@@ -189,5 +189,7 @@
   "parcool.link.distribution": "Distributions",
   "parcool.link.distribution.curseforge": "CurseForge",
   "parcool.link.distribution.modrinth": "Modrinth",
-  "parcool.link.github.wiki": "GitHub Wiki"
+  "parcool.link.github.wiki": "GitHub Wiki",
+  "parcool.modmenu.title": "ParCool! settings",
+  "parcool.modmenu.need_world": "Join a world to change ParCool settings. In game, press Alt + P."
 }

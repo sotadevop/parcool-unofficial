@@ -1,16 +1,16 @@
 package com.alrex.parcool.client.md;
 
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public interface MarkdownParagraph {
-    record Image(ResourceLocation spriteLocation, @Nullable String caption) implements MarkdownParagraph {
-        public static Image from(ResourceLocation sprite, @Nullable String caption) {
+    record Image(Identifier spriteLocation, @Nullable String caption) implements MarkdownParagraph {
+        public static Image from(Identifier sprite, @Nullable String caption) {
             return new Image(sprite, caption);
         }
     }
@@ -31,10 +31,10 @@ public interface MarkdownParagraph {
     }
 
     /// `<recipe id="parcool:parcool_guide"/>`
-    record ExtensionMCRecipe(ResourceLocation recipeId) implements MarkdownParagraph {
+    record ExtensionMCRecipe(Identifier recipeId) implements MarkdownParagraph {
     }
 
     /// `<brewing-recipe input="minecraft:awkward_potion" ingredient="minecraft:chicken"/>`
-    record ExtensionMCBrewingRecipe(ResourceLocation potionId) implements MarkdownParagraph {
+    record ExtensionMCBrewingRecipe(Identifier potionId) implements MarkdownParagraph {
     }
 }

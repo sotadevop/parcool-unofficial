@@ -6,20 +6,20 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ImageBySpriteWidget extends AbstractWidget {
     @Nullable
     private TextureAtlasSprite sprite;
-    private final ResourceLocation texLocation;
+    private final Identifier texLocation;
 
-    public ImageBySpriteWidget(int x, int y, int width, int height, ResourceLocation texLocation, @Nullable TextureAtlasSprite sprite) {
+    public ImageBySpriteWidget(int x, int y, int width, int height, Identifier texLocation, @Nullable TextureAtlasSprite sprite) {
         super(x, y, width, height, Component.empty());
         this.sprite = sprite;
         this.texLocation = texLocation;

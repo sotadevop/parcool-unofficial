@@ -5,10 +5,10 @@ import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.alrex.parcool.common.action.impl.RideZipline;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ZiplineUseSoundInstance extends ActionLoopSoundInstance<RideZipline> {
     public ZiplineUseSoundInstance(LocalPlayer player, RideZipline ziplineAbility) {
         super(player, ziplineAbility, ParCoolSoundEvents.ZIPLINE_USE.get());

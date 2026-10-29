@@ -1,16 +1,16 @@
 package com.alrex.parcool.client.md;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class MarkdownParser {
     private static final MarkdownParagraph.HorizontalLine HORIZONTAL_LINE = new MarkdownParagraph.HorizontalLine();
     private static final MarkdownText.LineBreak LINE_BREAK = new MarkdownText.LineBreak();
@@ -142,7 +142,7 @@ public class MarkdownParser {
         var alt = line.substring(2, found);
         var closeFound = find(line, found + 2, ")");
         if (closeFound == -1) return null;
-        var location = ResourceLocation.tryParse(line.substring(found + 2, closeFound));
+        var location = Identifier.tryParse(line.substring(found + 2, closeFound));
         if (location == null) return null;
         return MarkdownParagraph.Image.from(location, alt.isEmpty() ? null : alt);
     }
@@ -158,14 +158,14 @@ public class MarkdownParser {
         if (extTag.name().equals("recipe")) {
             var id = extTag.attributes().get("id");
             if (id == null) return null;
-            var location = ResourceLocation.tryParse(id);
+            var location = Identifier.tryParse(id);
             if (location == null) return null;
             return new MarkdownParagraph.ExtensionMCRecipe(location);
         }
         if (extTag.name().equals("brewing-recipe")) {
             var potionId = extTag.attributes().get("potion");
             if (potionId == null) return null;
-            var potionLocation = ResourceLocation.tryParse(potionId);
+            var potionLocation = Identifier.tryParse(potionId);
             if (potionLocation == null) return null;
             return new MarkdownParagraph.ExtensionMCBrewingRecipe(potionLocation);
         }
@@ -228,7 +228,7 @@ public class MarkdownParser {
                             list.add(new MarkdownText.ExternalLink(text, location));
                             i = closeFound;
                         } else {
-                            var linkText = ResourceLocation.tryParse(location);
+                            var linkText = Identifier.tryParse(location);
                             if (linkText != null) {
                                 if (!builder.isEmpty()) {
                                     list.add(new MarkdownText.Text(builder.toString()));
@@ -268,7 +268,7 @@ public class MarkdownParser {
                     case "item" -> {
                         var itemId = tag.attributes().get("id");
                         if (itemId != null) {
-                            var location = ResourceLocation.tryParse(itemId);
+                            var location = Identifier.tryParse(itemId);
                             if (location != null) list.add(new MarkdownText.ExtensionMCItemName(location));
                         }
                     }

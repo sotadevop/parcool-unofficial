@@ -3,7 +3,7 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
 import com.alrex.parcool.common.network.MultiActionStateSetPacket;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import java.util.LinkedList;
 

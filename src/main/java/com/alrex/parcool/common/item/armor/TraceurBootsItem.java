@@ -5,7 +5,7 @@ import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.client.renderer.entity.layers.EquipmentRenderLayer;
 import com.alrex.parcool.common.item.DyeAble;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,16 +15,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
-    private static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_boots.png");
-    private static final ResourceLocation MODIFIER_ID = ParCool.resourceLocation("traceur_boots");
+    private static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_boots.png");
+    private static final Identifier MODIFIER_ID = ParCool.resourceLocation("traceur_boots");
     private final ItemAttributeModifiers equipModifier;
 
     public TraceurBootsItem(Properties properties) {
@@ -65,10 +65,10 @@ public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
         DyeAble.appendHoverText(this, stack, context, lines, tooltipFlag);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
-    public ResourceLocation getEquipmentTexture(LivingEntity entity, EquipmentSlot slot, EquipmentRenderLayer layer) {
+    public Identifier getEquipmentTexture(LivingEntity entity, EquipmentSlot slot, EquipmentRenderLayer layer) {
         if (slot == EquipmentSlot.FEET && layer == EquipmentRenderLayer.INNER) return TEXTURE_LOCATION;
         return null;
     }

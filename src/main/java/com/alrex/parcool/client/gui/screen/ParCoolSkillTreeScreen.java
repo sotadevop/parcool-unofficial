@@ -16,15 +16,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
     private static final int SKILL_VIEW_CARD_WIDTH = 72;
     private static final int SKILL_VIEW_CARD_HEIGHT = (int) (SKILL_VIEW_CARD_WIDTH * 2.5);

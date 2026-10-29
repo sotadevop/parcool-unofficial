@@ -1,12 +1,12 @@
 package com.alrex.parcool.client.animation.system;
 
 import com.alrex.parcool.client.animation.system.math.Vec3f;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record BlendingModelTransform(ModelTransform transformation, boolean isOverwriting, float blendFactor,
                                      @Nullable Vec3f cameraRotation) {
     public static BlendingModelTransform from(ModelTransform transform, float blendFactor, @Nullable Vec3f cameraRotation) {

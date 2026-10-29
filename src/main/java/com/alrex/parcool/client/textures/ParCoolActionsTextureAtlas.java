@@ -5,13 +5,13 @@ import com.alrex.parcool.api.action.ActionEntry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.TextureAtlasHolder;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolActionsTextureAtlas extends TextureAtlasHolder {
-    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/action_icons.png");
+    public static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/action_icons.png");
 
     protected ParCoolActionsTextureAtlas(TextureManager manager) {
         super(manager, TEXTURE_LOCATION, ParCool.resourceLocation("parcool_actions"));

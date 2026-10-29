@@ -12,24 +12,24 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class FastSwim extends ContinuableAction {
     private static final BehaviorEnforcer.ID ENFORCE_SPRINT_ID = BehaviorEnforcer.newID();
-    private static final ResourceLocation FAST_SWIM_MODIFIER_ID = ParCool.resourceLocation("modi.fast_swim");
+    private static final Identifier FAST_SWIM_MODIFIER_ID = ParCool.resourceLocation("modi.fast_swim");
 
     public FastSwim(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
@@ -48,13 +48,13 @@ public class FastSwim extends ContinuableAction {
         return canStart() && ((LocalPlayer) parkourability.player()).input.hasForwardImpulse();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().FAST_SWIM);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         parkourability.getBehaviorEnforcer().sprintMarks.add(ENFORCE_SPRINT_ID, this::isDoing);

@@ -20,20 +20,16 @@ import com.alrex.parcool.common.item.ParCoolItems;
 import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import com.alrex.parcool.extern.AdditionalMods;
-import com.alrex.parcool.registrar.ClientRegistrar;
 import com.alrex.parcool.registrar.CommonRegistrar;
 import com.alrex.parcool.server.command.args.ArgumentTypes;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraft.resources.Identifier;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
 
-@Mod(ParCool.MOD_ID)
-public class ParCool {
+public class ParCool implements ModInitializer {
 	public static final String MOD_ID = "parcool";
 
 	private static final ActionRegistry actionRegistry = new ActionRegistry();
@@ -42,8 +38,8 @@ public class ParCool {
 	private static ParCoolConfig config;
 	private static String connectionId;
 
-	public static ResourceLocation resourceLocation(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	public static Identifier resourceLocation(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static ActionRegistry getActionRegistry() {
@@ -66,20 +62,13 @@ public class ParCool {
 		return actionProcessor;
 	}
 
-	public ParCool(ModContainer container) {
-		var eventBus = container.getEventBus();
-		assert eventBus != null;
-		eventBus.addListener(this::setupClient);
-		eventBus.addListener(this::loaded);
-
-		CommonRegistrar.registerModLoadingEvent(eventBus);
-		CommonRegistrar.registerGameEvent(NeoForge.EVENT_BUS);
-		NeoForge.EVENT_BUS.register(actionProcessor);
-
-		if (FMLEnvironment.dist.isClient()) {
-			ClientRegistrar.registerModLoadingEvent(eventBus);
-			ClientRegistrar.registerGameEvent(NeoForge.EVENT_BUS);
-		}
+	/**
+	 * Fabric port of upstream's {@code @Mod} constructor. Registration runs in the same order; the
+	 * NeoForge bus subscriptions are replaced by {@link CommonRegistrar#init()}.
+	 */
+	@Override
+	public void onInitialize() {
+		var eventBus = IEventBus.INSTANCE;
 
 		ParCoolMobEffects.register(eventBus);
 		ParCoolPotions.register(eventBus);
@@ -96,26 +85,22 @@ public class ParCool {
 
 		AdditionalMods.init();
 
-		eventBus.post(new RegisterParCoolStaminaTypeEvent(staminaTypeRegistry));
+		var staminaEvent = new RegisterParCoolStaminaTypeEvent(staminaTypeRegistry);
+		com.alrex.parcool.common.stamina.StaminaTypes.onRegister(staminaEvent);
+		eventBus.post(staminaEvent);
 		staminaTypeRegistry.freeze();
-		eventBus.post(new RegisterParCoolActionEvent(actionRegistry));
+		var actionEvent = new RegisterParCoolActionEvent(actionRegistry);
+		com.alrex.parcool.common.action.ParCoolActions.onRegister(actionEvent);
+		eventBus.post(actionEvent);
 		actionRegistry.freeze();
 		config = new ParCoolConfig(actionRegistry, staminaTypeRegistry);
-		config.register(container);
-		var modInfo = container.getModInfo();
-		connectionId = modInfo.getVersion() + "/" + RegistryHash.getHash(actionRegistry, staminaTypeRegistry);
-	}
+		config.register(MOD_ID);
+		var version = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
+		connectionId = version + "/" + RegistryHash.getHash(actionRegistry, staminaTypeRegistry);
 
-	private void loaded(FMLLoadCompleteEvent event) {
-		switch (FMLEnvironment.dist) {
-			case CLIENT -> AdditionalMods.initInClient();
-			case DEDICATED_SERVER -> AdditionalMods.initInDedicatedServer();
+		CommonRegistrar.init();
+		if (FabricLoader.getInstance().getEnvironmentType() == net.fabricmc.api.EnvType.SERVER) {
+			AdditionalMods.initInDedicatedServer();
 		}
 	}
-
-	private void setupClient(final FMLClientSetupEvent event) {
-		Renderers.register();
-		ParCoolItems.registerColors();
-        AnimationSets.getInstance().freeze();
-    }
 }

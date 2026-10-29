@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import com.alrex.parcool.fabric.compat.event.RegisterCommandsEvent;
 
 public class CommandRegistry {
     public static void onRegisterCommand(RegisterCommandsEvent event) {

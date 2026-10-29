@@ -9,14 +9,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ClientTickEvent;
+import com.alrex.parcool.fabric.compat.event.ComputeFovModifierEvent;
+import com.alrex.parcool.fabric.compat.event.ViewportEvent;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GrappleCameraHandler {
     private static final double REFERENCE_SPEED = 1.6;
 
@@ -31,7 +30,6 @@ public class GrappleCameraHandler {
     private static float previousRoll = 0;
     private static float currentRoll = 0;
 
-    @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         previousIntensity = currentIntensity;
         previousRoll = currentRoll;
@@ -69,7 +67,6 @@ public class GrappleCameraHandler {
         return (float) (lateral * MAX_ROLL_DEGREES * intensity);
     }
 
-    @SubscribeEvent
     public static void onComputeFov(ComputeFovModifierEvent event) {
         double configured = ParCool.getConfig().client().grapplingHook.fovIntensity().get();
         if (configured <= 0) return;
@@ -79,7 +76,6 @@ public class GrappleCameraHandler {
         event.setNewFovModifier(event.getNewFovModifier() * (1f + MAX_FOV_GAIN * intensity * (float) configured));
     }
 
-    @SubscribeEvent
     public static void onComputeCameraAngles(ViewportEvent.ComputeCameraAngles event) {
         double configured = ParCool.getConfig().client().grapplingHook.cameraRollIntensity().get();
         if (configured <= 0) return;

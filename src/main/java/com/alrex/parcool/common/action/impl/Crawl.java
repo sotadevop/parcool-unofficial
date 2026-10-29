@@ -11,8 +11,8 @@ import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Pose;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,7 +31,7 @@ public class Crawl extends ContinuableAction {
         ));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
@@ -53,13 +53,13 @@ public class Crawl extends ContinuableAction {
         return !parkourability.player().canPlayerFitWithinBlocksAndEntitiesWhen(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().CRAWL);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         parkourability.getBehaviorEnforcer().noSprintMarks.add(ID_CANCEL_SPRINT, this::isDoing);

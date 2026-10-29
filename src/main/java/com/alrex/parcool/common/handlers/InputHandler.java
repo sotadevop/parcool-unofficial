@@ -6,13 +6,11 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.client.Minecraft;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import com.alrex.parcool.fabric.compat.event.ClientTickEvent;
+import com.alrex.parcool.fabric.compat.event.InputEvent;
+import com.alrex.parcool.fabric.compat.event.MovementInputUpdateEvent;
 
 public class InputHandler {
-    @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
         if (ParCoolKeyBinds.OPEN_SETTING_SKILLTREE.state().isJustPressed()) {
             var player = Minecraft.getInstance().player;
@@ -25,7 +23,6 @@ public class InputHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onInput(InputEvent.InteractionKeyMappingTriggered event) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
@@ -40,7 +37,6 @@ public class InputHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onPlayerInputUpdated(MovementInputUpdateEvent event) {
         if (!event.getEntity().isLocalPlayer()) return;
 

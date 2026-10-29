@@ -4,15 +4,15 @@ import com.alrex.parcool.client.animation.system.data.AnimationComponentGroup;
 import com.alrex.parcool.client.animation.system.data.IAnimationComponent;
 import com.alrex.parcool.client.animation.system.data.Transform;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class WorkingAnimation implements IWorkingAnimation {
     public record Component(
             IAnimationComponent component,

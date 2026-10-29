@@ -3,7 +3,7 @@ package com.alrex.parcool.client.gui.screen;
 import com.alrex.parcool.client.md.CompiledMarkdown;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.util.Stack;
@@ -17,10 +17,10 @@ public class GuidePageStack {
     private Runnable onContentChangedListener;
     private final Stack<Entry> pageStack = new Stack<>();
 
-    public record Entry(ResourceLocation pageId, @Nullable CompiledMarkdown content) {
+    public record Entry(Identifier pageId, @Nullable CompiledMarkdown content) {
     }
 
-    public void pushPage(ResourceLocation pageId) {
+    public void pushPage(Identifier pageId) {
         if (!pageStack.isEmpty()) {
             var currentPage = pageStack.lastElement();
             if (currentPage != null && currentPage.pageId.equals(pageId)) return;
@@ -39,7 +39,7 @@ public class GuidePageStack {
     }
 
     @Nullable
-    public ResourceLocation getCurrentPageID() {
+    public Identifier getCurrentPageID() {
         if (pageStack.isEmpty()) return null;
         return pageStack.lastElement().pageId();
     }

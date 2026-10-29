@@ -5,17 +5,17 @@ import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import com.alrex.parcool.client.animation.system.data.StaticAnimationComponent;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.registration.ID;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationResource {
-    private final Map<ResourceLocation, StaticAnimationComponent> componentMap;
-    private final Map<ResourceLocation, AnimationComponentGroup> animationGroupMap;
+    private final Map<Identifier, StaticAnimationComponent> componentMap;
+    private final Map<Identifier, AnimationComponentGroup> animationGroupMap;
     private final Map<ID<AnimationSet>, List<AnimationSet>> idAnimationSetMap;
     private final Random random = new Random();
 
@@ -24,9 +24,9 @@ public class AnimationResource {
     }
 
     public AnimationResource(
-            Map<ResourceLocation, StaticAnimationComponent> componentMap,
-            Map<ResourceLocation, AnimationComponentGroup> animationGroupMap,
-            Map<ResourceLocation, List<AnimationSet>> animationSetMap
+            Map<Identifier, StaticAnimationComponent> componentMap,
+            Map<Identifier, AnimationComponentGroup> animationGroupMap,
+            Map<Identifier, List<AnimationSet>> animationSetMap
     ) {
         this.componentMap = componentMap;
         this.animationGroupMap = animationGroupMap;

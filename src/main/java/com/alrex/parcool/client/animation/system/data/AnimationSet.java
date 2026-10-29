@@ -3,16 +3,16 @@ package com.alrex.parcool.client.animation.system.data;
 import com.alrex.parcool.client.animation.system.AnimationPhase;
 import com.alrex.parcool.client.animation.system.IBlendingFactor;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record AnimationSet(
-        ResourceLocation name,
+        Identifier name,
         @Nullable AnimationComponentGroup introAnimation,
         AnimationComponentGroup mainAnimation,
         @Nullable AnimationComponentGroup outroAnimation,

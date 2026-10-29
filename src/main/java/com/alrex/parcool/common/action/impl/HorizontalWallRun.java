@@ -22,8 +22,8 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -44,7 +44,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         );
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
@@ -91,7 +91,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -115,7 +115,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         var leftToWall = propertyLeftToWall.get();
@@ -127,13 +127,13 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onTickInLocalClient() {
         if (tickSinceCanceled < 255) tickSinceCanceled++;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         propertyDirection.set(parkourability.getAdditionalProperties().getDefaultWallInteraction());

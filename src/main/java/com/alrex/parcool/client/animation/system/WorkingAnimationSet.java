@@ -4,12 +4,12 @@ import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class WorkingAnimationSet {
     private final IWorkingAnimation mainAnimation;
     @Nullable

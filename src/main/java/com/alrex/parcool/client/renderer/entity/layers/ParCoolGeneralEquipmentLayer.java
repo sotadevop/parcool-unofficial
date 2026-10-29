@@ -11,18 +11,18 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> extends RenderLayer<T, M> {
     private final A innerLayer;
     private final A outerLayer;
@@ -114,7 +114,7 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
         }
     }
 
-    private void renderModel(PoseStack stack, MultiBufferSource bufferSource, int packedLight, boolean hasFoil, Model model, int color, ResourceLocation textureLocation) {
+    private void renderModel(PoseStack stack, MultiBufferSource bufferSource, int packedLight, boolean hasFoil, Model model, int color, Identifier textureLocation) {
         var vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferSource, RenderType.armorCutoutNoCull(textureLocation), hasFoil);
         model.renderToBuffer(stack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, color);
     }

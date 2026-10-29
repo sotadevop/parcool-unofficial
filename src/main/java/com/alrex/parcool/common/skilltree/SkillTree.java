@@ -7,7 +7,7 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.google.gson.*;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
@@ -110,7 +110,7 @@ public class SkillTree {
 
         private static Entry<?> readFrom(ActionRegistry registry, ByteBuf buf) {
             var nameLen = buf.readByte();
-            var name = ResourceLocation.parse(buf.readCharSequence(nameLen, StandardCharsets.UTF_8).toString());
+            var name = Identifier.parse(buf.readCharSequence(nameLen, StandardCharsets.UTF_8).toString());
             var childCount = buf.readByte();
             var children = new ArrayList<Entry<?>>(childCount);
             for (var i = 0; i < childCount; i++) {
@@ -136,9 +136,9 @@ public class SkillTree {
         if (element instanceof JsonObject object) {
             if (!(object.get("action") instanceof JsonPrimitive actionElement && actionElement.isString()))
                 throw new JsonSyntaxException("action name is not string");
-            var actionName = ResourceLocation.tryParse(actionElement.getAsString());
+            var actionName = Identifier.tryParse(actionElement.getAsString());
             if (actionName == null)
-                throw new JsonSyntaxException("name[" + actionElement.getAsString() + "] is not valid ResourceLocation");
+                throw new JsonSyntaxException("name[" + actionElement.getAsString() + "] is not valid Identifier");
             var action = actionRegistry.get(actionName);
             if (action == null) throw new JsonSyntaxException("action[" + actionName + "] is not registered");
             if (object.get("children") instanceof JsonArray children) {
@@ -151,9 +151,9 @@ public class SkillTree {
             }
             return new Entry<>(action);
         } else if (element instanceof JsonPrimitive primitive && primitive.isString()) {
-            var actionName = ResourceLocation.tryParse(primitive.getAsString());
+            var actionName = Identifier.tryParse(primitive.getAsString());
             if (actionName == null)
-                throw new JsonSyntaxException("name[" + primitive.getAsString() + "] is not valid ResourceLocation");
+                throw new JsonSyntaxException("name[" + primitive.getAsString() + "] is not valid Identifier");
             var action = actionRegistry.get(actionName);
             if (action == null) throw new JsonSyntaxException("action[" + actionName + "] is not registered");
             return new Entry<>(action);

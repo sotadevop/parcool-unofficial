@@ -1,13 +1,13 @@
 package com.alrex.parcool.client.md;
 
 import net.minecraft.util.Tuple;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.TreeMap;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class HtmlLikeTagParser {
     /// Only supporting self-closing tag
     @Nullable

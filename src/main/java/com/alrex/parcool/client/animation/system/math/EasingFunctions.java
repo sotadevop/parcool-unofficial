@@ -1,10 +1,10 @@
 package com.alrex.parcool.client.animation.system.math;
 
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class EasingFunctions {
     public static final IEasingFunction SINE = new Sine();
     public static final IEasingFunction QUAD = new Quad();

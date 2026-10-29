@@ -1,9 +1,9 @@
 package com.alrex.parcool.api.action;
 
 import com.alrex.parcool.common.Parkourability;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
 
 import java.util.Collection;
 
@@ -92,7 +92,7 @@ public abstract class ContinuableAction extends Action {
 
     public final boolean isPossibleToContinue() {
         if (!isPossible()) return false;
-        if (NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToContinue(parkourability.player(), this)).isCanceled())
+        if (ParCoolEventBus.post(new ParCoolActionEvent.TryToContinue(parkourability.player(), this)).isCanceled())
             return false;
         return canContinue();
     }
@@ -110,15 +110,15 @@ public abstract class ContinuableAction extends Action {
     public void onStopInServer() {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onStopInClient() {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onStopInOtherClient() {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onStopInLocalClient() {
     }
 
@@ -128,15 +128,15 @@ public abstract class ContinuableAction extends Action {
     public void onWorkingTickInServer() {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onWorkingTickInClient() {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onWorkingTickInOtherClient() {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onWorkingTickInLocalClient() {
     }
 }

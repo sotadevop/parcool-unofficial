@@ -1,10 +1,10 @@
 package com.alrex.parcool.client.md.resource.json;
 
 import com.alrex.parcool.ParCool;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class PageJson {
-    private static final ResourceLocation DEFAULT = ParCool.resourceLocation("not_found");
+    private static final Identifier DEFAULT = ParCool.resourceLocation("not_found");
     public String title = "parcool.guide.pageId.not_found";
-    public ResourceLocation location = DEFAULT;
+    public Identifier location = DEFAULT;
 }

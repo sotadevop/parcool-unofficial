@@ -43,6 +43,23 @@ for e in out:
         errors.append(e)
 errors.sort()
 print(f"{len(errors)} compiler errors")
+
+# Grouped view first: one line per distinct problem (message plus the missing symbol / location
+# type), most frequent first, with up to three example places. Most porting errors are renames, so
+# this is usually enough to fix whole groups without reading every error.
+def key(e):
+    msg = e.split(": ", 1)[1].split(" || ")[0]
+    details = [d.strip() for d in e.split(" | ")[1:] if d.strip().startswith(("symbol", "location: class", "location: interface", "location: variable"))]
+    details = [d.split(" of type ")[-1] if d.startswith("location: variable") else d for d in details]
+    return msg + ("  [" + "; ".join(details) + "]" if details else "")
+
+groups = {}
+for e in errors:
+    groups.setdefault(key(e), []).append(e.split(": ", 1)[0].rsplit("/", 1)[-1])
+print(f"--- {len(groups)} distinct problems ---")
+for k, places in sorted(groups.items(), key=lambda kv: (-len(kv[1]), kv[0])):
+    print(f"{len(places)}x {k}  @ {', '.join(places[:3])}")
+print("--- all errors ---")
 print("\n".join(errors))
 
 text = open(sys.argv[1], encoding="utf-8", errors="replace").read()

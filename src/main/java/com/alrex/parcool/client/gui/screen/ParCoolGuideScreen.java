@@ -11,15 +11,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolGuideScreen extends ParCoolTabletScreen {
     public static final int SIDE_PANEL_WIDTH_OPENED = 90;
 
@@ -29,11 +29,11 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
     private ParCoolGuidePageList pageList;
     private boolean openSidePanel;
 
-    public ParCoolGuideScreen(ResourceLocation dataLocation) {
+    public ParCoolGuideScreen(Identifier dataLocation) {
         this(dataLocation, new GuidePageStack(null));
     }
 
-    public ParCoolGuideScreen(ResourceLocation dataLocation, GuidePageStack pageStack) {
+    public ParCoolGuideScreen(Identifier dataLocation, GuidePageStack pageStack) {
         super(Component.empty(), GuiColorPallet.DEFAULT_LIGHT, true);
         var content = GuideResourceManager.getInstance().getResource().get(dataLocation);
         if (content == null) openSidePanel = true;

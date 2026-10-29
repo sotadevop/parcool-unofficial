@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.input;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.function.Predicate;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public abstract class InputComponent {
     protected final ParCoolKeyBinds.Input input;
     protected final int timeout;

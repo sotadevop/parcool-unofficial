@@ -3,13 +3,13 @@ package com.alrex.parcool.client.animation.system.data;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.client.animation.system.math.IEasingFunction;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public abstract class Transition {
     protected final TimedValue start;
 

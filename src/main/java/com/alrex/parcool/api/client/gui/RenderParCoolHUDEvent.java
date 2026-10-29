@@ -1,8 +1,8 @@
 package com.alrex.parcool.api.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
+import com.alrex.parcool.fabric.compat.event.Event;
+import com.alrex.parcool.fabric.compat.event.ICancellableEvent;
 
 public class RenderParCoolHUDEvent extends Event {
     public static class Render extends RenderParCoolHUDEvent {

@@ -2,8 +2,8 @@ package com.alrex.parcool.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.alrex.parcool.fabric.compat.network.LogicalSide;
+import com.alrex.parcool.fabric.compat.network.IPayloadContext;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -33,6 +33,9 @@ public class NetworkUtil {
         if (player.getUUID().equals(playerID)) {
             return player;
         }
-        return player.level().getPlayerByUUID(playerID);
+        // Fabric port: upstream returned the player with that UUID, so a modified client could change
+        // another player's ParCool state. A client only ever reports its own state, so anything else
+        // is rejected.
+        return null;
     }
 }

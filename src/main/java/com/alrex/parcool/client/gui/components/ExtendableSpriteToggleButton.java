@@ -8,13 +8,13 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ExtendableSpriteToggleButton extends SpriteToggleButton {
 
     public ExtendableSpriteToggleButton(Font font, int x, int y, int width, int height, Component onText, Component offText, int txtColor, TextureAtlasSprite spriteWhenOn, TextureAtlasSprite spriteWhenOnHover, TextureAtlasSprite spriteWhenOff, TextureAtlasSprite spriteWhenOffHover, TextureAtlasSprite spriteWhenInactive, @Nullable OnPressedListener pressedListener) {

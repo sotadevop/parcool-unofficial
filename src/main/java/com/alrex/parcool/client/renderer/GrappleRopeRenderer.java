@@ -19,28 +19,27 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GrappleRopeRenderer {
-    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/misc/grapple_rope.png");
+    public static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/misc/grapple_rope.png");
 
-    public static final ResourceLocation TIP_TEXTURE_LOCATION = ParCool.resourceLocation("textures/item/grappling_hook_model.png");
+    public static final Identifier TIP_TEXTURE_LOCATION = ParCool.resourceLocation("textures/item/grappling_hook_model.png");
 
     private static GrappleTipModel tipModel = null;
 
@@ -55,7 +54,6 @@ public class GrappleRopeRenderer {
     private static final double CORNER_RADIUS = 0.4;
     private static final int CORNER_STEPS = 7;
 
-    @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
         Minecraft minecraft = Minecraft.getInstance();

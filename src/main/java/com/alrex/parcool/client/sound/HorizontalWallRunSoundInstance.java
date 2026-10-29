@@ -5,10 +5,10 @@ import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.alrex.parcool.common.action.impl.HorizontalWallRun;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class HorizontalWallRunSoundInstance extends ActionLoopSoundInstance<HorizontalWallRun> {
     public HorizontalWallRunSoundInstance(LocalPlayer player, HorizontalWallRun action) {
         super(player, action, ParCoolSoundEvents.HORIZONTAL_WALL_RUN.get());

@@ -1,10 +1,9 @@
 package com.alrex.parcool.api.action;
 
 import com.alrex.parcool.common.action.ActionRegistry;
-import net.neoforged.bus.api.Event;
-import net.neoforged.fml.event.IModBusEvent;
+import com.alrex.parcool.fabric.compat.event.Event;
 
-public class RegisterParCoolActionEvent extends Event implements IModBusEvent {
+public class RegisterParCoolActionEvent extends Event {
     private final ActionRegistry registry;
 
     public RegisterParCoolActionEvent(ActionRegistry registry) {

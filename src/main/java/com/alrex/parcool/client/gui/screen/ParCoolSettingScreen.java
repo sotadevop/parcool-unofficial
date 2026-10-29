@@ -19,12 +19,12 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolSettingScreen extends ParCoolTabletScreen {
     public enum SettingTab {
         ACTIONS("parcool.gui.settings.actions", ParCoolGuiTextureAtlas.SETTINGS_ICON_ACTIONS),
@@ -41,9 +41,9 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         GENERAL("parcool.gui.settings.general", ParCoolGuiTextureAtlas.SETTINGS_ICON_OPTIONS),
         LINKS("parcool.gui.settings.links", ParCoolGuiTextureAtlas.SETTINGS_ICON_LINKS);
         private final String translationKey;
-        private final ResourceLocation spriteLocation;
+        private final Identifier spriteLocation;
 
-        SettingTab(String translationKey, ResourceLocation spriteLocation) {
+        SettingTab(String translationKey, Identifier spriteLocation) {
             this.translationKey = translationKey;
             this.spriteLocation = spriteLocation;
         }

@@ -3,14 +3,14 @@ package com.alrex.parcool.client.animation.system.registration;
 import com.alrex.parcool.client.animation.system.IAnimationController;
 import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationSets extends BasicRegistry<AnimationSet, AnimationSets.Entry> {
     @Nullable
     private static AnimationSets instance = null;
@@ -22,7 +22,7 @@ public class AnimationSets extends BasicRegistry<AnimationSet, AnimationSets.Ent
 
     public record Entry(
             ID<AnimationSet> id,
-            ResourceLocation location,
+            Identifier location,
             Function<AbstractClientPlayer, IAnimationController> controllerSupplier,
             @Nullable Entry parent
     ) {
@@ -36,11 +36,11 @@ public class AnimationSets extends BasicRegistry<AnimationSet, AnimationSets.Ent
         }
     }
 
-    public ID<AnimationSet> register(ResourceLocation location, IAnimationController controller, @Nullable ID<AnimationSet> parent) {
+    public ID<AnimationSet> register(Identifier location, IAnimationController controller, @Nullable ID<AnimationSet> parent) {
         return register(location, (AbstractClientPlayer p) -> controller, parent);
     }
 
-    public ID<AnimationSet> registerTimeout(ResourceLocation location, int timeoutInTick, @Nullable ID<AnimationSet> parent) {
+    public ID<AnimationSet> registerTimeout(Identifier location, int timeoutInTick, @Nullable ID<AnimationSet> parent) {
         return register(
                 location,
                 (AbstractClientPlayer p) -> {
@@ -51,7 +51,7 @@ public class AnimationSets extends BasicRegistry<AnimationSet, AnimationSets.Ent
         );
     }
 
-    private ID<AnimationSet> register(ResourceLocation location, Function<AbstractClientPlayer, IAnimationController> controllerSupplier, @Nullable ID<AnimationSet> parent) {
+    private ID<AnimationSet> register(Identifier location, Function<AbstractClientPlayer, IAnimationController> controllerSupplier, @Nullable ID<AnimationSet> parent) {
         Entry parentEntry;
         if (parent != null) {
             parentEntry = get(parent);

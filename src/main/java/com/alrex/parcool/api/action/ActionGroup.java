@@ -1,6 +1,6 @@
 package com.alrex.parcool.api.action;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,13 +19,13 @@ public record ActionGroup(String namespace, List<ActionEntry<? extends Action>> 
         }
 
         public <T extends Action> ActionEntry<T> add(String name, Class<T> clazz, ActionEntry.ActionConstructor<T> factory) {
-            var entry = new ActionEntry<>((short) registered.size(), ResourceLocation.fromNamespaceAndPath(namespace, name), clazz, factory, new ActionOption());
+            var entry = new ActionEntry<>((short) registered.size(), Identifier.fromNamespaceAndPath(namespace, name), clazz, factory, new ActionOption());
             registered.addLast(entry);
             return entry;
         }
 
         public <T extends Action> ActionEntry<T> add(String name, Class<T> clazz, ActionEntry.ActionConstructor<T> factory, ActionOption option) {
-            var entry = new ActionEntry<>((short) registered.size(), ResourceLocation.fromNamespaceAndPath(namespace, name), clazz, factory, option);
+            var entry = new ActionEntry<>((short) registered.size(), Identifier.fromNamespaceAndPath(namespace, name), clazz, factory, option);
             registered.addLast(entry);
             return entry;
         }

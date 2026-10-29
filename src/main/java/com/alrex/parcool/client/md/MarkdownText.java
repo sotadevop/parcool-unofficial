@@ -1,17 +1,17 @@
 package com.alrex.parcool.client.md;
 
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public interface MarkdownText {
     record ExternalLink(String text, String url) implements MarkdownText {
     }
 
-    record Link(String text, ResourceLocation location) implements MarkdownText {
+    record Link(String text, Identifier location) implements MarkdownText {
     }
 
     record Emphasis(List<MarkdownText> child) implements MarkdownText {
@@ -38,6 +38,6 @@ public interface MarkdownText {
 
     /// Extension for display item name
     /// - `<item id = "parcool:parcool_guide" />` -> `ParCool Guide`
-    record ExtensionMCItemName(ResourceLocation id) implements MarkdownText {
+    record ExtensionMCItemName(Identifier id) implements MarkdownText {
     }
 }

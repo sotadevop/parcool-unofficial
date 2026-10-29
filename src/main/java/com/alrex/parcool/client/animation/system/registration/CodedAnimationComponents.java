@@ -7,16 +7,16 @@ import com.alrex.parcool.client.animation.system.data.Transform;
 import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.alrex.parcool.client.animation.system.util.EntityUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class CodedAnimationComponents extends BasicRegistry<CodedAnimationComponent, CodedAnimationComponents.RegistrationEntry> {
-    public record RegistrationEntry(ResourceLocation name, CodedAnimationComponent component) {
+    public record RegistrationEntry(Identifier name, CodedAnimationComponent component) {
     }
 
     private CodedAnimationComponents() {
@@ -35,7 +35,7 @@ public class CodedAnimationComponents extends BasicRegistry<CodedAnimationCompon
         return register(name, component);
     }
 
-    public ID<CodedAnimationComponent> register(ResourceLocation name, CodedAnimationComponent component) {
+    public ID<CodedAnimationComponent> register(Identifier name, CodedAnimationComponent component) {
         return registerItem(name, new RegistrationEntry(name, component));
     }
 

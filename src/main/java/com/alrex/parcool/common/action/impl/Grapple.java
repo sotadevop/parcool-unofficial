@@ -32,8 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -305,7 +305,7 @@ public class Grapple extends ContinuableAction {
         propertyFlightDuration.set((byte) flightDuration);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         currentAngleRadian = oldAngleRadian = 0;
@@ -317,7 +317,7 @@ public class Grapple extends ContinuableAction {
         playSound(parkourability.player(), ParCoolSoundEvents.GRAPPLE_SHOT.get(), 0.7f, 1.5f);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -327,7 +327,7 @@ public class Grapple extends ContinuableAction {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInClient() {
         playSound(
@@ -369,7 +369,7 @@ public class Grapple extends ContinuableAction {
         return propertyAcceleration.getOrDefaultIfNull(Vec3.ZERO);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void updateAngle() {
         oldAngleRadian = currentAngleRadian;
         var acceleration = propertyAcceleration.getOrDefaultIfNull(Vec3.ZERO);
@@ -379,7 +379,7 @@ public class Grapple extends ContinuableAction {
     }
 
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -414,7 +414,7 @@ public class Grapple extends ContinuableAction {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         if (getPhase() != GrapplePhase.ATTACHED) {
@@ -441,7 +441,7 @@ public class Grapple extends ContinuableAction {
         if (magnitude > WOBBLE_MAX) ropeWobble = ropeWobble.scale(WOBBLE_MAX / magnitude);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -453,7 +453,7 @@ public class Grapple extends ContinuableAction {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void tickFlight(LocalPlayer player) {
         if (getDoingTick() < flightDuration) return;
         if (pendingTarget == null) {
@@ -463,7 +463,7 @@ public class Grapple extends ContinuableAction {
         attach(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void attach(LocalPlayer player) {
         var config = config();
         Vec3 anchor = pendingTarget.point();
@@ -487,7 +487,7 @@ public class Grapple extends ContinuableAction {
         tickSwing(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void tickSwing(LocalPlayer player) {
         if (rope == null) return;
         var config = config();
@@ -586,7 +586,7 @@ public class Grapple extends ContinuableAction {
         unresolvedContacts = 0;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Vec3 winch(ParCoolConfig.Server.GrapplingHook config, Vec3 ropeDirection, Vec3 position, double dt, double gravity) {
         if (rope == null) return Vec3.ZERO;
         double distance = position.distanceTo(rope.pivot());
@@ -610,7 +610,7 @@ public class Grapple extends ContinuableAction {
         return pullDirection.scale((config.pullStrength().get() + againstGravity) * Mth.lerp(pullVerticallity, 1, 0.2));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Vec3 steering(LocalPlayer player, ParCoolConfig.Server.GrapplingHook config, Vec3 ropeDirection, Vec3 currentVelocity) {
         Vec3 forward = EntityUtil.getHorizontalLookAngle(player);
         Vec3 input = forward.scale(player.input.forwardImpulse)
@@ -638,7 +638,7 @@ public class Grapple extends ContinuableAction {
         return GrapplePhysics.tangential(steer, ropeDirection);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Vec3[] contactBoundary(LocalPlayer player, Vec3 pivot, Vec3 from, Vec3 to) {
         if (!RopeState.isSegmentClear(player.level(), player, pivot, from)) return new Vec3[]{from, to};
         double clear = 0;
@@ -655,7 +655,7 @@ public class Grapple extends ContinuableAction {
         return new Vec3[]{from.add(span.scale(clear)), from.add(span.scale(blocked))};
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void reportRopeProblems(LocalPlayer player, Vec3 attachment) {
         if (rope == null) return;
         List<Vec3> path = new java.util.ArrayList<>(rope.bends().size() + 2);
@@ -698,7 +698,7 @@ public class Grapple extends ContinuableAction {
         return Math.abs(achieved) < Math.abs(planned) - 1.0e-5 ? achieved : velocity;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onTickInLocalClient() {
         updatePreviewTarget();
@@ -734,7 +734,7 @@ public class Grapple extends ContinuableAction {
         return state;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void updatePreviewTarget() {
         var player = parkourability.player();
         if (isDoing()

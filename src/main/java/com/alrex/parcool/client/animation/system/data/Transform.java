@@ -4,12 +4,12 @@ import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Quaternionf;
 import org.joml.Quaternionfc;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record Transform(Vec3f translation, Quaternionfc rotation) {
     public static final Transform NO_TRANSFORMATION = new Transform(Vec3f.ZERO, new Quaternionf());
     public static final Transform NO_TRANSFORMATION_INV = NO_TRANSFORMATION.getInverseRotated();

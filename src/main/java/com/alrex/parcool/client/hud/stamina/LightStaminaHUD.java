@@ -12,12 +12,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import static com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas.*;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class LightStaminaHUD implements IStaminaHUD {
 	private boolean valueChanging;
 	private int tickValueChangingOrNotChanging;

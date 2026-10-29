@@ -22,8 +22,8 @@ import net.minecraft.world.level.block.ChainBlock;
 import net.minecraft.world.level.block.CrossCollisionBlock;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -47,7 +47,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
         );
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
@@ -90,7 +90,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
         return false;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -114,13 +114,13 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
         });
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onTickInLocalClient() {
         if (cooldown > 0) cooldown--;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().POLE_CLIMB);

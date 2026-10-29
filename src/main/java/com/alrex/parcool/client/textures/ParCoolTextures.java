@@ -4,12 +4,12 @@ import com.alrex.parcool.api.action.ActionEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.RegisterClientReloadListenersEvent;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolTextures {
     private static ParCoolTextures INSTANCE;
 
@@ -34,11 +34,11 @@ public class ParCoolTextures {
         guideImageTextureAtlas = new ParCoolGuideImageTextureAtlas(manager);
     }
 
-    public static TextureAtlasSprite guiSprite(ResourceLocation spriteId) {
+    public static TextureAtlasSprite guiSprite(Identifier spriteId) {
         return INSTANCE.guiTextureAtlas.getSprite(spriteId);
     }
 
-    public static TextureAtlasSprite guideResourceSprite(ResourceLocation spriteId) {
+    public static TextureAtlasSprite guideResourceSprite(Identifier spriteId) {
         return INSTANCE.guideImageTextureAtlas.getSprite(spriteId);
     }
 

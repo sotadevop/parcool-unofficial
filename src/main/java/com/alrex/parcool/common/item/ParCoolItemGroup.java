@@ -7,9 +7,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
+import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
 
 import java.util.Arrays;
 

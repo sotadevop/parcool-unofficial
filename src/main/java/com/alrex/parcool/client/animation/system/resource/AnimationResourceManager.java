@@ -12,14 +12,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.RegisterClientReloadListenersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,13 +27,13 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationResourceManager extends SimplePreparableReloadListener<AnimationResource> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final TypeToken<List<JsonAnimationSet>> ANIMATION_SETS_TYPE = new TypeToken<>() {
     };
     private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocationAdapter())
+            .registerTypeAdapter(Identifier.class, new ResourceLocationAdapter())
             .registerTypeAdapter(TimedValue.class, new TimedValueAdapter())
             .registerTypeAdapter(Argument.class, new ArgumentAdapter())
             .registerTypeAdapter(BlendMethod.class, new BlendMethodAdapter())
@@ -57,10 +57,10 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
 
     @Override
     protected AnimationResource prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        var animationSetRegistrationMap = new TreeMap<ResourceLocation, JsonAnimationSet>();
-        var requestedComponentGroups = new TreeSet<ResourceLocation>();
+        var animationSetRegistrationMap = new TreeMap<Identifier, JsonAnimationSet>();
+        var requestedComponentGroups = new TreeSet<Identifier>();
         for (var namespace : resourceManager.getNamespaces()) {
-            var resourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, "mma/animations.json");
+            var resourceLocation = Identifier.fromNamespaceAndPath(namespace, "mma/animations.json");
             for (var setResource : resourceManager.getResourceStack(resourceLocation)) {
                 try (var reader = setResource.openAsReader()) {
                     var jsonResult = GSON.<List<JsonAnimationSet>>fromJson(reader, ANIMATION_SETS_TYPE.getType());
@@ -79,10 +79,10 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
                 }
             }
         }
-        var animationComponentGroupMap = new TreeMap<ResourceLocation, JsonAnimationComponentGroup>();
-        var requestedComponents = new TreeSet<ResourceLocation>();
+        var animationComponentGroupMap = new TreeMap<Identifier, JsonAnimationComponentGroup>();
+        var requestedComponents = new TreeSet<Identifier>();
         for (var groupLocation : requestedComponentGroups) {
-            var resourceLocation = ResourceLocation.fromNamespaceAndPath(groupLocation.getNamespace(), "mma/groups/" + groupLocation.getPath());
+            var resourceLocation = Identifier.fromNamespaceAndPath(groupLocation.getNamespace(), "mma/groups/" + groupLocation.getPath());
             var groupResource = resourceManager.getResource(resourceLocation);
             if (groupResource.isPresent()) {
                 try (var reader = groupResource.get().openAsReader()) {
@@ -106,9 +106,9 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
                 LOGGER.warn("Requested component group [{}] is not found in loaded resources", compGroup);
             }
         }
-        var animationComponentMap = new TreeMap<ResourceLocation, JsonAnimationComponent>();
+        var animationComponentMap = new TreeMap<Identifier, JsonAnimationComponent>();
         for (var compLocation : requestedComponents) {
-            var resourceLocation = ResourceLocation.fromNamespaceAndPath(compLocation.getNamespace(), "mma/components/" + compLocation.getPath());
+            var resourceLocation = Identifier.fromNamespaceAndPath(compLocation.getNamespace(), "mma/components/" + compLocation.getPath());
             var compResource = resourceManager.getResource(resourceLocation);
             if (compResource.isPresent()) {
                 try (var reader = compResource.get().openAsReader()) {
@@ -125,9 +125,9 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
     }
 
     private AnimationResource constructResource(
-            TreeMap<ResourceLocation, JsonAnimationSet> animationSets,
-            TreeMap<ResourceLocation, JsonAnimationComponentGroup> componentGroups,
-            TreeMap<ResourceLocation, JsonAnimationComponent> components
+            TreeMap<Identifier, JsonAnimationSet> animationSets,
+            TreeMap<Identifier, JsonAnimationComponentGroup> componentGroups,
+            TreeMap<Identifier, JsonAnimationComponent> components
     ) {
         var componentInstances = constructComponents(components);
         var componentGroupInstances = constructComponentGroups(componentGroups, componentInstances);
@@ -135,10 +135,10 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
         return new AnimationResource(componentInstances, componentGroupInstances, animationSetInstances);
     }
 
-    private TreeMap<ResourceLocation, StaticAnimationComponent> constructComponents(
-            TreeMap<ResourceLocation, JsonAnimationComponent> jsonComponents
+    private TreeMap<Identifier, StaticAnimationComponent> constructComponents(
+            TreeMap<Identifier, JsonAnimationComponent> jsonComponents
     ) {
-        var componentInstances = new TreeMap<ResourceLocation, StaticAnimationComponent>();
+        var componentInstances = new TreeMap<Identifier, StaticAnimationComponent>();
         for (var componentJson : jsonComponents.entrySet()) {
             var map = new EnumMap<AnimatableModelPart, EnumMap<AnimatableProperty, Timeline>>(AnimatableModelPart.class);
             int duration = 0;
@@ -173,11 +173,11 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
         return componentInstances;
     }
 
-    private TreeMap<ResourceLocation, AnimationComponentGroup> constructComponentGroups(
-            TreeMap<ResourceLocation, JsonAnimationComponentGroup> jsonComponentGroups,
-            TreeMap<ResourceLocation, StaticAnimationComponent> components
+    private TreeMap<Identifier, AnimationComponentGroup> constructComponentGroups(
+            TreeMap<Identifier, JsonAnimationComponentGroup> jsonComponentGroups,
+            TreeMap<Identifier, StaticAnimationComponent> components
     ) {
-        var instances = new TreeMap<ResourceLocation, AnimationComponentGroup>();
+        var instances = new TreeMap<Identifier, AnimationComponentGroup>();
         for (var compGroupEntry : jsonComponentGroups.entrySet()) {
             var componentList = new ArrayList<AnimationComponentGroup.ComponentEntry>(compGroupEntry.getValue().getComponents().size());
             for (var compEntry : compGroupEntry.getValue().getComponents()) {
@@ -223,11 +223,11 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
         return instances;
     }
 
-    private TreeMap<ResourceLocation, List<AnimationSet>> constructAnimationSets(
-            TreeMap<ResourceLocation, JsonAnimationSet> jsonAnimationSets,
-            TreeMap<ResourceLocation, AnimationComponentGroup> componentGroups
+    private TreeMap<Identifier, List<AnimationSet>> constructAnimationSets(
+            TreeMap<Identifier, JsonAnimationSet> jsonAnimationSets,
+            TreeMap<Identifier, AnimationComponentGroup> componentGroups
     ) {
-        var instances = new TreeMap<ResourceLocation, List<AnimationSet>>();
+        var instances = new TreeMap<Identifier, List<AnimationSet>>();
         for (var animSetsEntry : jsonAnimationSets.entrySet()) {
             var animations = animSetsEntry.getValue().getAnimations();
             var compiledAnimList = new ArrayList<AnimationSet>(animations.size());

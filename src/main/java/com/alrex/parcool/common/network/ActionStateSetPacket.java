@@ -8,9 +8,9 @@ import com.alrex.parcool.util.NetworkUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.alrex.parcool.fabric.compat.network.LogicalSide;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
+import com.alrex.parcool.fabric.compat.network.IPayloadContext;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -83,13 +83,13 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
                     var action = parkourability.get(syncEntry.entry());
                     action.getSynchronizedData().acceptPacket(syncEntry);
                     if (syncEntry.type() == ActionStatePacket.Type.START) {
-                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Pre(parkourability.player(), action));
+                        ParCoolEventBus.post(new ParCoolActionEvent.Start.Pre(parkourability.player(), action));
                         action.start();
-                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Post(parkourability.player(), action));
+                        ParCoolEventBus.post(new ParCoolActionEvent.Start.Post(parkourability.player(), action));
                     } else if (syncEntry.type() == ActionStatePacket.Type.FINISH && action instanceof ContinuableAction continuableAction) {
-                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Pre(parkourability.player(), continuableAction));
+                        ParCoolEventBus.post(new ParCoolActionEvent.Finish.Pre(parkourability.player(), continuableAction));
                         continuableAction.finish();
-                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Post(parkourability.player(), continuableAction));
+                        ParCoolEventBus.post(new ParCoolActionEvent.Finish.Post(parkourability.player(), continuableAction));
                     }
                 }
             }

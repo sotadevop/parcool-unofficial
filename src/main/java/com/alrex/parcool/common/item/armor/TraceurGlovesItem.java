@@ -9,7 +9,7 @@ import com.alrex.parcool.extern.AdditionalMods;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -21,9 +21,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,8 +30,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
-    private static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_gloves.png");
-    private static final ResourceLocation MODIFIER_ID = ParCool.resourceLocation("traceur_glove");
+    private static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_gloves.png");
+    private static final Identifier MODIFIER_ID = ParCool.resourceLocation("traceur_glove");
     private final ItemAttributeModifiers equipModifier;
 
     public TraceurGlovesItem(Properties properties) {
@@ -75,21 +74,10 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         DyeAble.appendHoverText(this, stack, context, lines, tooltipFlag);
     }
 
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-            @Override
-            @Nullable
-            public HumanoidModel.ArmPose getArmPose(@Nonnull LivingEntity entityLiving, @Nonnull InteractionHand hand, @Nonnull ItemStack itemStack) {
-                if (shouldRenderAsEquipment(entityLiving, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND)) {
-                    return HumanoidModel.ArmPose.EMPTY;
-                }
-                return null;
-            }
-        });
-    }
+    // Fabric port: NeoForge's IClientItemExtensions hook is ported with the 26.3 rendering code
+    // (see porting/NOTES.md, "Open").
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static boolean shouldRenderAsEquipment(LivingEntity entity, EquipmentSlot slot) {
         if (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND) {
             var chestItem = entity.getItemBySlot(EquipmentSlot.CHEST);
@@ -98,10 +86,10 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
-    public ResourceLocation getEquipmentTexture(LivingEntity entity, EquipmentSlot slot, EquipmentRenderLayer layer) {
+    public Identifier getEquipmentTexture(LivingEntity entity, EquipmentSlot slot, EquipmentRenderLayer layer) {
         if (!shouldRenderAsEquipment(entity, slot)) return null;
         return layer == EquipmentRenderLayer.INNER ? TEXTURE_LOCATION : null;
     }

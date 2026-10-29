@@ -7,10 +7,10 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
 import com.alrex.parcool.common.network.ActionStatePacket;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -59,7 +59,7 @@ public abstract class Action {
 		return SynchronizedDataHolder.empty();
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	@Nullable
 	public ParCoolKeyBinds.IStateProvider getKeyBind() {
 		return null;
@@ -160,7 +160,7 @@ public abstract class Action {
 
 	public boolean isReadyToStart() {
 		if (!isPossible()) return false;
-        if (NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)).isCanceled())
+        if (ParCoolEventBus.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)).isCanceled())
 			return false;
 		return (this instanceof IRequestable<?> requestable)
 				? parkourability.canStartByRequest(requestable)
@@ -182,15 +182,15 @@ public abstract class Action {
 	public void onStartInServer() {
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public void onStartInClient() {
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public void onStartInOtherClient() {
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public void onStartInLocalClient() {
 	}
 
@@ -200,24 +200,24 @@ public abstract class Action {
 	public void onTickInServer() {
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public void onTickInClient() {
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public void onTickInLocalClient() {
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public void onTickInOtherClient() {
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public boolean wantsToShowStatusBar() {
 		return false;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public float getStatusValue() {
 		return 0;
 	}

@@ -5,9 +5,9 @@ import com.alrex.parcool.common.item.component.ZiplinePositionComponent;
 import com.alrex.parcool.common.item.component.ZiplineTensionComponent;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
+import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
 
 public class ParCoolDataComponents {
     private static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, ParCool.MOD_ID);

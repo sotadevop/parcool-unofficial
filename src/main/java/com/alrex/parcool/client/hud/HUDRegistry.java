@@ -2,14 +2,13 @@ package com.alrex.parcool.client.hud;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.hud.stamina.StaminaHUDController;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ClientTickEvent;
+import com.alrex.parcool.fabric.compat.event.RegisterGuiLayersEvent;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class HUDRegistry {
 	private static HUDRegistry instance = null;
 
@@ -22,7 +21,7 @@ public class HUDRegistry {
 	}
 
     public void onSetup(RegisterGuiLayersEvent event) {
-        event.registerAbove(ResourceLocation.fromNamespaceAndPath("minecraft", "food_level"), ParCool.resourceLocation("hud.stamina.host"), staminaHUD);
+        event.registerAbove(Identifier.fromNamespaceAndPath("minecraft", "food_level"), ParCool.resourceLocation("hud.stamina.host"), staminaHUD);
 	}
 
     public void onTick(ClientTickEvent.Post event) {

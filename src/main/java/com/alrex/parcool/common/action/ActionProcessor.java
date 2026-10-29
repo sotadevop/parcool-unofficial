@@ -12,14 +12,13 @@ import com.alrex.parcool.common.network.ActionStateSetPacket;
 import com.alrex.parcool.common.stamina.StaminaSynchronizationDepot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.network.LogicalSide;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
+import com.alrex.parcool.fabric.compat.event.LevelTickEvent;
+import com.alrex.parcool.fabric.compat.event.PlayerTickEvent;
+import com.alrex.parcool.fabric.compat.network.PacketDistributor;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -37,14 +36,12 @@ public class ActionProcessor {
 		return serverActionDepot;
 	}
 
-	@SubscribeEvent
     public void onTickLevel(LevelTickEvent.Post event) {
         if (event.getLevel().isClientSide()) return;
 		getStaminaSyncDepot().tick();
 		getActionSyncDepot().tick();
 	}
 
-	@SubscribeEvent
     public void onTickPlayer(PlayerTickEvent.Post event) {
         var player = event.getEntity();
 		var parkourability = Parkourability.get(player);
@@ -59,9 +56,9 @@ public class ActionProcessor {
 
         parkourability.getAdditionalProperties().onTick();
 		for (Action action : parkourability.getActions()) {
-            NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Tick.Pre(player, action));
+            ParCoolEventBus.post(new ParCoolActionEvent.Tick.Pre(player, action));
             processAction(parkourability, side, action, synchronizedData);
-            NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Tick.Post(player, action));
+            ParCoolEventBus.post(new ParCoolActionEvent.Tick.Post(player, action));
 		}
 		if (!synchronizedData.isEmpty()) {
             onTick$sendActionSyncPacket(parkourability, side, synchronizedData);
@@ -85,7 +82,7 @@ public class ActionProcessor {
         parkourability.sendSkillTreePacketFromServer();
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	private void onTick$doPreprocessInClient(Parkourability parkourability) {
 		if (parkourability.getStamina() instanceof AbstractLocalStamina stamina) {
 			stamina.tick();
@@ -99,7 +96,7 @@ public class ActionProcessor {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	private void onTick$sendStaminaSyncPacketInLocal(Parkourability parkourability) {
 		if ((parkourability.player().tickCount & 0b11) == 0 && parkourability.getStamina() instanceof AbstractLocalStamina localStamina) {
 			localStamina.sync();
@@ -137,16 +134,16 @@ public class ActionProcessor {
 		if (needSync) {
 			if (action instanceof ContinuableAction continuableAction && continuableAction.isDoing()) {
 				if (!(continuableAction.isPossibleToContinue())) {
-                    NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Pre(parkourability.player(), continuableAction));
+                    ParCoolEventBus.post(new ParCoolActionEvent.Finish.Pre(parkourability.player(), continuableAction));
 					continuableAction.finish();
-                    NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Post(parkourability.player(), continuableAction));
+                    ParCoolEventBus.post(new ParCoolActionEvent.Finish.Post(parkourability.player(), continuableAction));
 					type = ActionStatePacket.Type.FINISH;
 				}
 			} else {
 				if (action.isReadyToStart()) {
-                    NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Pre(parkourability.player(), action));
+                    ParCoolEventBus.post(new ParCoolActionEvent.Start.Pre(parkourability.player(), action));
 					action.start();
-                    NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Post(parkourability.player(), action));
+                    ParCoolEventBus.post(new ParCoolActionEvent.Start.Post(parkourability.player(), action));
 					type = ActionStatePacket.Type.START;
 				}
 			}

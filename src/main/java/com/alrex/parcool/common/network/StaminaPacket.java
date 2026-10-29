@@ -6,8 +6,8 @@ import com.alrex.parcool.common.stamina.ReadonlyStamina;
 import com.alrex.parcool.util.NetworkUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.alrex.parcool.fabric.compat.network.LogicalSide;
+import com.alrex.parcool.fabric.compat.network.IPayloadContext;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;

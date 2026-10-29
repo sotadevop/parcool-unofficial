@@ -5,8 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,7 +17,7 @@ public record Zipline(ZiplineShape shape, ZiplineInfo info, BlockPos start, Bloc
     public static final double MAXIMUM_HORIZONTAL_DISTANCE = 192.;
     public static final double MAXIMUM_VERTICAL_DISTANCE = MAXIMUM_HORIZONTAL_DISTANCE * 0.51;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public static Zipline getHangAbleZipline(ClientLevel level, Player player) {
         if (!(level instanceof ILoadedZiplineHolderProvider provider)) return null;

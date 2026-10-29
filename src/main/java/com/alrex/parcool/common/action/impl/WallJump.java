@@ -17,8 +17,8 @@ import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class WallJump extends Action {
     private enum Type {
@@ -42,7 +42,7 @@ public class WallJump extends Action {
         return dataHolder;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         switch (propertyJumpType.getOrDefaultIfNull(Type.LEFT)) {
@@ -58,7 +58,7 @@ public class WallJump extends Action {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         var deltaMovement = parkourability.player().getDeltaMovement();
@@ -73,7 +73,7 @@ public class WallJump extends Action {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInServer() {
         parkourability.player().fallDistance = 0;

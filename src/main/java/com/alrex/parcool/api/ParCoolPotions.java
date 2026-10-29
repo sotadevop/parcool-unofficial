@@ -5,9 +5,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
+import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
 
 public class ParCoolPotions {
     private static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(Registries.POTION, ParCool.MOD_ID);

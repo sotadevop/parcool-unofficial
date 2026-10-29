@@ -9,13 +9,13 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.ModelEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ModelEvent;
 
 import javax.annotation.Nonnull;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GrapplingHookItemRenderer extends BlockEntityWithoutLevelRenderer {
     public static final ModelResourceLocation GUI_MODEL = ModelResourceLocation.standalone(ParCool.resourceLocation("item/grappling_hook_gui"));
     public static final ModelResourceLocation HELD_MODEL = ModelResourceLocation.standalone(ParCool.resourceLocation("item/grappling_hook_in_hand"));

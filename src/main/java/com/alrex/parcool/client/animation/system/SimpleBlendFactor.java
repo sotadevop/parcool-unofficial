@@ -2,10 +2,10 @@ package com.alrex.parcool.client.animation.system;
 
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class SimpleBlendFactor implements IBlendingFactor {
     private final Handler handler;
     private final BlendMethod method;

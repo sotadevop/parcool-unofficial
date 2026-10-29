@@ -6,9 +6,7 @@ import com.alrex.parcool.common.action.ActionRegistry;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.alrex.parcool.fabric.compat.network.IPayloadContext;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;

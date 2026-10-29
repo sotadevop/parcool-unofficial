@@ -1,7 +1,7 @@
 package com.alrex.parcool.api.action;
 
 import com.alrex.parcool.common.Parkourability;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class ActionEntry<T extends Action> implements Comparable<ActionEntry<?>> {
     private final short index;
-    private final ResourceLocation id;
+    private final Identifier id;
     private final Class<T> clazz;
     private final ActionConstructor<T> factory;
     private final ActionOption.Value option;
@@ -18,7 +18,7 @@ public class ActionEntry<T extends Action> implements Comparable<ActionEntry<?>>
 
     public ActionEntry(
             short index,
-            ResourceLocation id,
+            Identifier id,
             Class<T> clazz,
             ActionConstructor<T> factory,
             ActionOption option
@@ -38,7 +38,7 @@ public class ActionEntry<T extends Action> implements Comparable<ActionEntry<?>>
         return index;
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return id;
     }
 

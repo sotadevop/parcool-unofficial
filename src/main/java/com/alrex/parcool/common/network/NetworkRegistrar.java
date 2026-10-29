@@ -1,11 +1,9 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import com.alrex.parcool.fabric.compat.network.RegisterPayloadHandlersEvent;
 
 public class NetworkRegistrar {
-    @SubscribeEvent
     public static void registerPackets(RegisterPayloadHandlersEvent event) {
         var r = event.registrar(ParCool.getConnectionId());
         r.playBidirectional(

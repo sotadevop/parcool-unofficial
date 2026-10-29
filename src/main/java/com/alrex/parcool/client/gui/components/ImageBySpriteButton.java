@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,10 +17,10 @@ public class ImageBySpriteButton extends AbstractButton {
     private final Font font;
     @Nullable
     private final Runnable runnable;
-    private final ResourceLocation texLocation;
+    private final Identifier texLocation;
     private TextureAtlasSprite sprite;
 
-    public ImageBySpriteButton(Font font, int x, int y, int width, int height, Component text, int txtColor, ResourceLocation texLocation, TextureAtlasSprite sprite, @Nullable Runnable onPressListener) {
+    public ImageBySpriteButton(Font font, int x, int y, int width, int height, Component text, int txtColor, Identifier texLocation, TextureAtlasSprite sprite, @Nullable Runnable onPressListener) {
         super(x, y, width, height, text);
         this.font = font;
         this.txtColor = txtColor;

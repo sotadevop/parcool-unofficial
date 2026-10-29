@@ -1,7 +1,7 @@
 package com.alrex.parcool.api.action;
 
 import net.minecraft.world.entity.Pose;
-import net.neoforged.fml.LogicalSide;
+import com.alrex.parcool.fabric.compat.network.LogicalSide;
 
 import javax.annotation.Nullable;
 import java.util.*;

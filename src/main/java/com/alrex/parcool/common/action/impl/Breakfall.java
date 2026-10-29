@@ -15,10 +15,10 @@ import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
+import com.alrex.parcool.fabric.compat.event.LivingFallEvent;
 
 import javax.annotation.Nullable;
 
@@ -49,14 +49,14 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         return false;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     @Override
     public ParCoolKeyBinds.IStateProvider getKeyBind() {
         return ParCoolKeyBinds.BREAKFALL;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onTickInLocalClient() {
         propertyInputBreakfallType.set(input.isActive() ?
@@ -72,7 +72,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         if (breakfallType == null || breakfallType == BreakfallType.NONE) return;
         var attr = parkourability.player().getAttribute(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION);
         if (attr == null) return;
-        if (isPossible() && !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)).isCanceled()) {
+        if (isPossible() && !ParCoolEventBus.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)).isCanceled()) {
             var damageReduction = attr.getValue();
             event.setDamageMultiplier(event.getDamageMultiplier() * (float) (1. - damageReduction));
             if (event.getDistance() < 15 * damageReduction) {
@@ -85,7 +85,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         switch (propertyWorkingBreakfallType.getOrDefaultIfNull(BreakfallType.NONE)) {
@@ -104,7 +104,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         switch (propertyWorkingBreakfallType.getOrDefaultIfNull(BreakfallType.NONE)) {

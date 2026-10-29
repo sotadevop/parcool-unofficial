@@ -4,8 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.common.action.impl.*;
 import net.minecraft.world.entity.Pose;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
+import com.alrex.parcool.fabric.compat.network.LogicalSide;
 
 public class ParCoolActions {
     private static final ActionGroup GROUP;
@@ -206,7 +205,6 @@ public class ParCoolActions {
         GROUP = builder.build();
     }
 
-    @SubscribeEvent
     public static void onRegister(RegisterParCoolActionEvent event) {
         event.register(GROUP);
     }

@@ -14,22 +14,22 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileEntity> {
-    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/misc/zipline.png");
+    public static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/misc/zipline.png");
 
     public ZiplineHookRenderer(BlockEntityRendererProvider.Context context) {
     }

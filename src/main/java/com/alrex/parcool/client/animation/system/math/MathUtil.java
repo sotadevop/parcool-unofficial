@@ -2,12 +2,12 @@ package com.alrex.parcool.client.animation.system.math;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Quaternionf;
 import org.joml.Quaternionfc;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class MathUtil {
     // normalize angle in [-pi,pi)
     public static float warpRadian(float angleRadian) {

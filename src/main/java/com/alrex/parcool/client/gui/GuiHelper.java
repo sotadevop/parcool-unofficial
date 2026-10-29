@@ -6,7 +6,7 @@ import com.alrex.parcool.client.gui.screen.ParCoolSkillTreeScreen;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.item.ParCoolItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class GuiHelper {
@@ -19,7 +19,7 @@ public class GuiHelper {
     }
 
     public static void openGuideGui() {
-        Minecraft.getInstance().setScreen(new ParCoolGuideScreen(ResourceLocation.fromNamespaceAndPath("parcool", "welcome.md")));
+        Minecraft.getInstance().setScreen(new ParCoolGuideScreen(Identifier.fromNamespaceAndPath("parcool", "welcome.md")));
     }
 
     public static void openSettingGui(Player player) {

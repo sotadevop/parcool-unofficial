@@ -6,8 +6,8 @@ import com.alrex.parcool.client.hud.stamina.HUDType;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypes;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.fml.ModContainer;
+import net.minecraft.resources.Identifier;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -20,9 +20,10 @@ public class ParCoolConfig {
 		this.server = new Server(actionRegistry, staminaTypeRegistry);
 	}
 
-    public void register(ModContainer loadingContext) {
-		loadingContext.registerConfig(ModConfig.Type.CLIENT, client.builtConfig);
-		loadingContext.registerConfig(ModConfig.Type.SERVER, server.builtConfig);
+    /** Fabric port: registered through Forge Config API Port instead of the NeoForge mod container. */
+    public void register(String modId) {
+		ConfigRegistry.INSTANCE.register(modId, ModConfig.Type.CLIENT, client.builtConfig);
+		ConfigRegistry.INSTANCE.register(modId, ModConfig.Type.SERVER, server.builtConfig);
 	}
 
 	private final Client client;
@@ -179,8 +180,8 @@ public class ParCoolConfig {
 		public final ModConfigSpec.BooleanValue enableSkillTreeUi;
         public final GrapplingHook grapplingHook;
 
-		public final ResourceLocation getStaminaTypeID() {
-			var id = ResourceLocation.tryParse(staminaType.get());
+		public final Identifier getStaminaTypeID() {
+			var id = Identifier.tryParse(staminaType.get());
 			return id != null ? id : StaminaTypes.PARCOOL_STAMINA.id();
 		}
 

@@ -10,8 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.entity.EntityAccess;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.ScoreHolder;
-import net.neoforged.neoforge.attachment.AttachmentHolder;
-import net.neoforged.neoforge.common.extensions.IEntityExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin extends AttachmentHolder implements SyncedDataHolder, EntityAccess, CommandSource, ScoreHolder, IEntityExtension {
+public abstract class EntityMixin {
     @Shadow
     public boolean noPhysics;
 

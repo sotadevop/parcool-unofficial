@@ -2,14 +2,14 @@ package com.alrex.parcool.client;
 
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import net.minecraft.client.CameraType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class RenderBehaviorEnforcer {
     private static RenderBehaviorEnforcer INSTANCE = null;
 

@@ -1,10 +1,10 @@
 package com.alrex.parcool.client.animation.system.math;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Vector3f;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record Vec3f(float x, float y, float z) {
     public static final Vec3f ZERO = new Vec3f(0f, 0f, 0f);
     public static final Vec3f XP = new Vec3f(1f, 0f, 0f);

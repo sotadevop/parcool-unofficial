@@ -2,14 +2,14 @@ package com.alrex.parcool.client.animation.system.data;
 
 import com.alrex.parcool.client.animation.system.AnimationProgress;
 import com.alrex.parcool.client.animation.system.IBlendingFactor;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record AnimationComponentGroup(List<ComponentEntry> components, int duration, boolean loops, boolean infinite) {
     public record ComponentEntry(
             IAnimationComponent component,

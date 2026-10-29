@@ -10,7 +10,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 public class ActionArgumentType implements ArgumentType<ActionEntry<?>> {
     @Override
     public ActionEntry<?> parse(StringReader reader) throws CommandSyntaxException {
-        var id = ResourceLocation.read(reader);
+        var id = Identifier.read(reader);
         var result = ParCool.getActionRegistry().get(id);
         if (result != null) return result;
         var message = Component.translatable("parcool.command.message.action_not_found", id.toString());

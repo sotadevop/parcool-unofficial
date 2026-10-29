@@ -1,8 +1,8 @@
 package com.alrex.parcool.api.action;
 
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public enum GeneralInputType {
     NONE, INSTANT, CONTINUOUS;
@@ -33,12 +33,12 @@ public enum GeneralInputType {
     public interface Input {
         boolean isActive();
 
-        @OnlyIn(Dist.CLIENT)
+        @Environment(EnvType.CLIENT)
         default void tick(ParCoolKeyBinds.IStateProvider stateProvider) {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static abstract class AbstractInputHandle implements Input {
         protected boolean current;
 
@@ -48,7 +48,7 @@ public enum GeneralInputType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static class PressKeyInput extends AbstractInputHandle {
         @Override
         public void tick(ParCoolKeyBinds.IStateProvider stateProvider) {
@@ -56,7 +56,7 @@ public enum GeneralInputType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static class ReleaseKeyInput extends AbstractInputHandle {
         @Override
         public void tick(ParCoolKeyBinds.IStateProvider stateProvider) {
@@ -64,7 +64,7 @@ public enum GeneralInputType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static class DownKeyInput extends AbstractInputHandle {
         @Override
         public void tick(ParCoolKeyBinds.IStateProvider stateProvider) {
@@ -72,7 +72,7 @@ public enum GeneralInputType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static class ToggleKeyInput extends AbstractInputHandle {
         @Override
         public void tick(ParCoolKeyBinds.IStateProvider stateProvider) {
@@ -80,7 +80,7 @@ public enum GeneralInputType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static class AlwaysInput implements Input {
         @Override
         public boolean isActive() {

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "Unofficial Fabric port of ParCool! 4.0 by alRex_U for Minecraft 26.3. Parkour moves: ledge grab, wall run, wall jump, crawl, vault, roll, grappling hook and more.",
+  "authors": [
+    "alRex_U (original)",
+    "sotadevop (Fabric 26.3 port)"
+  ],
+  "contact": {
+    "homepage": "https://github.com/sotadevop/parcool-unofficial",
+    "sources": "https://github.com/sotadevop/parcool-unofficial",
+    "issues": "https://github.com/sotadevop/parcool-unofficial/issues"
+  },
+  "license": "${mod_license}",
+  "icon": "parcool_logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.alrex.parcool.ParCool"],
+    "client": ["com.alrex.parcool.ParCoolClient"],
+    "modmenu": ["com.alrex.parcool.ParCoolModMenu"]
+  },
+  "mixins": ["parcool.mixins.json"],
+  "accessWidener": "parcool.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.20.0",
+    "fabric-api": "*",
+    "forgeconfigapiport": ">=26.3.0",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=25"
+  },
+  "suggests": {
+    "modmenu": "*"
+  }
+}

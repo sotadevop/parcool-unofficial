@@ -6,16 +6,16 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.EntityRenderersEvent;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolModelLayers {
-    public static final ModelLayerLocation INNER_EQUIPMENT = new ModelLayerLocation(ResourceLocation.withDefaultNamespace("player"), "parcool.equipment_in");
-    public static final ModelLayerLocation INNER_EQUIPMENT_SLIM = new ModelLayerLocation(ResourceLocation.withDefaultNamespace("player_slim"), "parcool.equipment_in");
-    public static final ModelLayerLocation OUTER_EQUIPMENT = new ModelLayerLocation(ResourceLocation.withDefaultNamespace("player"), "parcool.equipment_out");
+    public static final ModelLayerLocation INNER_EQUIPMENT = new ModelLayerLocation(Identifier.withDefaultNamespace("player"), "parcool.equipment_in");
+    public static final ModelLayerLocation INNER_EQUIPMENT_SLIM = new ModelLayerLocation(Identifier.withDefaultNamespace("player_slim"), "parcool.equipment_in");
+    public static final ModelLayerLocation OUTER_EQUIPMENT = new ModelLayerLocation(Identifier.withDefaultNamespace("player"), "parcool.equipment_out");
     public static final ModelLayerLocation OUTER_EQUIPMENT_SLIM = new ModelLayerLocation(ParCool.resourceLocation("player_slim"), "parcool.equipment_out");
     public static final ModelLayerLocation GRAPPLE_TIP = new ModelLayerLocation(ParCool.resourceLocation("grapple_tip"), "main");
 

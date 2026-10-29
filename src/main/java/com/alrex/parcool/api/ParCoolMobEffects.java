@@ -5,9 +5,9 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.potion.effects.InexhaustibleEffect;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
+import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
 
 public class ParCoolMobEffects {
     private static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, ParCool.MOD_ID);

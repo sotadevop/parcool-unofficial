@@ -12,11 +12,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.IEventBus;
+import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
+import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
 
 public class ParCoolItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, ParCool.MOD_ID);
@@ -33,7 +33,7 @@ public class ParCoolItems {
         ITEMS.register(bus);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static void registerColors() {
         Minecraft.getInstance().getItemColors().register(new DyeAble.DyedColor(0), ZIPLINE_ROPE::get);
         Minecraft.getInstance().getItemColors().register(new DyeAble.DyedColor(0), TRACEUR_GLOVES::get);

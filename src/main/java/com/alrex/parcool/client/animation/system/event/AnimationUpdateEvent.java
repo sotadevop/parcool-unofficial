@@ -4,14 +4,14 @@ import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.AnimationProcessor;
 import com.alrex.parcool.client.animation.system.ModelTransform;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.Event;
+import com.alrex.parcool.fabric.compat.event.ICancellableEvent;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationUpdateEvent extends Event {
     private final AbstractClientPlayer player;
     private final AnimationProcessor processor;

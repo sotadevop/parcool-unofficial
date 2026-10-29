@@ -4,15 +4,13 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.EntityEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import com.alrex.parcool.fabric.compat.event.EntityEvent;
+import com.alrex.parcool.fabric.compat.event.LivingDamageEvent;
+import com.alrex.parcool.fabric.compat.event.LivingEvent;
+import com.alrex.parcool.fabric.compat.event.LivingFallEvent;
+import com.alrex.parcool.fabric.compat.event.PlayerEvent;
 
 public class PlayerEventHandler {
-    @SubscribeEvent
     public static void onAttack(LivingDamageEvent.Pre event) {
         if (!(event.getEntity() instanceof Player player)) return;
         var parkourability = Parkourability.get(player);
@@ -22,7 +20,6 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onFall(LivingFallEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         var parkourability = Parkourability.get(player);
@@ -32,7 +29,6 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onJump(LivingEvent.LivingJumpEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         var parkourability = Parkourability.get(player);
@@ -42,7 +38,6 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onLivingVisibilityEvent(LivingEvent.LivingVisibilityEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         var parkourability = Parkourability.get(player);
@@ -52,7 +47,6 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onSizeRefresh(EntityEvent.Size sizeEvent) {
         if (!(sizeEvent.getEntity() instanceof Player player)) return;
         var parkourability = Parkourability.get(player);
@@ -63,7 +57,6 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onClone(PlayerEvent.Clone event) {
         Player player = event.getEntity();
         if (event.isWasDeath() && player instanceof ServerPlayer) {
@@ -76,7 +69,6 @@ public class PlayerEventHandler {
         }
     }
 
-    @SubscribeEvent
     public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         var parkourability = Parkourability.get(event.getEntity());
         parkourability.getEnabledActions().setDirty();

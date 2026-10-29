@@ -20,8 +20,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         var player = parkourability.player();
@@ -77,7 +77,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         player.setDeltaMovement(deltaMove.x, runSpeed, deltaMove.z);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         var player = parkourability.player();
@@ -111,7 +111,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onTickInLocalClient() {
         tickAfterJump++;

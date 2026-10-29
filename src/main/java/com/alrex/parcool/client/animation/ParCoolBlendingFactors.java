@@ -8,10 +8,10 @@ import com.alrex.parcool.client.animation.system.registration.BlendingFactors;
 import com.alrex.parcool.client.animation.system.registration.ID;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ParCoolActions;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ParCoolBlendingFactors {
     public final ID<IBlendingFactor> HANG_ON_LEFT_TO_WALL = BlendingFactors.getInstance()
             .register(ParCool.resourceLocation("builtin/hang_on_left_to_wall"), (args, method) ->

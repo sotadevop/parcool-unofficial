@@ -7,31 +7,31 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nonnull;
 
 public class TexturedPanel extends AbstractWidget {
     public static class Textures {
-        public static final ResourceLocation SETTING_TOP = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/top.png");
-        public static final ResourceLocation SETTING_SURFACE = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/surface.png");
-        public static final ResourceLocation SETTING_CARD = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/card.png");
-        public static final ResourceLocation SETTING_BACKGROUND = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/background.png");
-        public static final ResourceLocation SKILLTREE_TOP = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/skilltree/top.png");
-        public static final ResourceLocation SKILLTREE_SURFACE = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/skilltree/surface.png");
-        public static final ResourceLocation SKILLTREE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/skilltree/background.png");
+        public static final Identifier SETTING_TOP = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/top.png");
+        public static final Identifier SETTING_SURFACE = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/surface.png");
+        public static final Identifier SETTING_CARD = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/card.png");
+        public static final Identifier SETTING_BACKGROUND = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/setting/background.png");
+        public static final Identifier SKILLTREE_TOP = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/skilltree/top.png");
+        public static final Identifier SKILLTREE_SURFACE = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/skilltree/surface.png");
+        public static final Identifier SKILLTREE_BACKGROUND = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/panel/skilltree/background.png");
     }
 
-    private final ResourceLocation texLocation;
+    private final Identifier texLocation;
     private final int texWidth;
     private final int texHeight;
     private int borderColor;
 
-    public TexturedPanel(int x, int y, int width, int height, ResourceLocation texLocation) {
+    public TexturedPanel(int x, int y, int width, int height, Identifier texLocation) {
         this(x, y, width, height, texLocation, 16, 16);
     }
 
-    public TexturedPanel(int x, int y, int width, int height, ResourceLocation texLocation, int texWidth, int texHeight) {
+    public TexturedPanel(int x, int y, int width, int height, Identifier texLocation, int texWidth, int texHeight) {
         super(x, y, width, height, Component.empty());
         this.texLocation = texLocation;
         this.texWidth = texWidth;

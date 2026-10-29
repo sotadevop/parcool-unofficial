@@ -4,17 +4,17 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.animation.system.AnimationProgress;
 import com.alrex.parcool.client.animation.system.resource.Argument;
 import com.alrex.parcool.client.animation.system.util.EntityUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationProgresses extends BasicRegistry<AnimationProgress, AnimationProgresses.RegistrationEntry<?>> {
     public record RegistrationEntry<T extends AnimationProgress>(
-            ResourceLocation name,
+            Identifier name,
             AnimationProgress.Constructor<T> constructor
     ) {
     }
@@ -34,7 +34,7 @@ public class AnimationProgresses extends BasicRegistry<AnimationProgress, Animat
         return this.register(subName, (loop, min, max, args) -> new AnimationProgress.FunctionDeltaAnimationProgress(loop, min, max, args, progressProvider));
     }
 
-    public ID<AnimationProgress> register(ResourceLocation name, AnimationProgress.IDeltaProgressProvider progressProvider) {
+    public ID<AnimationProgress> register(Identifier name, AnimationProgress.IDeltaProgressProvider progressProvider) {
         return register(name, (loop, min, max, args) -> new AnimationProgress.FunctionDeltaAnimationProgress(loop, min, max, args, progressProvider));
     }
 
@@ -42,7 +42,7 @@ public class AnimationProgresses extends BasicRegistry<AnimationProgress, Animat
         return this.register(subName, (loop, min, max, args) -> new AnimationProgress.FunctionDirectAnimationProgress(args, progressProvider));
     }
 
-    public ID<AnimationProgress> register(ResourceLocation name, AnimationProgress.IDirectProgressProvider progressProvider) {
+    public ID<AnimationProgress> register(Identifier name, AnimationProgress.IDirectProgressProvider progressProvider) {
         return this.register(name, (loop, min, max, args) -> new AnimationProgress.FunctionDirectAnimationProgress(args, progressProvider));
     }
 
@@ -50,7 +50,7 @@ public class AnimationProgresses extends BasicRegistry<AnimationProgress, Animat
         return registerItem(subName, new RegistrationEntry<>(ParCool.resourceLocation(subName), progressProvider));
     }
 
-    public ID<AnimationProgress> register(ResourceLocation name, AnimationProgress.Constructor<?> progressProvider) {
+    public ID<AnimationProgress> register(Identifier name, AnimationProgress.Constructor<?> progressProvider) {
         return registerItem(name, new RegistrationEntry<>(name, progressProvider));
     }
 

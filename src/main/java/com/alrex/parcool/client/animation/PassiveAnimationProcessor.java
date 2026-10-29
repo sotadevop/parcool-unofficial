@@ -1,15 +1,12 @@
 package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.PlayerTickEvent;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class PassiveAnimationProcessor {
-    @SubscribeEvent(priority = EventPriority.LOW)
     public void onTick(PlayerTickEvent.Post event) {
         var player = event.getEntity();
         if (player instanceof IPlayerAnimatorHolder holder) {

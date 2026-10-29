@@ -16,8 +16,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -92,7 +92,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         final var fStartPos = this.startPos;
@@ -130,7 +130,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         var type = propertyType.get();
@@ -151,7 +151,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInLocalClient() {
         if (propertyType.get() == Type.JUMP && destination != null) {

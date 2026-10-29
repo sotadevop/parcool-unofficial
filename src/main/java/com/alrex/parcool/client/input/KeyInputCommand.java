@@ -1,12 +1,12 @@
 package com.alrex.parcool.client.input;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.LinkedList;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class KeyInputCommand {
     private boolean active = false;
     private byte currentProgress = 0;

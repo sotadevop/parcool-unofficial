@@ -11,8 +11,8 @@ import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class ChargeJump extends ContinuableAction implements ActionExtension.JumpListener {
     private static final byte CHARGE_DURATION = 10;
@@ -84,7 +84,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().JUMP_CHARGING);
@@ -98,7 +98,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         oldChargingTick = chargingTick = 0;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInClient() {
         if (propertyJumpTriggered.getOrDefaultIfNull(false))

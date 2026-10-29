@@ -14,8 +14,8 @@ import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.EntityUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +79,7 @@ public class TrickJump extends Action implements ActionExtension.JumpListener {
         jumped = true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         var type = propertyTrickType.get();

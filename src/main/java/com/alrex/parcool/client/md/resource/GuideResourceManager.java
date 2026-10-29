@@ -10,13 +10,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.RegisterClientReloadListenersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,15 +27,15 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GuideResourceManager extends SimplePreparableReloadListener<GuideResource> {
-    private static final ResourceLocation PAGES_LOCATION = ParCool.resourceLocation("parcool_guide/pages.json");
+    private static final Identifier PAGES_LOCATION = ParCool.resourceLocation("parcool_guide/pages.json");
     private static final Logger LOGGER = LogManager.getLogger();
     private static GuideResourceManager INSTANCE = null;
     private static final TypeToken<List<PageGroupJson>> PAGES_TYPE = new TypeToken<>() {
     };
     private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocationAdapter())
+            .registerTypeAdapter(Identifier.class, new ResourceLocationAdapter())
             .create();
 
     public static GuideResourceManager getInstance() {
@@ -43,8 +43,8 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
         return INSTANCE;
     }
 
-    public static ResourceLocation getLocation(ActionEntry<?> action) {
-        return ResourceLocation.fromNamespaceAndPath(
+    public static Identifier getLocation(ActionEntry<?> action) {
+        return Identifier.fromNamespaceAndPath(
                 action.id().getNamespace(),
                 "actions/" + action.id().getPath() + ".md"
         );
@@ -93,13 +93,13 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
         });
         for (var pageEntry : loadingPages) {
             var location = pageEntry.resourceLocation();
-            var pageLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), String.format("parcool_guide/%s/%s", langCode, location.getPath()));
+            var pageLocation = Identifier.fromNamespaceAndPath(location.getNamespace(), String.format("parcool_guide/%s/%s", langCode, location.getPath()));
             var pageResource = resourceManager.getResource(pageLocation);
             if (pageResource.isEmpty() && !langCode.equals("en_us")) {
-                pageLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), String.format("parcool_guide/en_us/%s", location.getPath()));
+                pageLocation = Identifier.fromNamespaceAndPath(location.getNamespace(), String.format("parcool_guide/en_us/%s", location.getPath()));
                 pageResource = resourceManager.getResource(pageLocation);
             }
-            ResourceLocation finalPageLocation = pageLocation;
+            Identifier finalPageLocation = pageLocation;
             pageResource.ifPresent(resource -> {
                 try (var reader = resource.openAsReader()) {
                     map.put(pageEntry, MarkdownParser.parse(reader));

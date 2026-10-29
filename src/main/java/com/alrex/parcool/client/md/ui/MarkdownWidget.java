@@ -24,7 +24,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
@@ -34,15 +34,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class MarkdownWidget extends AbstractWidget {
     private final CompiledMarkdown content;
     private final List<AbstractWidget> contentRendererWidgets;
@@ -51,13 +51,13 @@ public class MarkdownWidget extends AbstractWidget {
     private final int contentHeight;
     private final float maxScrollY;
     @Nullable
-    private final Consumer<ResourceLocation> openLinkListener;
+    private final Consumer<Identifier> openLinkListener;
     @Nullable
     private final Consumer<String> openURLListener;
 
     private float scrollY = 0;
 
-    public MarkdownWidget(Font font, int x, int y, int width, int height, CompiledMarkdown markdown, int color, @Nullable Consumer<ResourceLocation> openLinkListener, @Nullable Consumer<String> openURLListener) {
+    public MarkdownWidget(Font font, int x, int y, int width, int height, CompiledMarkdown markdown, int color, @Nullable Consumer<Identifier> openLinkListener, @Nullable Consumer<String> openURLListener) {
         super(x, y, width, height, Component.empty());
         this.content = markdown;
         this.font = font;
@@ -457,7 +457,7 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     private class RecipeWidget extends ComponentWidget<MarkdownParagraph.ExtensionMCRecipe> {
-        private static final ResourceLocation CRAFTING_TABLE_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/container/crafting_table.png");
+        private static final Identifier CRAFTING_TABLE_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/gui/container/crafting_table.png");
         @Nullable
         private final RecipeHolder<?> recipe;
         private final float scale;

@@ -2,7 +2,7 @@ package com.alrex.parcool.common.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.alrex.parcool.fabric.compat.network.IPayloadContext;
 
 import java.util.Collection;
 import java.util.LinkedList;

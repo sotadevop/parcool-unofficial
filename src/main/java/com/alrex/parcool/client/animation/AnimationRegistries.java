@@ -1,10 +1,10 @@
 package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class AnimationRegistries {
     private static AnimationRegistries INSTANCE = null;
 

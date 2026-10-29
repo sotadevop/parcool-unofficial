@@ -4,13 +4,13 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.lang.reflect.Type;
 
-public class ResourceLocationAdapter implements JsonDeserializer<ResourceLocation> {
+public class ResourceLocationAdapter implements JsonDeserializer<Identifier> {
     @Override
-    public ResourceLocation deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        return ResourceLocation.tryParse(jsonElement.getAsJsonPrimitive().getAsString());
+    public Identifier deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        return Identifier.tryParse(jsonElement.getAsJsonPrimitive().getAsString());
     }
 }

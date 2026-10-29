@@ -1,12 +1,12 @@
 package com.alrex.parcool.client.animation.system;
 
 import com.alrex.parcool.client.animation.system.data.Transform;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.util.EnumMap;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record ModelTransform(EnumMap<AnimatableModelPart, Transform> transforms) {
     public static final ModelTransform NO_TRANSFORMATION;
 

@@ -1,8 +1,8 @@
 package com.alrex.parcool.api.action;
 
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
+import com.alrex.parcool.fabric.compat.event.Event;
+import com.alrex.parcool.fabric.compat.event.ICancellableEvent;
 
 public class ParCoolActionEvent extends Event {
     private final Player player;

@@ -26,11 +26,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import com.alrex.parcool.fabric.compat.event.InputEvent;
+import com.alrex.parcool.fabric.compat.event.LivingEvent;
+import com.alrex.parcool.fabric.compat.event.LivingFallEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,7 +80,7 @@ public class HideInBlock
         return dataHolder;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInLocalClient() {
         RenderBehaviorEnforcer.getInstance().setMarkerEnforcingCameraType(this::isDoing, () -> CameraType.THIRD_PERSON_BACK);
@@ -110,7 +110,7 @@ public class HideInBlock
         )).getSoundType().getBreakSound(), 1, 1);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(
@@ -145,7 +145,7 @@ public class HideInBlock
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInLocalClient() {
         var hideStartedPoint = propertyHidingStartedPoint.get();
@@ -156,7 +156,7 @@ public class HideInBlock
         );
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void onStopInClient() {
         var area1 = propertyHidingAreaEdge1.get();
@@ -344,7 +344,7 @@ public class HideInBlock
         if (isDoing()) event.modifyVisibility(event.getVisibilityModifier() * 0.1);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static void spawnOnHideParticles(Level world, BlockPos hidingArea1, BlockPos hidingArea2) {
         var particleEngine = Minecraft.getInstance().particleEngine;
         int minX = hidingArea1.getX();

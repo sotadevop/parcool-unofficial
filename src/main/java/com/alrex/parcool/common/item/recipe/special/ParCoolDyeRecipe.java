@@ -4,7 +4,7 @@ import com.alrex.parcool.common.item.DyeAble;
 import com.alrex.parcool.common.item.recipe.Recipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
