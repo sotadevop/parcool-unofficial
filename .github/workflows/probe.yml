@@ -46,7 +46,21 @@ jobs:
                 | grep -E "$FIND" | sort -u | head -900
             fi
             # Each entry is a class name, optionally followed by ::regex to keep only matching members.
+            # "pkg.Class$*" expands to the class and all of its nested classes.
+            expanded=""
             for entry in $CLASSES; do
+              base="${entry%%::*}"; rest=""; [ "$entry" != "$base" ] && rest="::${entry#*::}"
+              if [ "${base%\$\*}" != "$base" ]; then
+                outer="${base%\$\*}"; path=$(echo "$outer" | tr . /)
+                for n in $(for j in $jars; do unzip -Z1 "$j" 2>/dev/null; done \
+                    | grep -E "^${path}(\\\$[^/]*)?\.class$" | sort -u | sed 's/\.class$//; s|/|.|g'); do
+                  expanded="$expanded $n$rest"
+                done
+              else
+                expanded="$expanded $entry"
+              fi
+            done
+            for entry in $expanded; do
               c="${entry%%::*}"; filter="$MEMBER_FILTER"
               [ "$entry" != "$c" ] && filter="${entry#*::}"
               echo "=== $c"
