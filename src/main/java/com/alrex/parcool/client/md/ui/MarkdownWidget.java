@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.md.ui;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.md.CompiledMarkdown;
 import com.alrex.parcool.client.md.MarkdownParagraph;
@@ -8,7 +9,7 @@ import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuideImageTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -378,7 +379,7 @@ public class MarkdownWidget extends AbstractWidget {
             poseStack.popMatrix();
             if (bottomLine) {
                 RenderSystem.setShaderColor(1f, 1f, 1f, 0.4f);
-                graphics.hLine(getX(), getX() + width, getY() + Mth.ceil(widget.getHeight() * scale), textColor());
+                graphics.horizontalLine(getX(), getX() + width, getY() + Mth.ceil(widget.getHeight() * scale), textColor());
             }
         }
     }
@@ -391,7 +392,7 @@ public class MarkdownWidget extends AbstractWidget {
         @Override
         public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             RenderSystem.setShaderColor(1, 1, 1, 0.5f);
-            graphics.hLine(getX() + 5, getX() + width - 5, getY() + 1, textColor());
+            graphics.horizontalLine(getX() + 5, getX() + width - 5, getY() + 1, textColor());
         }
     }
 
@@ -459,8 +460,7 @@ public class MarkdownWidget extends AbstractWidget {
 
         @Override
         public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
-            RenderSystem.setShaderTexture(0, ParCoolGuideImageTextureAtlas.TEXTURE_LOCATION);
-            graphics.blit(getX(), getY(), 0, width, height, sprite);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height);
         }
     }
 
@@ -495,7 +495,7 @@ public class MarkdownWidget extends AbstractWidget {
             {
                 poseStack.translate((float) (getX()), (float) (getY()));
                 poseStack.scale((float) (scale), (float) (scale));
-                graphics.blit(CRAFTING_TABLE_LOCATION, 0, 0, 28, 15, 118, 56);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, CRAFTING_TABLE_LOCATION, 0, 0, 28, 15, 118, 56, 256, 256);
             }
             poseStack.popMatrix();
             var time = Util.getMillis() / 1000;
@@ -565,12 +565,11 @@ public class MarkdownWidget extends AbstractWidget {
         @Override
         public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
             var poseStack = graphics.pose();
-            RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             poseStack.pushMatrix();
             {
                 poseStack.translate((float) (getX()), (float) (getY()));
                 poseStack.scale((float) (scale), (float) (scale));
-                graphics.blit(0, 0, 0, 127, 20, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BREWING_RECIPE_BOX));
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BREWING_RECIPE_BOX), 0, 0, 127, 20);
             }
             poseStack.popMatrix();
             var time = Util.getMillis() / 1000;

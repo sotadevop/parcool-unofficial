@@ -11,4 +11,5 @@ accessible field net/minecraft/world/entity/Entity invulnerableTime I
 
 # NeoForge widens these; ParCool calls them directly. 1.21.11 already made LevelResource's constructor
 # public, so only the Player helper still has to be widened.
+accessible method net/minecraft/world/entity/LivingEntity getJumpPower (F)F
 accessible method net/minecraft/world/entity/player/Player canPlayerFitWithinBlocksAndEntitiesWhen (Lnet/minecraft/world/entity/Pose;)Z

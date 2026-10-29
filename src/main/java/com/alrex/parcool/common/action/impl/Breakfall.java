@@ -70,7 +70,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         if (parkourability.player().level().isClientSide()) return;
         var breakfallType = propertyInputBreakfallType.get();
         if (breakfallType == null || breakfallType == BreakfallType.NONE) return;
-        var attr = parkourability.player().getAttribute(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION);
+        var attr = parkourability.player().getAttribute(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION.getDelegate());
         if (attr == null) return;
         if (isPossible() && !ParCoolEventBus.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)).isCanceled()) {
             var damageReduction = attr.getValue();

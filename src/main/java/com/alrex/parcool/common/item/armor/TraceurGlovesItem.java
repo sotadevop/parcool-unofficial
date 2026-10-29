@@ -38,10 +38,10 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         super(properties);
         var modifiersBuilder = ItemAttributeModifiers.builder();
         var slideDownAttr = new AttributeModifier(MODIFIER_ID, 0.1, AttributeModifier.Operation.ADD_VALUE);
-        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.HAND);
-        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.CHEST);
+        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION.getDelegate(), slideDownAttr, EquipmentSlotGroup.HAND);
+        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION.getDelegate(), slideDownAttr, EquipmentSlotGroup.CHEST);
 
-        modifiersBuilder.add(ParCoolAttributes.MAX_STAMINA, new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.CHEST);
+        modifiersBuilder.add(ParCoolAttributes.MAX_STAMINA.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.CHEST);
         modifiersBuilder.add(Attributes.ATTACK_SPEED, new AttributeModifier(MODIFIER_ID, 0.1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.CHEST);
         equipModifier = modifiersBuilder.build();
     }

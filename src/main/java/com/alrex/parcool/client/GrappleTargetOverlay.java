@@ -1,5 +1,6 @@
 package com.alrex.parcool.client;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ParCoolActions;
@@ -70,12 +71,7 @@ public class GrappleTargetOverlay {
         int size = ParCool.getConfig().client().targetIndicatorSize.get();
 
 
-        event.getGuiGraphics().blit(
-                TEXTURE,
-                Math.round(screenX - size / 2f), Math.round(screenY - size / 2f),
-                size, size,
-                0, 0, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE
-        );
+        event.getGuiGraphics().blit(RenderPipelines.GUI_TEXTURED, TEXTURE, Math.round(screenX - size / 2f), Math.round(screenY - size / 2f), 0, 0, size, size, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE);
 
     }
 }

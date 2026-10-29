@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -23,14 +24,9 @@ public class ExperienceProgressView extends AbstractWidget {
 
     @Override
     public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
-        RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-        graphics.blit(getX(), getY(), 0, width, height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX));
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX), getX(), getY(), width, height);
         var sprite = ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX_OVERLAY);
-        graphics.innerBlit(
-                sprite.atlasLocation(),
-                getX(), (int) (getX() + sprite.contents().width() * progress), getY(), getY() + sprite.contents().height(), 0,
-                sprite.getU0(), sprite.getU(progress), sprite.getV0(), sprite.getV1()
-        );
+        graphics.blit(sprite.atlasLocation(), getX(), getY(), (int) (getX() + sprite.contents().width() * progress), getY() + sprite.contents().height(), sprite.getU0(), sprite.getU(progress), sprite.getV0(), sprite.getV1());
         var message = getMessage();
         var messageWidth = font.width(message);
         graphics.text(font, message, getX() + width - 3 - messageWidth, getY() + 1 + (height - font.lineHeight) / 2, ~0, true);

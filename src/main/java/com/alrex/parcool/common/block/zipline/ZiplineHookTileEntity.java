@@ -177,9 +177,9 @@ public class ZiplineHookTileEntity extends BlockEntity {
             BlockPos pos;
             if (cTag.contains("rX") && cTag.contains("rY") && cTag.contains("rZ")) {
                 pos = getBlockPos().offset(
-                        cTag.getInt("rX"),
-                        cTag.getInt("rY"),
-                        cTag.getInt("rZ")
+                        cTag.getIntOr("rX", 0),
+                        cTag.getIntOr("rY", 0),
+                        cTag.getIntOr("rZ", 0)
                 );
             } else continue;
             var info = ZiplineInfo.load(cTag.get("info"));

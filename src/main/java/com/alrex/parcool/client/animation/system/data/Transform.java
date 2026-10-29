@@ -87,9 +87,9 @@ public record Transform(Vec3f translation, Quaternionfc rotation) {
         applyTransformation(
                 part,
                 new Vec3f(
-                        initialPose.x - 16f * translation.x(),
-                        initialPose.y - 16f * translation.y(),
-                        initialPose.z + 16f * translation.z()),
+                        initialPose.x() - 16f * translation.x(),
+                        initialPose.y() - 16f * translation.y(),
+                        initialPose.z() + 16f * translation.z()),
                 MathUtil.toModelPartRotation(rotation)
         );
     }
@@ -106,9 +106,9 @@ public record Transform(Vec3f translation, Quaternionfc rotation) {
     private static Vec3f lerpTranslation(ModelPart part, Vec3f newTranslation, float factor) {
         var initialPose = part.getInitialPose();
         return new Vec3f(
-                Mth.lerp(factor, part.x, initialPose.x - 16f * newTranslation.x()),
-                Mth.lerp(factor, part.y, initialPose.y - 16f * newTranslation.y()),
-                Mth.lerp(factor, part.z, initialPose.z + 16f * newTranslation.z())
+                Mth.lerp(factor, part.x, initialPose.x() - 16f * newTranslation.x()),
+                Mth.lerp(factor, part.y, initialPose.y() - 16f * newTranslation.y()),
+                Mth.lerp(factor, part.z, initialPose.z() + 16f * newTranslation.z())
         );
     }
 }

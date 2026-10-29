@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.screen;
 
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
@@ -7,7 +9,7 @@ import com.alrex.parcool.client.gui.components.CardPanel;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -134,7 +136,7 @@ public class ParCoolTabletScreen extends Screen {
         var poseStack = graphics.pose();
         poseStack.pushMatrix();
         {
-            graphics.blit(TEXTURE_LOCATION, frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_LOCATION, frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, 256, 256);
             GuiRenderUtil.enableScissorTestInGuiCoordinate(frameOffsetX + 22, frameOffsetY + 7, 224, font.lineHeight + 5);
             graphics.text(font, topBarText, frameOffsetX + 23, frameOffsetY + 8, 0x37474F, false);
             RenderSystem.disableScissor();
@@ -182,12 +184,11 @@ public class ParCoolTabletScreen extends Screen {
             if (isHovered) {
                 RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 1f);
             }
-            RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-            graphics.blit(getX(), getY(), 0, width, height, sprite);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height);
         }
 
         @Override
-        public void onPress() {
+        public void onPress(InputWithModifiers input) {
             if (pressListener != null) pressListener.run();
         }
 
@@ -242,7 +243,7 @@ public class ParCoolTabletScreen extends Screen {
 
     protected void confirmLink(boolean confirmed, String uri) {
         if (confirmed) {
-            Util.getPlatform().openUri(uri);
+            Util.getPlatform().openUri(java.net.URI.create(uri));
         }
         if (minecraft != null) minecraft.gui.setScreen(this);
     }

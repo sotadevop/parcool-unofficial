@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
@@ -226,21 +228,21 @@ public class SkillTreeWidget extends AbstractWidget {
             if (leaves.isEmpty()) return;
             if (leaves.size() == 1) {
                 graphics.fill(rootXCenter - 1, rootYCenter, rootXCenter + 2, leaves.get(0).getY(), 0xFF000000);
-                graphics.vLine(rootXCenter, rootYCenter, leaves.get(0).getY(), color);
+                graphics.verticalLine(rootXCenter, rootYCenter, leaves.get(0).getY(), color);
                 return;
             }
             int minX = leaves.stream().map(leaf -> leaf.getX() + leaf.getWidth() / 2).min(Integer::compare).get();
             int maxX = leaves.stream().map(leaf -> leaf.getX() + leaf.getWidth() / 2).max(Integer::compare).get();
             graphics.fill(minX - 1, yOfHLine - 1, maxX + 1, yOfHLine + 2, 0xFF000000);
-            graphics.hLine(minX, maxX, yOfHLine, color);
+            graphics.horizontalLine(minX, maxX, yOfHLine, color);
             for (var leaf : leaves) {
                 var x = leaf.getX() + leaf.getWidth() / 2;
                 var y = leaf.getY() + leaf.getHeight() / 2;
                 graphics.fill(x - 1, yOfHLine + 1, x + 2, y, 0xFF000000);
-                graphics.vLine(x, yOfHLine, y, color);
+                graphics.verticalLine(x, yOfHLine, y, color);
             }
             graphics.fill(rootXCenter - 1, rootYCenter, rootXCenter + 2, yOfHLine, 0xFF000000);
-            graphics.vLine(rootXCenter, rootYCenter, yOfHLine, color);
+            graphics.verticalLine(rootXCenter, rootYCenter, yOfHLine, color);
         }
     }
 
@@ -258,23 +260,19 @@ public class SkillTreeWidget extends AbstractWidget {
 
         @Override
         public void extractContents(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-            RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             if (entry.isVisible(parkourability)) {
                 if (isHovered)
                     RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
                 else
-                graphics.blit(this.getX(), this.getY(), 0, this.width, this.height,
-                        ParCoolTextures.guiSprite(entry.isUnlocked(parkourability)
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ParCoolTextures.guiSprite(entry.isUnlocked(parkourability)
                                 ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED
                                 : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_LOCKED
-                        )
-                );
+                        ), this.getX(), this.getY(), this.width, this.height);
                 if (visible) {
-                    RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
-                    graphics.blit(this.getX(), this.getY(), 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
+                    graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ParCoolTextures.action(entry.getActionEntry()), this.getX(), this.getY(), this.width, this.height);
                 }
             } else {
-                graphics.blit(this.getX(), this.getY(), 0, this.width, this.height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE));
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE), this.getX(), this.getY(), this.width, this.height);
             }
         }
 
@@ -288,7 +286,7 @@ public class SkillTreeWidget extends AbstractWidget {
         }
 
         @Override
-        public void onPress() {
+        public void onPress(InputWithModifiers input) {
             setSelectedSkill(this.entry);
         }
     }

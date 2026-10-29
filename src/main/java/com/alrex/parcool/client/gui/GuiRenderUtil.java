@@ -41,37 +41,9 @@ public class GuiRenderUtil {
 
         float midU0 = sprite.getU(halfWidth / spriteWidth), midV0 = sprite.getV(halfHeight / spriteHeight);
         float midU1 = sprite.getU(1f - (width - halfWidth) / spriteWidth), midV1 = sprite.getV(1f - (height - halfHeight) / spriteHeight);
-        graphics.innerBlit(
-                sprite.atlasLocation(),
-                x, x + halfWidth,
-                y, y + halfHeight,
-                0 /*z pos*/,
-                sprite.getU0(), midU0,
-                sprite.getV0(), midV0
-        );
-        graphics.innerBlit(
-                sprite.atlasLocation(),
-                x + halfWidth, x + width,
-                y, y + halfHeight,
-                0,
-                midU1, sprite.getU1(),
-                sprite.getV0(), midV0
-        );
-        graphics.innerBlit(
-                sprite.atlasLocation(),
-                x, x + halfWidth,
-                y + halfHeight, y + height,
-                0,
-                sprite.getU0(), midU0,
-                midV1, sprite.getV1()
-        );
-        graphics.innerBlit(
-                sprite.atlasLocation(),
-                x + halfWidth, x + width,
-                y + halfHeight, y + height,
-                0,
-                midU1, sprite.getU1(),
-                midV1, sprite.getV1()
-        );
+        graphics.blit(sprite.atlasLocation(), x, y, x + halfWidth, y + halfHeight, sprite.getU0(), midU0, sprite.getV0(), midV0);
+        graphics.blit(sprite.atlasLocation(), x + halfWidth, y, x + width, y + halfHeight, midU1, sprite.getU1(), sprite.getV0(), midV0);
+        graphics.blit(sprite.atlasLocation(), x, y + halfHeight, x + halfWidth, y + height, sprite.getU0(), midU0, midV1, sprite.getV1());
+        graphics.blit(sprite.atlasLocation(), x + halfWidth, y + halfHeight, x + width, y + height, midU1, sprite.getU1(), midV1, sprite.getV1());
     }
 }

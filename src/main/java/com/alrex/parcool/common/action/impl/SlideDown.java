@@ -200,7 +200,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onWorkingTickInLocalClient() {
         var player = parkourability.player();
-        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION);
+        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.getDelegate());
         if (attr == null) return;
         parkourability.player().setDeltaMovement(parkourability.player().getDeltaMovement().multiply(0, 1. - attr.getValue(), 0));
     }
@@ -208,7 +208,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onWorkingTickInServer() {
         var player = parkourability.player();
-        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION);
+        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.getDelegate());
         if (attr == null) return;
         player.fallDistance *= (float) (1. - attr.getValue());
 

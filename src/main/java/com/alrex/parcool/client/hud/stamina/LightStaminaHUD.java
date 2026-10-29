@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.hud.stamina;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolMobEffects;
 import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
@@ -44,7 +45,7 @@ public class LightStaminaHUD implements IStaminaHUD {
 		if (!valueChanging && tickValueChangingOrNotChanging > 40 && ParCool.getConfig().client().staminaHud.hideAutomatically().get())
 			return;
 		var player = parkourability.player();
-        final boolean inexhaustible = player.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE);
+        final boolean inexhaustible = player.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE.getDelegate());
 
 		float staminaScale = (float) (Mth.lerp(partialTick, oldContext.value(), currentContext.value()) / currentContext.maxValue());
 		if (staminaScale < 0) staminaScale = 0;
@@ -54,7 +55,6 @@ public class LightStaminaHUD implements IStaminaHUD {
 		// TODO: Is it actually needed to show cooldown or other status on hud?
 		// float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
-		RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
         final int width = guiGraphics.guiWidth();
         final int height = guiGraphics.guiHeight();
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
@@ -99,7 +99,7 @@ public class LightStaminaHUD implements IStaminaHUD {
 				offsetY = consumingStaminaVibration;
 			}
 
-            guiGraphics.blit(x, baseY + offsetY, 0, 9, 9, staminaSprite);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, staminaSprite, x, baseY + offsetY, 9, 9);
 		}
         Minecraft.getInstance().gui.rightHeight += 10;
 	}

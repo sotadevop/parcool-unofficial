@@ -65,7 +65,7 @@ public class FastSwim extends ContinuableAction {
         var player = parkourability.player();
         var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr == null) return;
-        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_SWIM_SPEED);
+        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_SWIM_SPEED.getDelegate());
         if (modifierAttr == null) return;
         var modifier = attr.getModifier(FAST_SWIM_MODIFIER_ID);
         if (isDoing()) {

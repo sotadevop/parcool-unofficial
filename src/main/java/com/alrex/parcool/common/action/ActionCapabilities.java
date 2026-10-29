@@ -111,7 +111,7 @@ public class ActionCapabilities {
             if (!(tag.get(groupName) instanceof CompoundTag groupTag)) continue;
             Arrays.fill(cap, false);
             for (var actionName : groupTag.keySet()) {
-                var actionCap = groupTag.getBoolean(actionName);
+                var actionCap = groupTag.getBooleanOr(actionName, false);
                 actionGroup
                         .actions()
                         .stream()

@@ -112,7 +112,7 @@ public class ParCoolGuidePageList extends AbstractWidget {
                 currentY += ROW_HEIGHT;
                 for (var page : group.getB()) {
                     RenderSystem.setShaderColor(1f, 1f, 1f, 0.2f);
-                    graphics.hLine(5, width - 10, currentY, lineColor);
+                    graphics.horizontalLine(5, width - 10, currentY, lineColor);
                     currentY += 1;
 
                     if (0 < mouseX && mouseX < width && currentY < mouseY && mouseY < currentY + ROW_HEIGHT) {
@@ -122,7 +122,7 @@ public class ParCoolGuidePageList extends AbstractWidget {
                     graphics.text(font, page.getA(), 2, (int) (currentY + 1 + (ROW_HEIGHT - font.lineHeight) / 2f), textColor, false);
                     currentY += ROW_HEIGHT;
                 }
-                graphics.hLine(2, width - 3, currentY, lineColor);
+                graphics.horizontalLine(2, width - 3, currentY, lineColor);
                 currentY += 1;
             }
         }

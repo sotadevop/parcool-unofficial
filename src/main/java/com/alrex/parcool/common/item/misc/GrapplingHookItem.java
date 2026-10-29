@@ -1,9 +1,9 @@
 package com.alrex.parcool.common.item.misc;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,8 +34,8 @@ public class GrapplingHookItem extends Item {
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, Player player, @Nonnull InteractionHand hand) {
-        return InteractionResultHolder.pass(player.getItemInHand(hand));
+    public InteractionResult use(@Nonnull Level level, Player player, @Nonnull InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
     // Fabric port: NeoForge's IClientItemExtensions hook is ported with the 26.3 rendering code

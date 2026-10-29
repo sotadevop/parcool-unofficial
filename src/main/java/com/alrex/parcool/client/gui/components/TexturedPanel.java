@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.util.ColorUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -51,7 +52,7 @@ public class TexturedPanel extends AbstractWidget {
             graphics.fill(getX() - 1, getY(), getX(), getY() + height, borderColor);
             graphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, borderColor);
         }
-        graphics.blit(texLocation, getX(), getY(), 0, 0, 0, width, height, texWidth, texHeight);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texLocation, getX(), getY(), 0, 0, width, height, texWidth, texHeight);
     }
 
     @Override

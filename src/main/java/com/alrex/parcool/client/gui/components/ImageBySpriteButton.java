@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -41,14 +43,13 @@ public class ImageBySpriteButton extends AbstractButton {
         } else {
             RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.5f);
         }
-        RenderSystem.setShaderTexture(0, texLocation);
-        graphics.blit(getX(), getY(), 0, width, height, sprite);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height);
         var message = getMessage();
         graphics.text(font, message, (int) (getX() + (width - font.width(message)) / 2f), (int) (1 + getY() + (height - font.lineHeight) / 2f), txtColor, false);
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         if (runnable != null) runnable.run();
     }
 

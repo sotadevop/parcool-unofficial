@@ -21,6 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
@@ -99,6 +100,6 @@ public final class FabricEventBridge {
 
     /** From the mixin on {@code Player#createAttributes}. */
     public static void firePlayerAttributes(AttributeSupplier.Builder builder) {
-        AddAttributesHandler.onAddAttributes(new EntityAttributeModificationEvent(EntityType.PLAYER, builder));
+        AddAttributesHandler.onAddAttributes(new EntityAttributeModificationEvent(EntityTypes.PLAYER, builder));
     }
 }

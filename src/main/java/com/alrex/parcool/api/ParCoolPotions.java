@@ -14,8 +14,8 @@ public class ParCoolPotions {
     public static final DeferredHolder<Potion, Potion> POOR_ENERGY_DRINK =
 			POTIONS.register(
 					"poor_energy_drink",
-					() -> new Potion(
-                            new MobEffectInstance(ParCoolMobEffects.INEXHAUSTIBLE, 3600/*3 min*/),
+					() -> new Potion("poor_energy_drink", 
+                            new MobEffectInstance(ParCoolMobEffects.INEXHAUSTIBLE.getDelegate(), 3600/*3 min*/),
 							new MobEffectInstance(MobEffects.HUNGER, 100),
 							new MobEffectInstance(MobEffects.POISON, 100)
 					)
@@ -23,8 +23,8 @@ public class ParCoolPotions {
     public static final DeferredHolder<Potion, Potion> ENERGY_DRINK =
 			POTIONS.register(
 					"energy_drink",
-					() -> new Potion(
-                            new MobEffectInstance(ParCoolMobEffects.INEXHAUSTIBLE, 8400/*7 min*/)
+					() -> new Potion("energy_drink", 
+                            new MobEffectInstance(ParCoolMobEffects.INEXHAUSTIBLE.getDelegate(), 8400/*7 min*/)
 					)
 			);
 

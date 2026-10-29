@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.gui.screen;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.gui.GuiColorPallet;
@@ -436,7 +437,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                 if (isMouseOver) {
                     graphics.fill(left, top - 1, left + width, top + height + 1, ColorUtil.withAlpha(colors.primary(), 0x20));
                 }
-                graphics.blit(left + 4, top + (height - 9) / 2, 0, 9, 9, sprite);
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, left + 4, top + (height - 9) / 2, 9, 9);
                 graphics.text(font, text, left + 17, 1 + top + (height - font.lineHeight) / 2, colors.onSurface(), false);
             }
         }

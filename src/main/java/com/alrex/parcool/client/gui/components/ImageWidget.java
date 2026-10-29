@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -30,7 +31,7 @@ public class ImageWidget extends AbstractWidget {
     @Override
     public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
-        graphics.blit(textureLocation, getX(), getY(), width, height, texX, texY, texWidth, texHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, textureLocation, getX(), getY(), texX, texY, width, height, texWidth, texHeight, 256, 256);
     }
 
     @Override

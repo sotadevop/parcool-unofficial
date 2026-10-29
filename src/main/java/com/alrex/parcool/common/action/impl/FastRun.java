@@ -74,7 +74,7 @@ public class FastRun extends ContinuableAction {
         var player = parkourability.player();
         var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr == null) return;
-        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_RUN_SPEED);
+        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_RUN_SPEED.getDelegate());
         if (modifierAttr == null) return;
         var modifier = attr.getModifier(FAST_RUNNING_MODIFIER_ID);
         if (isDoing()) {

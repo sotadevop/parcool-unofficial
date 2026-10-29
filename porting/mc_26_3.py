@@ -142,8 +142,8 @@ def convert_input(src):
     src = convert_decl(src, 'mouseReleased', ['double', 'double', 'int'], 'MouseButtonEvent event',
                        lambda n: [f'double {n[0]} = event.x();', f'double {n[1]} = event.y();', f'int {n[2]} = event.button();'])
     src = convert_decl(src, 'mouseDragged', ['double', 'double', 'int', 'double', 'double'], 'MouseButtonEvent event, double dragX, double dragY',
-                       lambda n: [f'double {n[0]} = event.x();', f'double {n[1]} = event.y();', f'int {n[2]} = event.button();',
-                                  f'double {n[3]} = dragX;', f'double {n[4]} = dragY;'])
+                       lambda n: [f'double {n[0]} = event.x();', f'double {n[1]} = event.y();', f'int {n[2]} = event.button();']
+                       + [f'double {a} = {b};' for a, b in ((n[3], 'dragX'), (n[4], 'dragY')) if a != b])
     for key_method in ('keyPressed', 'keyReleased'):
         src = convert_decl(src, key_method, ['int', 'int', 'int'], 'KeyEvent event',
                            lambda n: [f'int {n[0]} = event.key();', f'int {n[1]} = event.keycode();', f'int {n[2]} = event.modifiers();'])
@@ -213,12 +213,53 @@ def convert_gui(src, bases):
     src = rewrite_calls(src, 'translate', lambda a, r: f'{r}translate((float) ({a[0]}), (float) ({a[1]}))' if len(a) == 3 else None)
     src = rewrite_calls(src, 'scale', lambda a, r: f'{r}scale((float) ({a[0]}), (float) ({a[1]}))' if len(a) == 3 else None)
 
+    # Drawing calls: 26.x takes the render pipeline explicitly; sprites have their own method.
+    gui = 'RenderPipelines.GUI_TEXTURED'
+
+    def blit(a, r):
+        if a[0].startswith('RenderPipelines'):
+            return None
+        if len(a) == 6:   # (x, y, z, w, h, sprite)
+            return f'{r}blitSprite({gui}, {a[5]}, {a[0]}, {a[1]}, {a[3]}, {a[4]})'
+        if len(a) == 7:   # (texture, x, y, u, v, w, h) on a 256x256 texture
+            return f'{r}blit({gui}, {a[0]}, {a[1]}, {a[2]}, {a[3]}, {a[4]}, {a[5]}, {a[6]}, 256, 256)'
+        if len(a) == 9:   # (texture, x, y, u, v, w, h, texW, texH)
+            return f'{r}blit({gui}, {", ".join(a)})'
+        if len(a) == 10:  # (texture, x, y, z, u, v, w, h, texW, texH)
+            return f'{r}blit({gui}, {a[0]}, {a[1]}, {a[2]}, {", ".join(a[4:])})'
+        if len(a) == 11:  # (texture, x, y, w, h, u, v, uW, vH, texW, texH)
+            return f'{r}blit({gui}, {a[0]}, {a[1]}, {a[2]}, {a[5]}, {a[6]}, {a[3]}, {a[4]}, {a[7]}, {a[8]}, {a[9]}, {a[10]})'
+        return None
+    src = rewrite_calls(src, 'blit', blit)
+    # innerBlit(texture, x0, x1, y0, y1, z, u0, u1, v0, v1) -> blit(texture, x0, y0, x1, y1, u0, u1, v0, v1)
+    src = rewrite_calls(src, 'innerBlit', lambda a, r: f'{r}blit({a[0]}, {a[1]}, {a[3]}, {a[2]}, {a[4]}, {a[6]}, {a[7]}, {a[8]}, {a[9]})' if len(a) == 10 else None)
+    if gui in src and 'import net.minecraft.client.renderer.RenderPipelines;' not in src:
+        src = re.sub(r'^(import [^\n]+\n)', r'import net.minecraft.client.renderer.RenderPipelines;\n\1', src, count=1, flags=re.M)
+    src = re.sub(r'\.hLine\(', '.horizontalLine(', src).replace('.vLine(', '.verticalLine(')
+    src = re.sub(r'^[ \t]*RenderSystem\.setShaderTexture\([^;]*\);[ \t]*\n', '', src, flags=re.M)
+    # Buttons: onPress receives the input that pressed them.
+    if re.search(r'\bvoid onPress\(\)', src):
+        src = re.sub(r'\bvoid onPress\(\)', 'void onPress(InputWithModifiers input)', src)
+        if 'import net.minecraft.client.input.InputWithModifiers;' not in src:
+            src = re.sub(r'^(import [^\n]+\n)', r'import net.minecraft.client.input.InputWithModifiers;\n\1', src, count=1, flags=re.M)
+
     src = re.sub(r'^[ \t]*RenderSystem\.setShaderColor\(\s*1(?:\.0)?f?\s*,\s*1(?:\.0)?f?\s*,\s*1(?:\.0)?f?\s*,\s*1(?:\.0)?f?\s*\);[ \t]*\n', '', src, flags=re.M)
     src = re.sub(r'^[ \t]*RenderSystem\.(enableBlend|disableBlend|defaultBlendFunc|enableDepthTest|disableDepthTest)\(\);[ \t]*\n', '', src, flags=re.M)
     return src
 
 
+HOLDER_REGISTRIES = ('ParCoolMobEffects', 'ParCoolAttributes', 'ParCoolPotions')
+
+
 def convert_common(src):
+    # 26.x CompoundTag getters return Optional; the *Or variants keep the old defaults.
+    for name, default in (('Boolean', 'false'), ('Int', '0'), ('Byte', '(byte) 0'), ('Float', '0f'),
+                          ('Double', '0d'), ('Long', '0L'), ('Short', '(short) 0'), ('String', '""')):
+        src = re.sub(r'\.get' + name + r'\(("[^"]*"|[A-Z_]+|\w+)\)(?=\s*[;,)%+\-*/<>=!?:&|\]])',
+                     lambda m, n=name, d=default: f'.get{n}Or({m.group(1)}, {d})' if 'Tag' in src or 'tag' in src else m.group(0), src)
+    # Holder is sealed in 26.x, so DeferredHolder cannot be one; pass the registry's holder instead.
+    if not src.startswith('package com.alrex.parcool.api;') or True:
+        src = re.sub(r'\b(' + '|'.join(HOLDER_REGISTRIES) + r')\.([A-Z][A-Z0-9_]+)\b(?!\s*[.(=])', r'\1.\2.getDelegate()', src)
     src = re.sub(r'(Minecraft\.getInstance\(\)|\bminecraft|\bmc)\.setScreen\(', r'\1.gui.setScreen(', src)
     src = re.sub(r'\.isInFluidType\(\)', '.isInLiquid()', src)
     src = src.replace('.getMaxBuildHeight()', '.getMaxY()').replace('.getMinBuildHeight()', '.getMinY()')

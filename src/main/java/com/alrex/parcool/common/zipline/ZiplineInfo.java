@@ -17,9 +17,9 @@ public record ZiplineInfo(ZiplineType type, int color) {
 
     public static ZiplineInfo load(@Nullable Tag tag) {
         if (tag instanceof CompoundTag cTag) {
-            int color = cTag.contains("color") ? cTag.getInt("color") : ZiplineRopeItem.DEFAULT_COLOR;
+            int color = cTag.contains("color") ? cTag.getIntOr("color", 0) : ZiplineRopeItem.DEFAULT_COLOR;
             ZiplineType type = cTag.contains("type") ?
-                    ZiplineType.values()[cTag.getByte("type") % ZiplineType.values().length] :
+                    ZiplineType.values()[cTag.getByteOr("type", (byte) 0) % ZiplineType.values().length] :
                     ZiplineType.LOOSE;
             return new ZiplineInfo(type, color);
         }

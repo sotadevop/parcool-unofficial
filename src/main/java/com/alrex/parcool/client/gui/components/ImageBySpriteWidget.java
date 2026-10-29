@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -29,8 +30,7 @@ public class ImageBySpriteWidget extends AbstractWidget {
     public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
         if (sprite == null) return;
-        RenderSystem.setShaderTexture(0, texLocation);
-        graphics.blit(getX(), getY(), 0, width, height, sprite);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height);
     }
 
     @Override

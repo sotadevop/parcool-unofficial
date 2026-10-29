@@ -10,7 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -140,19 +140,19 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
 
     @Nonnull
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hitResult) {
         if (stack.getItem() instanceof ShearsItem) {
             var tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof ZiplineHookTileEntity ziplineHookTileEntity) {
                 if (ziplineHookTileEntity.getConnectionPoints().isEmpty())
-                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                    return InteractionResult.TRY_WITH_EMPTY_HAND;
 
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnections();
                 if (!itemStacks.isEmpty()) {
                     player.playSound(ParCoolSoundEvents.ZIPLINE_REMOVE.get(), 1, 1);
                 }
                 if (level.isClientSide()) {
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 } else {
                     itemStacks.forEach((it) -> Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), it));
                     if (!itemStacks.isEmpty()) {
@@ -160,12 +160,12 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
                             stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                         }
                     }
-                    return ItemInteractionResult.CONSUME;
+                    return InteractionResult.CONSUME;
                 }
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Nullable

@@ -229,7 +229,7 @@ public class Parkourability {
 		if (tag.get("enabled") instanceof CompoundTag compoundCapTag)
 			enabledActionStates.readFromTag(registry, compoundCapTag);
 		if (tag.contains("active")) {
-			active = tag.getBoolean("active");
+			active = tag.getBooleanOr("active", false);
 			activationDirty = true;
 		}
     }

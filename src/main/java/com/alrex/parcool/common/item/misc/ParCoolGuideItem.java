@@ -1,10 +1,10 @@
 package com.alrex.parcool.common.item.misc;
 
+import net.minecraft.world.InteractionResult;
 import com.alrex.parcool.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,11 +26,11 @@ public class ParCoolGuideItem extends Item {
 
     @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResult use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         var itemInHand = player.getItemInHand(hand);
         if (level.isClientSide()) {
             GuiHelper.openGuideGui();
         }
-        return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 }

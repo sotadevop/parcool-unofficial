@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -51,12 +53,12 @@ public class SpriteToggleButton extends AbstractSpriteButton {
         var sprite = active
                 ? (state ? (isHovered ? spriteWhenOnHover : spriteWhenOn) : (isHovered ? spriteWhenOffHover : spriteWhenOff))
                 : spriteWhenInactive;
-        graphics.blit(getX(), getY(), 0, width, height, sprite);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height);
         renderInnerMessage(graphics, getMessage());
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         setState(!state);
         if (pressedListener != null) pressedListener.onPress(state);
     }

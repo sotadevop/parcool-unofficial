@@ -30,7 +30,7 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
     public abstract void recover(double value);
 
     public boolean isInfinite() {
-        return owner.isCreative() || owner.isSpectator() || owner.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE);
+        return owner.isCreative() || owner.isSpectator() || owner.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE.getDelegate());
     }
 
     public void tick() {

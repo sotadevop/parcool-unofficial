@@ -31,10 +31,10 @@ public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
         super(properties);
         var equipModifiersBuilder = ItemAttributeModifiers.builder();
         equipModifiersBuilder.add(Attributes.MOVEMENT_SPEED, new AttributeModifier(MODIFIER_ID, 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
-        equipModifiersBuilder.add(ParCoolAttributes.MAX_STAMINA, new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
-        equipModifiersBuilder.add(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION, new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.FEET);
-        equipModifiersBuilder.add(ParCoolAttributes.FAST_RUN_SPEED, new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
-        equipModifiersBuilder.add(ParCoolAttributes.FAST_SWIM_SPEED, new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
+        equipModifiersBuilder.add(ParCoolAttributes.MAX_STAMINA.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
+        equipModifiersBuilder.add(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.FEET);
+        equipModifiersBuilder.add(ParCoolAttributes.FAST_RUN_SPEED.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
+        equipModifiersBuilder.add(ParCoolAttributes.FAST_SWIM_SPEED.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
         this.equipModifier = equipModifiersBuilder.build();
     }
 

@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -32,7 +34,7 @@ public class SpriteButton extends AbstractSpriteButton {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         if (runnable != null) runnable.run();
     }
 
@@ -46,7 +48,7 @@ public class SpriteButton extends AbstractSpriteButton {
         var sprite = active
                 ? (isHovered ? spriteWhenOnHover : spriteWhenOn)
                 : spriteWhenInactive;
-        graphics.blit(getX(), getY(), 0, width, height, sprite);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height);
         renderInnerMessage(graphics, getMessage());
     }
 
