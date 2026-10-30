@@ -55,14 +55,6 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
         }
     }
 
-    @Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
-    public void onJumpFromGround(CallbackInfo ci) {
-        Parkourability parkourability = Parkourability.get((Player) (Object) this);
-        if (parkourability == null) return;
-        if (parkourability.getBehaviorEnforcer().noJumpMarks.enforce()) {
-            ci.cancel();
-        }
-    }
 
     @Inject(method = "isStayingOnGroundSurface", at = @At("HEAD"), cancellable = true)
     public void onIsStayingOnGroundSurface(CallbackInfoReturnable<Boolean> cir) {

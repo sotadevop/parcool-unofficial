@@ -1,5 +1,9 @@
 package com.alrex.parcool.mixin.fabric;
 
+import com.alrex.parcool.common.Parkourability;
+
+import net.minecraft.world.entity.player.Player;
+
 import com.alrex.parcool.fabric.FabricEventBridge;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
@@ -23,6 +27,19 @@ public abstract class LivingEntityEventsMixin {
         var event = FabricEventBridge.fireFall((LivingEntity) (Object) this, (float) fallDistance, damageModifier);
         if (event.isCanceled()) return false;
         return original.call((double) event.getDistance(), event.getDamageMultiplier(), source);
+    }
+
+    /**
+     * Was on Player#jumpFromGround, which 26.x no longer overrides; only players are affected, as before.
+     * Runs at HEAD, so a cancelled jump also skips the jump event below (as upstream's did).
+     */
+    @Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
+    private void parcool$cancelJump(CallbackInfo ci) {
+        if (!((Object) this instanceof Player player)) return;
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability != null && parkourability.getBehaviorEnforcer().noJumpMarks.enforce()) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "jumpFromGround", at = @At("TAIL"))

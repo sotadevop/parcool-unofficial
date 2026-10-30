@@ -107,23 +107,26 @@ jobs:
       - name: Install virtual display
         run: sudo apt-get update -q && sudo apt-get install -y -q xvfb mesa-vulkan-drivers libgl1-mesa-dri
 
-      # For the audit only: let Mixin skip a broken mixin and keep going, so one run reports every
-      # broken injection instead of stopping at the first. The shipped jar keeps them required.
+      # For the audit only: a broken mixin is logged and skipped instead of crashing, so one run
+      # reports every broken injection. Injections stay required (defaultRequire 1): with 0, Mixin
+      # silently skips a missing target, which hid a crash the shipped jar (require 1) then had.
       - name: Make mixins non-fatal for the audit
         run: |
-          sed -i 's/"required": true/"required": false/; s/"defaultRequire": 1/"defaultRequire": 0/' src/main/resources/parcool.mixins.json
+          sed -i 's/"required": true/"required": false/' src/main/resources/parcool.mixins.json
 
       - name: Server audit
         run: |
           mkdir -p run && echo "eula=true" > run/eula.txt
           timeout 900 ./gradlew runServer -PparcoolMixinAudit > server.log 2>&1 || true
           grep -q "PARCOOL_MIXIN_AUDIT_OK server" server.log
+          ! grep -qE "Mixin apply for mod parcool failed|Critical injection failure" server.log
 
       - name: Client audit
         if: always()
         run: |
           timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClient -PparcoolMixinAudit > client.log 2>&1 || true
           grep -q "PARCOOL_MIXIN_AUDIT_OK client" client.log
+          ! grep -qE "Mixin apply for mod parcool failed|Critical injection failure" client.log
           ! grep -q "Mixin apply for mod parcool failed" server.log client.log
 
       - name: Report audit (1)
