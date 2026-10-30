@@ -32,10 +32,6 @@ public abstract class ClientLevelMixin implements ILoadedZiplineHolderProvider {
         return parcool$ziplineHolder;
     }
 
-    @Inject(method = "tickEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;tickBlockEntities()V"))
-    public void onTickEntities(CallbackInfo ci) {
-        parcool$ziplineHolder.clear();
-    }
 
     @Inject(method = "setBlocksDirty", at = @At("TAIL"))
     public void onSetBlocksDirty(BlockPos pos, BlockState oldState, BlockState newState, CallbackInfo ci) {
