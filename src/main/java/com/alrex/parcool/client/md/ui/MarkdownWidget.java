@@ -1,5 +1,9 @@
 package com.alrex.parcool.client.md.ui;
 
+import net.minecraft.world.item.crafting.PotionIngredient;
+
+import net.minecraft.world.item.crafting.BrewingRecipe;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
@@ -539,23 +543,41 @@ public class MarkdownWidget extends AbstractWidget {
             scale = width / 127f;
             setHeight((int) (scale * 20f));
             recipes = new ArrayList<>();
+            // 26.x brewing is data-driven (BrewingRecipe in the recipe manager); like the crafting box
+            // this reads the integrated server's recipes, so it is filled in singleplayer only.
             var outputPotion = BuiltInRegistries.POTION.getValue(content.potionId());
-            if (outputPotion == null) return;
-            var connection = Minecraft.getInstance().getConnection();
-            if (connection != null) {
-                for (var brewingRecipe : connection.potionBrewing().potionMixes) {
-                    if (outputPotion == brewingRecipe.to().value()) {
-                        var input = new ItemStack(Items.POTION);
-                        input.set(DataComponents.POTION_CONTENTS, new PotionContents(brewingRecipe.from()));
-                        var output = new ItemStack(Items.POTION);
-                        output.set(DataComponents.POTION_CONTENTS, new PotionContents(brewingRecipe.to()));
-                        for (var ingredient : brewingRecipe.ingredient().getItems()) {
-                            recipes.add(new PotionMix(input, ingredient, output));
-                        }
+            var server = Minecraft.getInstance().getSingleplayerServer();
+            var level = Minecraft.getInstance().level;
+            if (outputPotion == null || server == null || level == null) return;
+            var target = BuiltInRegistries.POTION.wrapAsHolder(outputPotion);
+            var context = SlotDisplayContext.fromLevel(level);
+            for (var holder : server.getRecipeManager().getRecipes()) {
+                if (!(holder.value() instanceof BrewingRecipe brewing)) continue;
+                var output = brewing.getOutput().create();
+                var contents = output.get(DataComponents.POTION_CONTENTS);
+                if (contents == null || !contents.is(target)) continue;
+                for (var inputItem : brewing.getInput().ingredient().display().resolveForStacks(context)) {
+                    var input = withMatchingPotion(inputItem, brewing.getInput());
+                    for (var reagent : brewing.getReagent().ingredient().display().resolveForStacks(context)) {
+                        recipes.add(new PotionMix(input, reagent, output));
                     }
                 }
             }
             ((ArrayList<?>) recipes).trimToSize();
+        }
+
+        /** The input ingredient only names the bottle; pick the first potion its predicate accepts. */
+        private static ItemStack withMatchingPotion(ItemStack bottle, PotionIngredient ingredient) {
+            if (ingredient.test(bottle)) return bottle;
+            return BuiltInRegistries.POTION.listElements()
+                    .map(potion -> {
+                        var stack = bottle.copy();
+                        stack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
+                        return stack;
+                    })
+                    .filter(ingredient::test)
+                    .findFirst()
+                    .orElse(bottle);
         }
 
         @Override
