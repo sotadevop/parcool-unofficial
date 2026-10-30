@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.item.recipe.special;
 
+import net.minecraft.core.component.DataComponents;
+
 import com.alrex.parcool.common.item.DyeAble;
 import com.alrex.parcool.common.item.recipe.Recipes;
 import net.minecraft.core.HolderLookup;
@@ -21,8 +23,8 @@ import javax.annotation.Nonnull;
 import java.util.LinkedList;
 
 public class ParCoolDyeRecipe extends CustomRecipe {
-    public ParCoolDyeRecipe(CraftingBookCategory craftingBookCategory) {
-        super(craftingBookCategory);
+    public ParCoolDyeRecipe() {
+        super();
     }
 
     @Override
@@ -34,7 +36,7 @@ public class ParCoolDyeRecipe extends CustomRecipe {
             if (stack.getItem() instanceof DyeAble) {
                 if (dyeAbleItemFound) return false;
                 else dyeAbleItemFound = true;
-            } else if (stack.getItem() instanceof DyeItem) {
+            } else if (stack.has(DataComponents.DYE)) {
                 dyeItemFound = true;
             } else if (!stack.isEmpty()) {
                 return false;
@@ -44,18 +46,19 @@ public class ParCoolDyeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(@Nonnull CraftingInput input, @Nonnull HolderLookup.Provider provider) {
+    public ItemStack assemble(@Nonnull CraftingInput input) {
         ItemStack dyeAbleStack = null;
         DyeAble dyeAbleItem = null;
-        LinkedList<DyeItem> dyeItems = new LinkedList<>();
+        LinkedList<DyeColor> dyeItems = new LinkedList<>();
         for (int i = 0; i < input.size(); i++) {
             ItemStack stack = input.getItem(i);
             Item item = stack.getItem();
             if (item instanceof DyeAble dyeAble) {
                 dyeAbleStack = stack;
                 dyeAbleItem = dyeAble;
-            } else if (item instanceof DyeItem) {
-                dyeItems.add((DyeItem) item);
+            } else if (stack.has(DataComponents.DYE)) {
+                // 26.x stores a dye's colour as a data component instead of on DyeItem.
+                dyeItems.add(stack.get(DataComponents.DYE));
             } else if (!stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
@@ -66,11 +69,10 @@ public class ParCoolDyeRecipe extends CustomRecipe {
 
         int r = 0, g = 0, b = 0;
         int dyeSize = dyeItems.size();
-        for (DyeItem dyeItem : dyeItems) {
-            DyeColor color = dyeItem.getDyeColor();
-            r += (color.getTextureDiffuseColor() >> 16);
-            g += (color.getTextureDiffuseColor() >> 8);
-            b += (color.getTextureDiffuseColor());
+        for (DyeColor color : dyeItems) {
+            r += (color.getTextureDiffuseColor() >> 16) & 0xFF;
+            g += (color.getTextureDiffuseColor() >> 8) & 0xFF;
+            b += color.getTextureDiffuseColor() & 0xFF;
         }
         if (dyeAbleItem.hasCustomColor(resultItem)) {
             dyeSize++;
@@ -86,14 +88,10 @@ public class ParCoolDyeRecipe extends CustomRecipe {
         return resultItem;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 2;
-    }
 
     @Nonnull
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Recipes.DYE_ITEM.get();
     }
 }

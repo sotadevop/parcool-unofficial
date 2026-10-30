@@ -31,6 +31,7 @@ import net.fabricmc.api.Environment;
 import com.alrex.parcool.fabric.compat.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -232,12 +233,12 @@ public class GrappleRopeRenderer {
     private static Vec3 ropeOrigin(Minecraft minecraft, Player player, Camera camera, float partialTick) {
         boolean firstPerson = player == minecraft.player
                 && minecraft.options.getCameraType().isFirstPerson()
-                && camera.getEntity() == player;
+                && camera.entity() == player;
         if (firstPerson) {
             Vec3 position = camera.position();
-            Vec3 look = toVec3(camera.getLookVector());
-            Vec3 up = toVec3(camera.getUpVector());
-            Vec3 right = toVec3(camera.getLeftVector()).reverse();
+            Vec3 look = toVec3(camera.forwardVector());
+            Vec3 up = toVec3(camera.upVector());
+            Vec3 right = toVec3(camera.leftVector()).reverse();
             return position.add(look.scale(0.45)).add(right.scale(0.3)).subtract(up.scale(0.28));
         }
 
@@ -254,7 +255,7 @@ public class GrappleRopeRenderer {
                 .add(forward.scale(0.10));
     }
 
-    private static Vec3 toVec3(Vector3f vector) {
+    private static Vec3 toVec3(Vector3fc vector) {
         return new Vec3(vector.x(), vector.y(), vector.z());
     }
 

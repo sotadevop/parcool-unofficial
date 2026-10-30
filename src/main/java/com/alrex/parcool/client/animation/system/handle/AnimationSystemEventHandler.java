@@ -32,7 +32,7 @@ public class AnimationSystemEventHandler {
 
     public static void onSetupCamera(ViewportEvent.ComputeCameraAngles event) {
         if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
-        if (event.getCamera().getEntity() instanceof IPlayerAnimatorHolder holder) {
+        if (event.getCamera().entity() instanceof IPlayerAnimatorHolder holder) {
             var transform = holder.getParCoolPlayerAnimator().getCurrentTransformation();
             if (transform == null) return;
             var cameraRot = transform.cameraRotation();

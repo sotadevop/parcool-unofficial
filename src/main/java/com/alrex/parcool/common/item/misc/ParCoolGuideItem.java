@@ -1,5 +1,8 @@
 package com.alrex.parcool.common.item.misc;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
+
 import net.minecraft.world.InteractionResult;
 import com.alrex.parcool.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
@@ -20,8 +23,8 @@ public class ParCoolGuideItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
-        lines.add(Component.translatable("parcool.gui.text.guide.tooltip.guide").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull TooltipDisplay display, @Nonnull Consumer<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+        lines.accept(Component.translatable("parcool.gui.text.guide.tooltip.guide").withStyle(ChatFormatting.GRAY));
     }
 
     @Nonnull

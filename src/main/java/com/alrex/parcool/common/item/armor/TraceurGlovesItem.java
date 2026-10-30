@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.item.armor;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.client.renderer.entity.layers.EquipmentRenderLayer;
@@ -32,10 +34,14 @@ import java.util.function.Consumer;
 public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
     private static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_gloves.png");
     private static final Identifier MODIFIER_ID = ParCool.resourceLocation("traceur_glove");
-    private final ItemAttributeModifiers equipModifier;
 
     public TraceurGlovesItem(Properties properties) {
-        super(properties);
+        super(withEquipment(properties));
+    }
+
+    // NeoForge read slot and attributes from overridden item methods; 26.x reads them from
+    // the EQUIPPABLE and ATTRIBUTE_MODIFIERS components, which also makes right-click equipping work.
+    private static Properties withEquipment(Properties properties) {
         var modifiersBuilder = ItemAttributeModifiers.builder();
         var slideDownAttr = new AttributeModifier(MODIFIER_ID, 0.1, AttributeModifier.Operation.ADD_VALUE);
         modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION.getDelegate(), slideDownAttr, EquipmentSlotGroup.HAND);
@@ -43,7 +49,7 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
 
         modifiersBuilder.add(ParCoolAttributes.MAX_STAMINA.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.CHEST);
         modifiersBuilder.add(Attributes.ATTACK_SPEED, new AttributeModifier(MODIFIER_ID, 0.1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.CHEST);
-        equipModifier = modifiersBuilder.build();
+        return properties.equippable(EquipmentSlot.CHEST).attributes(modifiersBuilder.build());
     }
 
     @Nonnull
@@ -52,25 +58,12 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         return EquipmentSlot.CHEST;
     }
 
-    @Override
-    public EquipmentSlot getEquipmentSlot(@Nonnull ItemStack stack) {
-        return getEquipmentSlot();
-    }
+
+
 
     @Override
-    public boolean canEquip(@Nonnull ItemStack stack, @Nonnull EquipmentSlot armorType, @Nonnull LivingEntity entity) {
-        return getEquipmentSlot(stack) == armorType;
-    }
-
-    @Nonnull
-    @Override
-    public ItemAttributeModifiers getDefaultAttributeModifiers(@Nonnull ItemStack stack) {
-        return equipModifier;
-    }
-
-    @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
-        lines.add(Component.translatable("parcool.gui.text.glove.tooltip").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull TooltipDisplay display, @Nonnull Consumer<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+        lines.accept(Component.translatable("parcool.gui.text.glove.tooltip").withStyle(ChatFormatting.GRAY));
         DyeAble.appendHoverText(this, stack, context, lines, tooltipFlag);
     }
 

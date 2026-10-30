@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.item;
 
+import java.util.function.Consumer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +21,7 @@ public interface DyeAble {
     int getDefaultColor();
 
     default void setColor(ItemStack stack, int color) {
-        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color, true));
+        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color));
     }
 
     default int getColor(ItemStack stack) {
@@ -31,12 +33,12 @@ public interface DyeAble {
         return stack.has(DataComponents.DYED_COLOR);
     }
 
-    static void appendHoverText(DyeAble dyeAble, @Nonnull ItemStack stack, @Nonnull Item.TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+    static void appendHoverText(DyeAble dyeAble, @Nonnull ItemStack stack, @Nonnull Item.TooltipContext context, @Nonnull Consumer<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
         var colorComp = stack.get(DataComponents.DYED_COLOR);
         if (colorComp != null) {
-            colorComp.addToTooltip(context, lines::add, tooltipFlag);
+            colorComp.addToTooltip(context, lines, tooltipFlag, stack);
         } else {
-            lines.add(Component.translatable("parcool.gui.text.dyeable.dyeable").withStyle(ChatFormatting.DARK_GRAY));
+            lines.accept(Component.translatable("parcool.gui.text.dyeable.dyeable").withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 }

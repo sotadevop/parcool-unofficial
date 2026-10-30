@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.item;
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+
 import com.alrex.parcool.ParCool;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -15,7 +17,7 @@ import java.util.Arrays;
 
 public class ParCoolItemGroup {
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ParCool.MOD_ID);
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEMS = TABS.register("items", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEMS = TABS.register("items", () -> FabricItemGroup.builder()
             .icon(() -> new ItemStack(ParCoolItems.PARCOOL_GUIDE.get()))
             .title(Component.translatable("itemGroup.ParCool"))
             .hideTitle()

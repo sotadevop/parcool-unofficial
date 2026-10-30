@@ -1,21 +1,16 @@
 package com.alrex.parcool.server.command.args;
 
 import com.alrex.parcool.ParCool;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import com.alrex.parcool.fabric.compat.IEventBus;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.minecraft.core.registries.BuiltInRegistries;
-import com.alrex.parcool.fabric.compat.event.IEventBus;
-import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
-import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
 
 public class ArgumentTypes {
-    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENTS = DeferredRegister.create(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, ParCool.MOD_ID);
-    public static DeferredHolder<ArgumentTypeInfo<?, ?>, ArgumentTypeInfo<ActionArgumentType, ?>> ACTION = ARGUMENTS.register(
-            "action", () -> ArgumentTypeInfos.registerByClass(ActionArgumentType.class, SingletonArgumentInfo.contextFree(ActionArgumentType::new))
-    );
-
     public static void register(IEventBus bus) {
-        ARGUMENTS.register(bus);
+        ArgumentTypeRegistry.registerArgumentType(
+                ParCool.resourceLocation("action"),
+                ActionArgumentType.class,
+                SingletonArgumentInfo.contextFree(ActionArgumentType::new)
+        );
     }
 }

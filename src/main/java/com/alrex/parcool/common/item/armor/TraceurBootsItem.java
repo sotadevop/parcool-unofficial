@@ -1,5 +1,8 @@
 package com.alrex.parcool.common.item.armor;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
+
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.client.renderer.entity.layers.EquipmentRenderLayer;
@@ -25,17 +28,21 @@ import java.util.List;
 public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
     private static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_boots.png");
     private static final Identifier MODIFIER_ID = ParCool.resourceLocation("traceur_boots");
-    private final ItemAttributeModifiers equipModifier;
 
     public TraceurBootsItem(Properties properties) {
-        super(properties);
+        super(withEquipment(properties));
+    }
+
+    // NeoForge read slot and attributes from overridden item methods; 26.x reads them from
+    // the EQUIPPABLE and ATTRIBUTE_MODIFIERS components, which also makes right-click equipping work.
+    private static Properties withEquipment(Properties properties) {
         var equipModifiersBuilder = ItemAttributeModifiers.builder();
         equipModifiersBuilder.add(Attributes.MOVEMENT_SPEED, new AttributeModifier(MODIFIER_ID, 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
         equipModifiersBuilder.add(ParCoolAttributes.MAX_STAMINA.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
         equipModifiersBuilder.add(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.FEET);
         equipModifiersBuilder.add(ParCoolAttributes.FAST_RUN_SPEED.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
         equipModifiersBuilder.add(ParCoolAttributes.FAST_SWIM_SPEED.getDelegate(), new AttributeModifier(MODIFIER_ID, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
-        this.equipModifier = equipModifiersBuilder.build();
+        return properties.equippable(EquipmentSlot.FEET).attributes(equipModifiersBuilder.build());
     }
 
     @Nonnull
@@ -44,24 +51,11 @@ public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
         return EquipmentSlot.FEET;
     }
 
-    @Override
-    public EquipmentSlot getEquipmentSlot(@Nonnull ItemStack stack) {
-        return getEquipmentSlot();
-    }
+
+
 
     @Override
-    public boolean canEquip(@Nonnull ItemStack stack, @Nonnull EquipmentSlot armorType, @Nonnull LivingEntity entity) {
-        return getEquipmentSlot(stack) == armorType;
-    }
-
-    @Nonnull
-    @Override
-    public ItemAttributeModifiers getDefaultAttributeModifiers(@Nonnull ItemStack stack) {
-        return equipModifier;
-    }
-
-    @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull TooltipDisplay display, @Nonnull Consumer<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
         DyeAble.appendHoverText(this, stack, context, lines, tooltipFlag);
     }
 

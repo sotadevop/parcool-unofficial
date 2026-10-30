@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.item.misc;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.world.InteractionResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -43,10 +45,10 @@ public class GrapplingHookItem extends Item {
 
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
-        lines.add(Component.translatable("parcool.gui.text.grappling_hook.throw").withStyle(ChatFormatting.GRAY));
-        lines.add(Component.translatable("parcool.gui.text.grappling_hook.reel").withStyle(ChatFormatting.GRAY));
-        lines.add(Component.translatable("parcool.gui.text.grappling_hook.steer").withStyle(ChatFormatting.GRAY));
-        lines.add(Component.translatable("parcool.gui.text.grappling_hook.release").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull TooltipDisplay display, @Nonnull Consumer<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+        lines.accept(Component.translatable("parcool.gui.text.grappling_hook.throw").withStyle(ChatFormatting.GRAY));
+        lines.accept(Component.translatable("parcool.gui.text.grappling_hook.reel").withStyle(ChatFormatting.GRAY));
+        lines.accept(Component.translatable("parcool.gui.text.grappling_hook.steer").withStyle(ChatFormatting.GRAY));
+        lines.accept(Component.translatable("parcool.gui.text.grappling_hook.release").withStyle(ChatFormatting.GRAY));
     }
 }

@@ -276,7 +276,7 @@ public class HideInBlock
         if (!world.isLoaded(base)) return null;
         var state = world.getBlockState(base);
         var block = state.getBlock();
-        if (state.getTags().noneMatch(ParCoolBlockTags.HIDE_ABLE::equals)) return null;
+        if (!state.is(ParCoolBlockTags.HIDE_ABLE)) return null;
         if (!world.getBlockState(base.above()).isAir()) {
             if (isHideAblePoint(world, block, base.above())) {
                 return new Tuple<>(base, base.above());
@@ -358,7 +358,7 @@ public class HideInBlock
                 for (int x = minX; x <= maxX; x++) {
                     var pos = new BlockPos(x, y, z);
                     if (!world.isLoaded(pos)) break;
-                    particleEngine.destroy(pos, world.getBlockState(pos));
+                    world.addDestroyBlockEffect(pos, world.getBlockState(pos));
                 }
             }
         }

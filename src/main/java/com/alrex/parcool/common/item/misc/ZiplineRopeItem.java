@@ -1,5 +1,8 @@
 package com.alrex.parcool.common.item.misc;
 
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
+
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
@@ -12,7 +15,6 @@ import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineInfo;
 import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -57,14 +59,14 @@ public class ZiplineRopeItem extends Item implements DyeAble {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull TooltipDisplay display, @Nonnull Consumer<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
         var boundPosComp = stack.get(ParCoolDataComponents.ZIPLINE_POSITION.get());
         if (boundPosComp != null) {
-            lines.add(Component.translatable("parcool.gui.text.zipline.bind_pos", boundPosComp.pos().toShortString()).withStyle(ChatFormatting.YELLOW));
+            lines.accept(Component.translatable("parcool.gui.text.zipline.bind_pos", boundPosComp.pos().toShortString()).withStyle(ChatFormatting.YELLOW));
         } else {
-            lines.add(Component.translatable("parcool.gui.text.zipline.not_bound").withStyle(ChatFormatting.DARK_GRAY));
+            lines.accept(Component.translatable("parcool.gui.text.zipline.not_bound").withStyle(ChatFormatting.DARK_GRAY));
         }
-        lines.add(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
+        lines.accept(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
         DyeAble.appendHoverText(this, stack, context, lines, tooltipFlag);
     }
 
@@ -129,7 +131,7 @@ public class ZiplineRopeItem extends Item implements DyeAble {
                         player.playSound(ParCoolSoundEvents.ZIPLINE_SET.get(), 1, 1);
                     }
                     removeBlockPosition(stack);
-                    return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+                    return InteractionResult.SUCCESS;
                 } else {
                     removeBlockPosition(stack);
                     if (context.getLevel().isClientSide()) {

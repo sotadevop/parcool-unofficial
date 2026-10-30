@@ -16,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractClientPlayer.class)
 public abstract class AbstractClientPlayerMixin extends Player implements IPlayerAnimatorHolder {
-    public AbstractClientPlayerMixin(Level p_219727_, BlockPos p_219728_, float p_219729_, GameProfile p_219730_) {
-        super(p_219727_, p_219728_, p_219729_, p_219730_);
+    public AbstractClientPlayerMixin(Level level, GameProfile profile) {
+        super(level, profile);
     }
 
     @Unique

@@ -171,7 +171,7 @@ public abstract class SynchronizedProperty<T> {
             VEC_3_I_HANDLER.dataLengthInBytes,
             (b) -> {
                 var vec3i = VEC_3_I_HANDLER.read(b);
-                return vec3i != null ? new BlockPos(vec3i) : null;
+                return vec3i != null ? new BlockPos(vec3i.getX(), vec3i.getY(), vec3i.getZ()) : null;
             },
             VEC_3_I_HANDLER::write
     );

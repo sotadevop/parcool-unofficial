@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.handlers;
 
+import net.minecraft.world.entity.player.Input;
+
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.gui.GuiHelper;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
@@ -44,7 +46,9 @@ public class InputHandler {
         if (parkourability == null) return;
 
         if (parkourability.getBehaviorEnforcer().noSneakMarks.enforce()) {
-            event.getInput().shiftKeyDown = false;
+            var keys = event.getInput().keyPresses;
+            // Input is an immutable record in 26.x, so replace it with shift released.
+            event.getInput().keyPresses = new Input(keys.forward(), keys.backward(), keys.left(), keys.right(), keys.jump(), false, keys.sprint());
         }
     }
 }

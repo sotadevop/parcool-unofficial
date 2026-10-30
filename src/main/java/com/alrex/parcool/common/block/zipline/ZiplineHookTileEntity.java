@@ -7,12 +7,13 @@ import com.alrex.parcool.common.zipline.ZiplineInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -145,46 +146,42 @@ public class ZiplineHookTileEntity extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider provider) {
-        super.saveAdditional(nbt, provider);
-
-        var connections = new ListTag();
+    protected void saveAdditional(@Nonnull ValueOutput output) {
+        super.saveAdditional(output);
+        var list = output.childrenList("connection");
+        var pos = getBlockPos();
         for (Map.Entry<BlockPos, ZiplineInfo> infoEntry : getConnections().entrySet()) {
-            var entryTag = new CompoundTag();
-            var pos = getBlockPos();
-            entryTag.putInt("rX", infoEntry.getKey().getX() - pos.getX());
-            entryTag.putInt("rY", infoEntry.getKey().getY() - pos.getY());
-            entryTag.putInt("rZ", infoEntry.getKey().getZ() - pos.getZ());
-            entryTag.put("info", infoEntry.getValue().save());
-            connections.add(entryTag);
+            var entry = list.addChild();
+            entry.putInt("rX", infoEntry.getKey().getX() - pos.getX());
+            entry.putInt("rY", infoEntry.getKey().getY() - pos.getY());
+            entry.putInt("rZ", infoEntry.getKey().getZ() - pos.getZ());
+            infoEntry.getValue().save(entry.child("info"));
         }
-        nbt.put("connection", connections);
     }
 
     @Override
-    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-
-        Tag connectionsTag = nbt.get("connection");
-        if (!(connectionsTag instanceof ListTag listConnections)) return;
-
+    protected void loadAdditional(@Nonnull ValueInput input) {
+        super.loadAdditional(input);
         connections.clear();
-
-        for (Tag entry : listConnections) {
-            if (!(entry instanceof CompoundTag cTag))
-                continue;
-
-            BlockPos pos;
-            if (cTag.contains("rX") && cTag.contains("rY") && cTag.contains("rZ")) {
-                pos = getBlockPos().offset(
-                        cTag.getIntOr("rX", 0),
-                        cTag.getIntOr("rY", 0),
-                        cTag.getIntOr("rZ", 0)
-                );
-            } else continue;
-            var info = ZiplineInfo.load(cTag.get("info"));
-            connections.put(pos, info);
+        for (ValueInput entry : input.childrenListOrEmpty("connection")) {
+            var rx = entry.getInt("rX");
+            var ry = entry.getInt("rY");
+            var rz = entry.getInt("rZ");
+            if (rx.isEmpty() || ry.isEmpty() || rz.isEmpty()) continue;
+            var pos = getBlockPos().offset(rx.get(), ry.get(), rz.get());
+            connections.put(pos, ZiplineInfo.load(entry.childOrEmpty("info")));
         }
+    }
+
+    /**
+     * Was {@code Block#onRemove} on {@link ZiplineHookBlock}; 26.x moved removal side effects to the
+     * block entity. Runs on the server just before the block entity is dropped, so connected ropes are
+     * detached and returned as items, as before.
+     */
+    @Override
+    public void preRemoveSideEffects(@Nonnull BlockPos pos, @Nonnull BlockState state) {
+        if (level == null || level.isClientSide()) return;
+        removeAllConnections().forEach(it -> Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), it));
     }
 
     @Nullable
@@ -196,9 +193,7 @@ public class ZiplineHookTileEntity extends BlockEntity {
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
-        var nbt = super.getUpdateTag(registries);
-        saveAdditional(nbt, registries);
-        return nbt;
+        return saveCustomOnly(registries);
     }
 
     private void notifyBlockUpdated() {

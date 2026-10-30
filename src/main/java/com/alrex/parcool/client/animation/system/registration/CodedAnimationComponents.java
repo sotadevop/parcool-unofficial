@@ -88,7 +88,7 @@ public class CodedAnimationComponents extends BasicRegistry<CodedAnimationCompon
     });
     public final ID<CodedAnimationComponent> ROTATE_BODY_SWIM = register("builtin/swim_rotate_body", (player, part, progress, partial, mirror) -> {
         if (part != AnimatableModelPart.BODY) return null;
-        var swimRot = !player.isInWater() && !player.isInFluidType((fluidType, height) -> player.canSwimInFluidType(fluidType)) ? -90.0f : -90.0f - player.getXRot();
+        var swimRot = !player.isInWater() ? -90.0f : -90.0f - player.getXRot();
         return new Transform(
                 new Vec3f(0, -0.6f, 0),
                 MathUtil.rotation(
@@ -99,7 +99,7 @@ public class CodedAnimationComponents extends BasicRegistry<CodedAnimationCompon
     });
     public final ID<CodedAnimationComponent> ROTATE_BODY_SWIM_RELATIVE = register("builtin/swim_rotate_body_relative", (player, part, progress, partial, mirror) -> {
         if (part != AnimatableModelPart.BODY) return null;
-        var swimRot = !player.isInWater() && !player.isInFluidType((fluidType, height) -> player.canSwimInFluidType(fluidType)) ? 0f : -player.getXRot();
+        var swimRot = !player.isInWater() ? 0f : -player.getXRot();
         return new Transform(
                 new Vec3f(0, -0.6f, 0),
                 MathUtil.rotation(
