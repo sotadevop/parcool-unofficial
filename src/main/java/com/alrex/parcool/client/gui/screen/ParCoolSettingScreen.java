@@ -147,7 +147,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
 
     @Override
     public void extractBackground(@Nullable GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        extractBlurredBackground(graphics);
+        extractBlurredBackground(guiGraphics);
     }
 
     private AbstractWidget createSkillOptions(int x, int y, int width, int height) {

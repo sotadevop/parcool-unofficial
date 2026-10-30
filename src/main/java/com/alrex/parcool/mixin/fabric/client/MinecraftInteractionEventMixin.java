@@ -36,7 +36,12 @@ public abstract class MinecraftInteractionEventMixin {
         if (player == null) return false;
         var event = FabricClientEventBridge.fireInteraction(kind, InteractionHand.MAIN_HAND);
         if (!event.isCanceled()) return false;
-        if (event.shouldSwingHand()) player.swing(event.getHand());
+        if (event.shouldSwingHand()) {
+            // 26.x swings with the held item's animation, as vanilla's startAttack/startUseItem do.
+            var stack = player.getItemInHand(event.getHand());
+            var animation = kind == InteractionKeyMappingTriggered.Kind.ATTACK ? stack.getAttackAnimation() : stack.getInteractAnimation();
+            player.swing(event.getHand(), animation, false);
+        }
         return true;
     }
 }

@@ -1,5 +1,14 @@
 package com.alrex.parcool.client.md.ui;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import java.util.List;
+
 import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.md.CompiledMarkdown;
@@ -15,7 +24,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
@@ -465,25 +473,23 @@ public class MarkdownWidget extends AbstractWidget {
     private class RecipeWidget extends ComponentWidget<MarkdownParagraph.ExtensionMCRecipe> {
         private static final Identifier CRAFTING_TABLE_LOCATION = Identifier.fromNamespaceAndPath("minecraft", "textures/gui/container/crafting_table.png");
         @Nullable
-        private final RecipeHolder<?> recipe;
+        private final RecipeDisplay display;
         private final float scale;
-        private final ItemRenderer itemRenderer;
-        private final RegistryAccess registryAccess;
 
+        /**
+         * Since 1.21.2 the client no longer receives the server's recipes. The guide reads them from the
+         * integrated server, so recipe boxes are filled in singleplayer and stay empty on a dedicated
+         * server. Ingredients and result come from Recipe#display, the data the recipe book uses.
+         */
         public RecipeWidget(int x, int y, int width, MarkdownParagraph.ExtensionMCRecipe content) {
             super(x, y, width, 0, content);
-            var connection = Minecraft.getInstance().getConnection();
-            if (connection != null) {
-                var manager = connection.getRecipeManager();
-                var recipe = manager.byKey(content.recipeId());
-                this.recipe = recipe.orElse(null);
-            } else {
-                this.recipe = null;
-            }
-            itemRenderer = Minecraft.getInstance().getItemRenderer();
+            var server = Minecraft.getInstance().getSingleplayerServer();
+            this.display = server == null ? null : server.getRecipeManager()
+                    .byKey(ResourceKey.create(Registries.RECIPE, content.recipeId()))
+                    .flatMap(holder -> holder.value().display().stream().findFirst())
+                    .orElse(null);
             scale = width / 118f;
             setHeight((int) (scale * 56f));
-            registryAccess = new RegistryAccess.ImmutableRegistryAccess(Collections.emptyList());
         }
 
         @Override
@@ -496,40 +502,33 @@ public class MarkdownWidget extends AbstractWidget {
                 graphics.blit(RenderPipelines.GUI_TEXTURED, CRAFTING_TABLE_LOCATION, 0, 0, 28, 15, 118, 56, 256, 256);
             }
             poseStack.popMatrix();
+            var level = Minecraft.getInstance().level;
+            if (display == null || level == null) return;
+            List<SlotDisplay> ingredients;
+            int craftWidth;
+            if (display instanceof ShapedCraftingRecipeDisplay shaped) {
+                ingredients = shaped.ingredients();
+                craftWidth = shaped.width();
+            } else if (display instanceof ShapelessCraftingRecipeDisplay shapeless) {
+                ingredients = shapeless.ingredients();
+                craftWidth = 3;
+            } else return;
+            var context = SlotDisplayContext.fromLevel(level);
             var time = Util.getMillis() / 1000;
-            if (recipe != null) {
-                var recipeValue = recipe.value();
-                if (recipeValue instanceof ShapelessRecipe || recipeValue instanceof ShapedRecipe) {
-                    var craftWidth = 3;
-                    NonNullList<Ingredient> ingredients;
-                    ItemStack result;
-
-                    if (recipeValue instanceof ShapelessRecipe craftingRecipe) {
-                        ingredients = craftingRecipe.getIngredients();
-                        result = craftingRecipe.getResultItem(registryAccess);
-                    } else if (recipeValue instanceof ShapedRecipe craftingRecipe) {
-                        ingredients = craftingRecipe.getIngredients();
-                        result = craftingRecipe.getResultItem(registryAccess);
-                    } else return;
-                    int i = -1;
-                    for (var ingredient : ingredients) {
-                        i++;
-                        var items = ingredient.getItems();
-                        if (items.length == 0) continue;
-                        var item = items[(int) (time % items.length)];
-                        var column = i % craftWidth;
-                        var row = i / craftWidth;
-                        GuiRenderUtil.renderScaledGuiItem(graphics, item, getX(), getY(), 2 + 18 * column, 2 + 18 * row, scale);
-                    }
-                    GuiRenderUtil.renderScaledGuiItem(graphics, result, getX(), getY(), 96, 20, scale);
-                }
+            int i = -1;
+            for (var ingredient : ingredients) {
+                i++;
+                var items = ingredient.resolveForStacks(context);
+                if (items.isEmpty()) continue;
+                var item = items.get((int) (time % items.size()));
+                GuiRenderUtil.renderScaledGuiItem(graphics, item, getX(), getY(), 2 + 18 * (i % craftWidth), 2 + 18 * (i / craftWidth), scale);
             }
+            GuiRenderUtil.renderScaledGuiItem(graphics, display.result().resolveForFirstStack(context), getX(), getY(), 96, 20, scale);
         }
     }
 
     private class BrewingRecipeWidget extends ComponentWidget<MarkdownParagraph.ExtensionMCBrewingRecipe> {
         private final float scale;
-        private final ItemRenderer itemRenderer;
         private List<PotionMix> recipes;
 
         private record PotionMix(ItemStack input, ItemStack ingredient, ItemStack output) {
@@ -537,7 +536,6 @@ public class MarkdownWidget extends AbstractWidget {
 
         public BrewingRecipeWidget(int x, int y, int width, MarkdownParagraph.ExtensionMCBrewingRecipe content) {
             super(x, y, width, 0, content);
-            itemRenderer = Minecraft.getInstance().getItemRenderer();
             scale = width / 127f;
             setHeight((int) (scale * 20f));
             recipes = new ArrayList<>();

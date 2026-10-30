@@ -1,5 +1,7 @@
 package com.alrex.parcool.mixin.client;
 
+import org.joml.Matrix4f;
+
 import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.animation.system.data.Transform;
@@ -54,11 +56,12 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<Avatar, A
 				bodyTransformation = Transform.NO_TRANSFORMATION.morph(bodyTransformation, transform.blendFactor(), true);
 			}
 			var translation = bodyTransformation.translation();
-			stack.mulPose(MathUtil.rotation(Vec3f.YP, (float) Math.toRadians(180.0F - bodyRot)));
+			// 26.x PoseStack#mulPose takes a matrix, not a quaternion.
+			stack.mulPose(new Matrix4f().rotation(MathUtil.rotation(Vec3f.YP, (float) Math.toRadians(180.0F - bodyRot))));
 
 			stack.translate(translation.x(), translation.y(), translation.z());
 			stack.translate(0, 0.9, 0);
-			stack.mulPose(new Quaternionf(bodyTransformation.rotation()).normalize());
+			stack.mulPose(new Matrix4f().rotation(new Quaternionf(bodyTransformation.rotation()).normalize()));
 			stack.translate(0, -0.9, 0);
 			ci.cancel();
 		}

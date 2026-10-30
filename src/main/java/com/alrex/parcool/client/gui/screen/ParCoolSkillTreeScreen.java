@@ -144,7 +144,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
 
     @Override
     public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        extractBlurredBackground(graphics);
+        extractBlurredBackground(guiGraphics);
     }
 
     @Override

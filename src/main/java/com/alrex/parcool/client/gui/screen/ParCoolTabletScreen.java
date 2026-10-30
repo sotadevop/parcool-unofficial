@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.screen;
 
+import com.mojang.blaze3d.Blaze3D;
+
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
@@ -241,7 +243,7 @@ public class ParCoolTabletScreen extends Screen {
 
     protected void confirmLink(boolean confirmed, String uri) {
         if (confirmed) {
-            Util.getPlatform().openUri(java.net.URI.create(uri));
+            Blaze3D.openUri(java.net.URI.create(uri));
         }
         if (minecraft != null) minecraft.gui.setScreen(this);
     }
