@@ -391,7 +391,11 @@ public class GrappleRopeRenderer {
         consumer.addVertex(matrix, (float) position.x, (float) position.y, (float) position.z)
                 .setColor(shade, shade, shade, 1f)
                 .setUv(u, v)
-                .setLight(light);
+                // The entity render type (upstream had its own rope type) also needs overlay and normal;
+                // without them the buffer rejects the vertex ("Missing elements in vertex").
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(light)
+                .setNormal(0f, 1f, 0f);
     }
 
     private static int lightAt(Level level, Vec3 position) {
