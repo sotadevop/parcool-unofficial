@@ -1,5 +1,9 @@
 package com.alrex.parcool.mixin.common;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.IParkourabilityHolder;
 import com.alrex.parcool.common.Parkourability;
@@ -69,16 +73,16 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
         }
     }
 
+    // 26.x saves entities through ValueOutput/ValueInput. The data stays the same compound under the
+    // same key, so player data written by the NeoForge build still loads.
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
-    public void onAddAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-        tag.put("parcool.parkourability", parcool$parkourability.saveToTag());
+    public void onAddAdditionalSaveData(ValueOutput output, CallbackInfo ci) {
+        output.store("parcool.parkourability", CompoundTag.CODEC, parcool$parkourability.saveToTag());
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
-    public void onReadAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-        if (tag.get("parcool.parkourability") instanceof CompoundTag pTag) {
-            parcool$parkourability.readFrom(pTag);
-        }
+    public void onReadAdditionalSaveData(ValueInput input, CallbackInfo ci) {
+        input.read("parcool.parkourability", CompoundTag.CODEC).ifPresent(parcool$parkourability::readFrom);
     }
 
     @Inject(method = "updatePlayerPose", at = @At("HEAD"), cancellable = true)

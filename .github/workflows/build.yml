@@ -71,6 +71,13 @@ jobs:
           unzip -p "$jar" assets/parcool/lang/en_us.json | grep -q '"key.category.parcool.parcool"' \
             || { echo "::error title=Jar check::key category translation missing"; exit 1; }
 
+      - name: Find client references in shared lambdas
+        run: |
+          jar=$(ls build/libs/parcool-*.jar | grep -v sources)
+          python3 .github/scripts/client-refs.py "$jar" > client-refs.txt || true
+          tail -1 client-refs.txt
+          .github/scripts/annotate.sh client-refs.txt 0 "Client refs"
+
       - name: Upload Fabric jar
         uses: actions/upload-artifact@v4
         with:
