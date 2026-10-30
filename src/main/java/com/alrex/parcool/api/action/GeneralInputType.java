@@ -10,6 +10,8 @@ public enum GeneralInputType {
     public enum Instant {
         PRESS_KEY, RELEASE_KEY;
 
+        // Client only: creates the client-only input handles below (only called for the local player).
+        @Environment(EnvType.CLIENT)
         public Input newInput() {
             return switch (this) {
                 case PRESS_KEY -> new PressKeyInput();
@@ -21,6 +23,8 @@ public enum GeneralInputType {
     public enum Continuation {
         DOWN_KEY, TOGGLE, ALWAYS;
 
+        // Client only: creates the client-only input handles below (only called for the local player).
+        @Environment(EnvType.CLIENT)
         public Input newInput() {
             return switch (this) {
                 case DOWN_KEY -> new DownKeyInput();
