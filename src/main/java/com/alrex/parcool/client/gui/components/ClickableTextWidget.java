@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.MouseButtonInfo;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -18,7 +20,7 @@ public class ClickableTextWidget extends TextWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int click) {
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return true;
     }
 

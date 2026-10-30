@@ -374,11 +374,11 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         }
 
         @Override
-        protected void renderListBackground(@Nonnull GuiGraphicsExtractor guiGraphics) {
+        protected void extractListBackground(@Nonnull GuiGraphicsExtractor guiGraphics) {
         }
 
         @Override
-        protected void renderListSeparators(@Nonnull GuiGraphicsExtractor guiGraphics) {
+        protected void extractListSeparators(@Nonnull GuiGraphicsExtractor guiGraphics) {
         }
 
         @Override
@@ -433,7 +433,9 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
             }
 
             @Override
-            public void extractRenderState(@Nonnull GuiGraphicsExtractor graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
+            public void extractContent(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
+                // 26.x entries know their own bounds instead of receiving them as arguments.
+                int top = getContentY(), left = getContentX(), width = getContentWidth(), height = getContentHeight();
                 if (isMouseOver) {
                     graphics.fill(left, top - 1, left + width, top + height + 1, ColorUtil.withAlpha(colors.primary(), 0x20));
                 }

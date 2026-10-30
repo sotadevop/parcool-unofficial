@@ -64,7 +64,8 @@ public class GrappleRopeRenderer {
         if (level == null) return;
 
         float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true);
-        Camera camera = minecraft.gameRenderer.getMainCamera();
+        Camera camera = minecraft.getEntityRenderDispatcher().camera;
+        if (camera == null) return;
         List<RopePath> paths = null;
         for (Player player : level.players()) {
             RopePath path = buildPath(minecraft, player, camera, partialTick);

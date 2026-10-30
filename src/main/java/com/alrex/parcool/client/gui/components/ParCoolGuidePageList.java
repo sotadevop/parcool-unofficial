@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.MouseButtonInfo;
+
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.md.resource.PageEntry;
 import com.alrex.parcool.client.md.resource.PageGroupEntry;
@@ -82,7 +84,7 @@ public class ParCoolGuidePageList extends AbstractWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int click) {
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return hoveredItem != null;
     }
 

@@ -273,7 +273,7 @@ public class SkillTreeWidget extends AbstractWidget {
         }
 
         @Override
-        protected boolean isValidClickButton(int p_93652_) {
+        protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
             return entry.isVisible(parkourability);
         }
 

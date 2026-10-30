@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.MouseButtonInfo;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -52,7 +54,7 @@ public class TextWidget extends AbstractWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int click) {
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return false;
     }
 

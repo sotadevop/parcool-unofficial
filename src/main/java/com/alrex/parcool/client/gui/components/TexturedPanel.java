@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.MouseButtonInfo;
+
 import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.util.ColorUtil;
@@ -56,7 +58,7 @@ public class TexturedPanel extends AbstractWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int click) {
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return false;
     }
 

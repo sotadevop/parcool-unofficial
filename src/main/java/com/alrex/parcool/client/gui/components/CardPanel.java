@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.MouseButtonInfo;
+
 import com.alrex.parcool.util.ColorUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -87,7 +89,7 @@ public class CardPanel extends AbstractWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int p_93652_) {
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return false;
     }
 

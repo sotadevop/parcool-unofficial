@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
+import net.minecraft.client.input.MouseButtonInfo;
+
 import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
@@ -37,7 +39,7 @@ public class ExperienceProgressView extends AbstractWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int p_93652_) {
+    protected boolean isValidClickButton(MouseButtonInfo buttonInfo) {
         return false;
     }
 

@@ -1,5 +1,7 @@
 package com.alrex.parcool.client;
 
+import org.joml.Matrix4f;
+
 import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
@@ -12,7 +14,6 @@ import net.minecraft.world.phys.Vec3;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import com.alrex.parcool.fabric.compat.event.RenderGuiEvent;
-import com.alrex.parcool.fabric.compat.event.RenderLevelStageEvent;
 import org.joml.Quaternionf;
 import org.joml.Vector4f;
 
@@ -23,51 +24,43 @@ public class GrappleTargetOverlay {
 
     private static float screenX;
     private static float screenY;
-    private static boolean visible = false;
 
-    public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
-        visible = false;
-
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player == null || minecraft.options.hideGui) return;
+    /**
+     * Upstream projected the target in RenderLevelStageEvent and drew it in the HUD. 26.x's camera
+     * exposes the combined view/projection matrix, so both happen in the HUD pass; the HUD is not
+     * drawn while it is hidden (F1), which replaces upstream's hideGui check.
+     */
+    private static boolean project(Minecraft minecraft) {
+        if (minecraft.player == null) return false;
         Parkourability parkourability = Parkourability.get(minecraft.player);
-        if (parkourability == null) return;
+        if (parkourability == null) return false;
         Vec3 target = parkourability.get(ParCoolActions.GRAPPLE).getPreviewTarget();
-        if (target == null) return;
+        if (target == null) return false;
+        var camera = minecraft.getEntityRenderDispatcher().camera;
+        if (camera == null) return false;
 
-        var camera = event.getCamera();
         Vec3 cameraPos = camera.position();
-        var poseStack = event.getPoseStack();
-        poseStack.pushMatrix();
-        {
-            var cameraRot = camera.rotation();
-            poseStack.mulPose(new Quaternionf(-cameraRot.x, -cameraRot.y, -cameraRot.z, cameraRot.w));
-            Vector4f point = new Vector4f(
-                    (float) (target.x - cameraPos.x),
-                    (float) (target.y - cameraPos.y),
-                    (float) (target.z - cameraPos.z),
-                    1f
-            );
-            point.mul(poseStack.last().pose());
-            point.mul(event.getProjectionMatrix());
+        Vector4f point = new Vector4f(
+                (float) (target.x - cameraPos.x),
+                (float) (target.y - cameraPos.y),
+                (float) (target.z - cameraPos.z),
+                1f
+        );
+        point.mul(camera.getViewRotationProjectionMatrix(new Matrix4f()));
+        if (point.w() <= 1.0e-4) return false;
 
-            if (Mth.abs(point.w()) <= 1.0e-4) return;
+        float normalisedX = point.x() / point.w();
+        float normalisedY = point.y() / point.w();
+        if (Math.abs(normalisedX) > 1.5f || Math.abs(normalisedY) > 1.5f) return false;
 
-            float normalisedX = point.x() / point.w();
-            float normalisedY = point.y() / point.w();
-            if (Math.abs(normalisedX) > 1.5f || Math.abs(normalisedY) > 1.5f) return;
-
-            var window = minecraft.getWindow();
-            screenX = (normalisedX * 0.5f + 0.5f) * window.getGuiScaledWidth();
-            screenY = (1 - (normalisedY * 0.5f + 0.5f)) * window.getGuiScaledHeight();
-            visible = true;
-        }
-        poseStack.popMatrix();
+        var window = minecraft.getWindow();
+        screenX = (normalisedX * 0.5f + 0.5f) * window.getGuiScaledWidth();
+        screenY = (1 - (normalisedY * 0.5f + 0.5f)) * window.getGuiScaledHeight();
+        return true;
     }
 
     public static void onRenderGui(RenderGuiEvent.Post event) {
-        if (!visible) return;
+        if (!project(Minecraft.getInstance())) return;
         int size = ParCool.getConfig().client().targetIndicatorSize.get();
 
 
