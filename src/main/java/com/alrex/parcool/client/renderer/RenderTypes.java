@@ -1,43 +1,16 @@
 package com.alrex.parcool.client.renderer;
 
 import com.alrex.parcool.client.renderer.blockentity.ZiplineHookRenderer;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
-@Environment(EnvType.CLIENT)
+/**
+ * Fabric port: upstream built two custom render types (textured, lightmapped quads). 26.x replaced
+ * RenderStateShard/CompositeState with render pipelines; vanilla's entity render types cover both
+ * cases, so the renderers emit the entity vertex format (with overlay and normal) instead.
+ */
 public class RenderTypes {
-    public static final RenderType ZIPLINE_3D;
-    public static final RenderType GRAPPLE_ROPE;
-
-    static {
-        GRAPPLE_ROPE = RenderType.create(
-                "parcool_grapple_rope",
-                DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-                VertexFormat.Mode.QUADS, 256,
-                false, false,
-                RenderType.CompositeState.builder()
-                        .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-                        .setTextureState(new RenderStateShard.TextureStateShard(GrappleRopeRenderer.TEXTURE_LOCATION, false, false))
-                        .setCullState(RenderStateShard.NO_CULL)
-                        .setLightmapState(RenderStateShard.LIGHTMAP)
-                        .createCompositeState(false)
-        );
-
-        ZIPLINE_3D = RenderType.create(
-                "zipline3d",
-                DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-                VertexFormat.Mode.QUADS, 256,
-                false, false,
-                RenderType.CompositeState.builder()
-                        .setShaderState(RenderStateShard.RENDERTYPE_SOLID_SHADER)
-                        .setTextureState(new RenderStateShard.TextureStateShard(ZiplineHookRenderer.TEXTURE_LOCATION, false, false))
-                        .setCullState(RenderStateShard.CULL)
-                        .setLightmapState(RenderStateShard.LIGHTMAP)
-                        .createCompositeState(false)
-        );
-    }
+    /** Zipline rope: opaque, back faces culled. */
+    public static final RenderType ZIPLINE_3D = net.minecraft.client.renderer.rendertype.RenderTypes.entitySolid(ZiplineHookRenderer.TEXTURE_LOCATION);
+    /** Grapple rope: alpha-tested, visible from both sides. */
+    public static final RenderType GRAPPLE_ROPE = net.minecraft.client.renderer.rendertype.RenderTypes.entityCutout(GrappleRopeRenderer.TEXTURE_LOCATION);
 }

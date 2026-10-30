@@ -17,12 +17,12 @@ public class ActionCapabilitiesCommand {
 
     public static ArgumentBuilder<CommandSourceStack, ?> getBuilder() {
         return Commands.literal("action")
-                .then(Commands.literal("unlock").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).then(
+                .then(Commands.literal("unlock").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).then(
                         Commands.argument(ARG_NAME_PLAYERS, EntityArgument.players())
                                 .then(Commands.argument(ARG_NAME_ACTION, ActionArgumentType.action()).executes(ActionCapabilitiesCommand::unlock))
                                 .then(Commands.literal("all").executes(ActionCapabilitiesCommand::unlockAll))
                         )
-                ).then(Commands.literal("lock").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).then(
+                ).then(Commands.literal("lock").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)).then(
                         Commands.argument(ARG_NAME_PLAYERS, EntityArgument.players())
                                 .then(Commands.argument(ARG_NAME_ACTION, ActionArgumentType.action()).executes(ActionCapabilitiesCommand::lock))
                                 .then(Commands.literal("all").executes(ActionCapabilitiesCommand::lockAll))

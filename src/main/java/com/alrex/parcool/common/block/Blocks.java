@@ -14,23 +14,17 @@ import com.alrex.parcool.fabric.compat.registry.DeferredHolder;
 
 public class Blocks {
     private static final DeferredRegister<Block> REGISTER = DeferredRegister.create(Registries.BLOCK, ParCool.MOD_ID);
-    public static final DeferredHolder<Block, WoodenZiplineHookBlock> WOODEN_ZIPLINE_HOOK = REGISTER.register(
-            "wooden_zipline_hook",
-            () -> new WoodenZiplineHookBlock(BlockBehaviour.Properties.of()
+    public static final DeferredHolder<Block, WoodenZiplineHookBlock> WOODEN_ZIPLINE_HOOK = REGISTER.register("wooden_zipline_hook", () -> new WoodenZiplineHookBlock(BlockBehaviour.Properties.of().setId(REGISTER.key("wooden_zipline_hook"))
                     .mapColor(MapColor.WOOD)
                     .strength(1.0f, 3.0f)
                     .sound(SoundType.WOOD)
-            )
-    );
-    public static final DeferredHolder<Block, IronZiplineHookBlock> IRON_ZIPLINE_HOOK = REGISTER.register(
-            "iron_zipline_hook",
-            () -> new IronZiplineHookBlock(BlockBehaviour.Properties.of()
+            ));
+    public static final DeferredHolder<Block, IronZiplineHookBlock> IRON_ZIPLINE_HOOK = REGISTER.register("iron_zipline_hook", () -> new IronZiplineHookBlock(BlockBehaviour.Properties.of().setId(REGISTER.key("iron_zipline_hook"))
                     .mapColor(MapColor.METAL)
                     .strength(1.0f, 3.0f)
-                    .noCollission()
+                    .noCollision()
                     .sound(SoundType.CHAIN)
-            )
-    );
+            ));
 
     public static void register(IEventBus bus) {
         REGISTER.register(bus);

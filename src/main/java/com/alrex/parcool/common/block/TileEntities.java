@@ -12,11 +12,10 @@ public class TileEntities {
     private static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ParCool.MOD_ID);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ZiplineHookTileEntity>> ZIPLINE_HOOK = REGISTER.register(
             "zipline_hook",
-            () -> BlockEntityType.Builder.of(
+            () -> new BlockEntityType<>(
                     (pos, state) -> new ZiplineHookTileEntity(TileEntities.ZIPLINE_HOOK.get(), pos, state),
-                    Blocks.WOODEN_ZIPLINE_HOOK.get(),
-                    Blocks.IRON_ZIPLINE_HOOK.get()
-            ).build(null)
+                    java.util.Set.of(Blocks.WOODEN_ZIPLINE_HOOK.get(), Blocks.IRON_ZIPLINE_HOOK.get())
+            )
     );
 
     public static void register(IEventBus bus) {

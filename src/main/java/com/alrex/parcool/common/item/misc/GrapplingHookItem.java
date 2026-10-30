@@ -38,18 +38,9 @@ public class GrapplingHookItem extends Item {
         return InteractionResult.PASS;
     }
 
-    // Fabric port: NeoForge's IClientItemExtensions hook is ported with the 26.3 rendering code
-    // (see porting/NOTES.md, "Open").
+    // Fabric port: the custom item renderer (flat icon in GUIs, 3D model in hand) is a
+    // "minecraft:select" on the display context in assets/parcool/items/grappling_hook.json.
 
-    @Environment(EnvType.CLIENT)
-    private static final class ClientRendererHolder {
-        private static com.alrex.parcool.client.renderer.GrapplingHookItemRenderer renderer;
-
-        private static com.alrex.parcool.client.renderer.GrapplingHookItemRenderer get() {
-            if (renderer == null) renderer = new com.alrex.parcool.client.renderer.GrapplingHookItemRenderer();
-            return renderer;
-        }
-    }
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {

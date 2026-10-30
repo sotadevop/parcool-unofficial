@@ -8,7 +8,6 @@ import com.alrex.parcool.client.animation.system.resource.AnimationResourceManag
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
-import com.alrex.parcool.client.renderer.GrapplingHookItemRenderer;
 import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.alrex.parcool.client.textures.ParCoolTextures;
@@ -41,7 +40,6 @@ public class ClientRegistrar {
         ParCoolTextures.init(RegisterClientReloadListenersEvent.INSTANCE);
         AnimationResourceManager.register(RegisterClientReloadListenersEvent.INSTANCE);
         GuideResourceManager.register(RegisterClientReloadListenersEvent.INSTANCE);
-        GrapplingHookItemRenderer.registerModels();
 
         var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
         AnimationRegistries.register(registerAnimationEntryEvent);

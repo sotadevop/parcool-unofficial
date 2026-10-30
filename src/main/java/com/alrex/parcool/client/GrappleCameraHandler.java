@@ -70,7 +70,7 @@ public class GrappleCameraHandler {
     public static void onComputeFov(ComputeFovModifierEvent event) {
         double configured = ParCool.getConfig().client().grapplingHook.fovIntensity().get();
         if (configured <= 0) return;
-        float partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
         float intensity = Mth.lerp(partialTick, previousIntensity, currentIntensity);
         if (intensity <= 1.0e-4) return;
         event.setNewFovModifier(event.getNewFovModifier() * (1f + MAX_FOV_GAIN * intensity * (float) configured));

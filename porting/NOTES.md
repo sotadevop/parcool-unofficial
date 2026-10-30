@@ -41,11 +41,12 @@ upstream calls). That keeps the diff to upstream small, so later 4.0.x releases 
 - Server only accepts client packets about the sending player (upstream applied them to any UUID).
 - NeoForge payload version negotiation (`registrar(connectionId)`) has no Fabric equivalent.
 - Brewing recipes are data files (26.3 made brewing data-driven).
+- Item colours and the grappling hook's item renderer are client item definitions
+  (`assets/parcool/items`), as 26.x requires for every item.
+- Zipline ropes: each segment is drawn once (upstream drew it twice in an inner loop).
 - Stamina HUD height: registered with HudStatusBarHeightRegistry, so it stacks with the air bar.
 
 ## Open
 
-- Grappling hook item renderer (upstream: BlockEntityWithoutLevelRenderer via IClientItemExtensions)
-  -> 26.3 special item model.
 - Traceur gloves arm pose (upstream: IClientItemExtensions#getArmPose) -> 26.3 render state.
 - Grapple rope / target overlay level rendering (upstream: RenderLevelStageEvent) -> LevelRenderEvents.

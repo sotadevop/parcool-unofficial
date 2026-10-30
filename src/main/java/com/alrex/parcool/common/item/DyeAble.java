@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -16,19 +15,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public interface DyeAble {
-    class DyedColor implements ItemColor {
-        private final int tintIndex;
-
-        public DyedColor(int tintIndex) {
-            this.tintIndex = tintIndex;
-        }
-
-        @Override
-        public int getColor(@Nonnull ItemStack itemStack, int tintIndex) {
-            if (tintIndex != this.tintIndex || !(itemStack.getItem() instanceof DyeAble dyeAble)) return -1;
-            return dyeAble.getColor(itemStack);
-        }
-    }
 
     int getDefaultColor();
 

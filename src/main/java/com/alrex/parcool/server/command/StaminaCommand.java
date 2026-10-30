@@ -14,7 +14,7 @@ public class StaminaCommand {
 
     public static ArgumentBuilder<CommandSourceStack, ?> getBuilder() {
         return Commands.literal("stamina")
-                .then(Commands.literal("get").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                .then(Commands.literal("get").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .then(Commands.literal("value")
                                 .then(Commands.argument(ARG_NAME_PLAYER, EntityArgument.players()).executes(StaminaCommand::getValue))
                         )

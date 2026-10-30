@@ -20,23 +20,20 @@ import com.alrex.parcool.fabric.compat.registry.DeferredRegister;
 
 public class ParCoolItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, ParCool.MOD_ID);
-    public static final DeferredHolder<Item, BlockItem> WOODEN_ZIPLINE_HOOK = ITEMS.register("wooden_zipline_hook", () -> new BlockItem(Blocks.WOODEN_ZIPLINE_HOOK.get(), new Item.Properties()));
-    public static final DeferredHolder<Item, BlockItem> IRON_ZIPLINE_HOOK = ITEMS.register("iron_zipline_hook", () -> new BlockItem(Blocks.IRON_ZIPLINE_HOOK.get(), new Item.Properties()));
-    public static final DeferredHolder<Item, ZiplineRopeItem> ZIPLINE_ROPE = ITEMS.register("zipline_rope", () -> new ZiplineRopeItem(new Item.Properties()));
-    public static final DeferredHolder<Item, Item> HOOK = ITEMS.register("hook", () -> new Item(new Item.Properties()));
-    public static final DeferredHolder<Item, GrapplingHookItem> GRAPPLING_HOOK = ITEMS.register("grappling_hook", () -> new GrapplingHookItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredHolder<Item, TraceurGlovesItem> TRACEUR_GLOVES = ITEMS.register("traceur_gloves", () -> new TraceurGlovesItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredHolder<Item, TraceurBootsItem> TRACEUR_BOOTS = ITEMS.register("traceur_boots", () -> new TraceurBootsItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredHolder<Item, ParCoolGuideItem> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new ParCoolGuideItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, BlockItem> WOODEN_ZIPLINE_HOOK = ITEMS.register("wooden_zipline_hook", () -> new BlockItem(Blocks.WOODEN_ZIPLINE_HOOK.get(), new Item.Properties().setId(ITEMS.key("wooden_zipline_hook")).useBlockDescriptionPrefix()));
+    public static final DeferredHolder<Item, BlockItem> IRON_ZIPLINE_HOOK = ITEMS.register("iron_zipline_hook", () -> new BlockItem(Blocks.IRON_ZIPLINE_HOOK.get(), new Item.Properties().setId(ITEMS.key("iron_zipline_hook")).useBlockDescriptionPrefix()));
+    public static final DeferredHolder<Item, ZiplineRopeItem> ZIPLINE_ROPE = ITEMS.register("zipline_rope", () -> new ZiplineRopeItem(new Item.Properties().setId(ITEMS.key("zipline_rope"))));
+    public static final DeferredHolder<Item, Item> HOOK = ITEMS.register("hook", () -> new Item(new Item.Properties().setId(ITEMS.key("hook"))));
+    public static final DeferredHolder<Item, GrapplingHookItem> GRAPPLING_HOOK = ITEMS.register("grappling_hook", () -> new GrapplingHookItem(new Item.Properties().setId(ITEMS.key("grappling_hook")).stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, TraceurGlovesItem> TRACEUR_GLOVES = ITEMS.register("traceur_gloves", () -> new TraceurGlovesItem(new Item.Properties().setId(ITEMS.key("traceur_gloves")).stacksTo(1)));
+    public static final DeferredHolder<Item, TraceurBootsItem> TRACEUR_BOOTS = ITEMS.register("traceur_boots", () -> new TraceurBootsItem(new Item.Properties().setId(ITEMS.key("traceur_boots")).stacksTo(1)));
+    public static final DeferredHolder<Item, ParCoolGuideItem> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new ParCoolGuideItem(new Item.Properties().setId(ITEMS.key("parcool_guide")).stacksTo(1).rarity(Rarity.UNCOMMON)));
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
     }
 
-    @Environment(EnvType.CLIENT)
+    // Fabric port: item tints are data in 26.x (assets/parcool/items/*.json, "minecraft:dye").
     public static void registerColors() {
-        Minecraft.getInstance().getItemColors().register(new DyeAble.DyedColor(0), ZIPLINE_ROPE::get);
-        Minecraft.getInstance().getItemColors().register(new DyeAble.DyedColor(0), TRACEUR_GLOVES::get);
-        Minecraft.getInstance().getItemColors().register(new DyeAble.DyedColor(0), TRACEUR_BOOTS::get);
     }
 }
