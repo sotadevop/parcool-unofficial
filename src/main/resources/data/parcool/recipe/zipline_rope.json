@@ -6,18 +6,10 @@
     "SCr"
   ],
   "key": {
-    "n": {
-      "item": "minecraft:iron_nugget"
-    },
-    "C": {
-      "item": "minecraft:chain"
-    },
-    "S": {
-      "item": "minecraft:string"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    }
+    "n": "minecraft:iron_nugget",
+    "C": "minecraft:iron_chain",
+    "S": "minecraft:string",
+    "r": "minecraft:redstone"
   },
   "result": {
     "id": "parcool:zipline_rope",

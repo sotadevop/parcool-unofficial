@@ -1,18 +1,10 @@
 {
-  "type": "crafting_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:redstone_torch"
-    },
-    {
-      "item": "minecraft:feather"
-    },
-    {
-      "item": "minecraft:feather"
-    },
-    {
-      "item": "minecraft:book"
-    }
+    "minecraft:redstone_torch",
+    "minecraft:feather",
+    "minecraft:feather",
+    "minecraft:book"
   ],
   "result": {
     "id": "parcool:parcool_guide"

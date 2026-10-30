@@ -6,12 +6,8 @@
     "nn "
   ],
   "key": {
-    "n": {
-      "item": "minecraft:iron_nugget"
-    },
-    "l": {
-      "item": "minecraft:leather"
-    }
+    "n": "minecraft:iron_nugget",
+    "l": "minecraft:leather"
   },
   "result": {
     "id": "parcool:traceur_gloves",
