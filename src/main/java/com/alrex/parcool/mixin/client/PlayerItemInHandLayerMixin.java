@@ -2,39 +2,29 @@ package com.alrex.parcool.mixin.client;
 
 import com.alrex.parcool.common.item.armor.EquipAble;
 import com.alrex.parcool.common.item.misc.GrapplingHookItem;
+import com.alrex.parcool.fabric.compat.IAvatarRenderStateEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.ArmedModel;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HeadedModel;
-import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/** Third person: hides the held item when it is drawn as equipment or is a deployed grappling hook. */
 @Mixin(PlayerItemInHandLayer.class)
-public class PlayerItemInHandLayerMixin<T extends Player, M extends EntityModel<T> & ArmedModel & HeadedModel> extends ItemInHandLayer<T, M> {
-
-    public PlayerItemInHandLayerMixin(RenderLayerParent<T, M> parent, ItemInHandRenderer renderer) {
-        super(parent, renderer);
-    }
-
-    @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/ItemInHandLayer;renderArmWithItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;Lnet/minecraft/world/entity/HumanoidArm;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V"), cancellable = true)
-    private void onRenderArmWithItem(LivingEntity entity, ItemStack stack, ItemDisplayContext displayContext, HumanoidArm arm, PoseStack poseStack, MultiBufferSource multiBufferSource, int p_270295_, CallbackInfo ci) {
+public abstract class PlayerItemInHandLayerMixin {
+    @Inject(method = "submitArmWithItem(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Lnet/minecraft/client/renderer/item/ItemStackRenderState;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/HumanoidArm;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V", at = @At("HEAD"), cancellable = true)
+    private void onSubmitArmWithItem(AvatarRenderState state, ItemStackRenderState itemState, ItemStack stack, HumanoidArm arm, PoseStack poseStack, SubmitNodeCollector collector, int light, CallbackInfo ci) {
+        var player = ((IAvatarRenderStateEntity) state).parcool$getPlayer();
+        if (player == null) return;
         if (stack.getItem() instanceof EquipAble equipAble) {
-            if (equipAble.renderWhenIn(entity, arm)) {
-                ci.cancel();
-            }
-        } else if (stack.getItem() instanceof GrapplingHookItem && GrapplingHookItem.isDeployed(entity)) {
+            if (equipAble.renderWhenIn(player, arm)) ci.cancel();
+        } else if (stack.getItem() instanceof GrapplingHookItem && GrapplingHookItem.isDeployed(player)) {
             ci.cancel();
         }
     }

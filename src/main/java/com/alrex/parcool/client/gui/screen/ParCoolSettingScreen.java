@@ -147,7 +147,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
 
     @Override
     public void extractBackground(@Nullable GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        extractBlurredBackground(partialTick);
+        extractBlurredBackground(graphics);
     }
 
     private AbstractWidget createSkillOptions(int x, int y, int width, int height) {
@@ -295,7 +295,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                         new ClickableTextWidget(
                                 font, 0, (rowHeight - font.lineHeight) / 2, width - 16, Component.literal(text),
                                 TextWidget.HorizontalAlignment.END, 0xFF0994E9, 0xFFEB622B,
-                                () -> Minecraft.getInstance().gui.setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, link.getB()), link.getB(), false))
+                                () -> Minecraft.getInstance().gui.setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, link.getB()), java.net.URI.create(link.getB()), false))
                         )
                 )));
                 subWidgetY += rowHeight;
@@ -392,7 +392,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         }
 
         @Override
-        protected int getRowTop(int idx) {
+        public int getRowTop(int idx) {
             return super.getRowTop(idx) - 2;
         }
 

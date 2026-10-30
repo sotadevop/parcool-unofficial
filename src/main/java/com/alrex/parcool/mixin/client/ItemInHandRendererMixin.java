@@ -3,9 +3,11 @@ package com.alrex.parcool.mixin.client;
 import com.alrex.parcool.common.item.armor.EquipAble;
 import com.alrex.parcool.common.item.misc.GrapplingHookItem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
@@ -15,21 +17,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ItemInHandRenderer.class)
+/**
+ * First person: also draws the bare arm when it holds equipment that is shown on the arm (traceur
+ * gloves) or a deployed grappling hook. Upstream popped the item transform and drew the arm right
+ * before the item; at the head of submitArmWithItem the pose is that same base pose. 26.x renamed
+ * ItemInHandRenderer to FirstPersonHandsAndItemsRenderer and passes render states; first person is
+ * always the local player.
+ */
+@Mixin(FirstPersonHandsAndItemsRenderer.class)
 public abstract class ItemInHandRendererMixin {
     @Shadow
-    protected abstract void renderPlayerArm(PoseStack p_109347_, MultiBufferSource p_109348_, int p_109349_, float p_109350_, float p_109351_, HumanoidArm p_109352_);
+    protected abstract void renderPlayerArm(PoseStack poseStack, SubmitNodeCollector collector, int light, float equipProgress, float attackProgress, HumanoidArm arm, PlayerRenderState playerState);
 
-    @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V"))
-    private void onRenderItemInRenderArmWithItem(AbstractClientPlayer player, float p_109373_, float p_109374_, InteractionHand hand, float p_109376_, ItemStack stack, float p_109378_, PoseStack poseStack, MultiBufferSource bufferSource, int p_109381_, CallbackInfo ci) {
+    @Inject(method = "submitArmWithItem", at = @At("HEAD"))
+    private void onSubmitArmWithItem(PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState handsState, float frameInterp, float xRot, InteractionHand hand, float attackProgress, ItemStack stack, float equipProgress, PoseStack poseStack, SubmitNodeCollector collector, int light, CallbackInfo ci) {
+        var player = Minecraft.getInstance().player;
+        if (player == null || stack.isEmpty()) return;
         var arm = hand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite();
         boolean showBareArm = stack.getItem() instanceof EquipAble equipAble
                 ? equipAble.renderWhenIn(player, arm)
                 : stack.getItem() instanceof GrapplingHookItem && GrapplingHookItem.isDeployed(player);
         if (showBareArm) {
-            poseStack.popPose();
-            this.renderPlayerArm(poseStack, bufferSource, p_109381_, p_109378_, p_109376_, arm);
             poseStack.pushPose();
+            this.renderPlayerArm(poseStack, collector, light, equipProgress, attackProgress, arm, playerState);
+            poseStack.popPose();
         }
     }
 }

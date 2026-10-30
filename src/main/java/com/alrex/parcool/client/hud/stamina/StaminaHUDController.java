@@ -8,7 +8,7 @@ import com.alrex.parcool.common.Parkourability;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.LayeredDraw;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,7 +18,10 @@ import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
 import javax.annotation.Nonnull;
 
 @Environment(EnvType.CLIENT)
-public class StaminaHUDController implements LayeredDraw.Layer {
+public class StaminaHUDController implements HudElement {
+	/** Rows the light HUD took in the last frame, for HudStatusBarHeightRegistry. */
+	private boolean shownLastFrame;
+
 	LightStaminaHUD lightStaminaHUD;
 
 	private StaminaDisplayContext currentContext = StaminaDisplayContext.DEFAULT;
@@ -48,6 +51,7 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 
 	@Override
     public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, @Nonnull DeltaTracker deltaTracker) {
+		shownLastFrame = false;
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
@@ -64,8 +68,14 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 
 		if (ParCool.getConfig().client().staminaHud.type().get() == HUDType.Light) {
             lightStaminaHUD.extractRenderState(guiGraphics, parkourability, currentContext, oldContext, deltaTracker);
+			shownLastFrame = true;
 		}
 
         ParCoolEventBus.post(new RenderParCoolHUDEvent.Render.Stamina.Post(guiGraphics, deltaTracker.getGameTimeDeltaPartialTick(true), currentContext, oldContext));
+	}
+
+	/** Height this HUD adds to the right status bar column (one 10 px row while it is shown). */
+	public int statusBarHeight() {
+		return shownLastFrame ? 10 : 0;
 	}
 }

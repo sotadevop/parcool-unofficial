@@ -1,5 +1,8 @@
 package com.alrex.parcool.fabric;
 
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import com.alrex.parcool.client.renderer.GrappleRopeRenderer;
+
 import com.alrex.parcool.client.GrappleCameraHandler;
 import com.alrex.parcool.client.GrappleTargetOverlay;
 import com.alrex.parcool.client.animation.PassiveAnimationProcessor;
@@ -47,6 +50,7 @@ public final class FabricClientEventBridge {
         });
         HudElementRegistry.addLast(com.alrex.parcool.ParCool.resourceLocation("grapple_target"),
                 (graphics, deltaTracker) -> GrappleTargetOverlay.onRenderGui(new RenderGuiEvent.Post(graphics, deltaTracker)));
+        LevelRenderEvents.COLLECT_SUBMITS.register(GrappleRopeRenderer::onRenderLevel);
         // Upstream registers this listener with low priority, i.e. after ActionProcessor's.
         var passiveAnimations = new PassiveAnimationProcessor();
         FabricEventBridge.PLAYER_TICK_LATE.add(passiveAnimations::onTick);

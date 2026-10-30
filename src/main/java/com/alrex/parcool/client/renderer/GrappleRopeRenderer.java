@@ -1,5 +1,10 @@
 package com.alrex.parcool.client.renderer;
 
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
@@ -14,9 +19,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -28,7 +30,6 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import com.alrex.parcool.fabric.compat.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -42,6 +43,7 @@ public class GrappleRopeRenderer {
 
     public static final Identifier TIP_TEXTURE_LOCATION = ParCool.resourceLocation("textures/item/grappling_hook_model.png");
 
+    private static final RenderType TIP_RENDER_TYPE = net.minecraft.client.renderer.rendertype.RenderTypes.entityCutout(TIP_TEXTURE_LOCATION);
     private static GrappleTipModel tipModel = null;
 
     private static final float ROPE_RADIUS = 0.04f;
@@ -55,15 +57,14 @@ public class GrappleRopeRenderer {
     private static final double CORNER_RADIUS = 0.4;
     private static final int CORNER_STEPS = 7;
 
-    public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
+    /** Fabric LevelRenderEvents.COLLECT_SUBMITS; upstream drew in RenderLevelStageEvent AFTER_ENTITIES. */
+    public static void onRenderLevel(LevelRenderContext context) {
         Minecraft minecraft = Minecraft.getInstance();
         Level level = minecraft.level;
         if (level == null) return;
 
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
-        Camera camera = event.getCamera();
-        MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
+        float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true);
+        Camera camera = minecraft.gameRenderer.getMainCamera();
         List<RopePath> paths = null;
         for (Player player : level.players()) {
             RopePath path = buildPath(minecraft, player, camera, partialTick);
@@ -73,27 +74,25 @@ public class GrappleRopeRenderer {
         }
         if (paths == null) return;
 
-        PoseStack poseStack = event.getPoseStack();
+        PoseStack poseStack = context.poseStack();
+        SubmitNodeCollector collector = context.submitNodeCollector();
         Vec3 cameraPosition = camera.position();
-        VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.GRAPPLE_ROPE);
 
         poseStack.pushPose();
         poseStack.translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
-        var matrix = poseStack.last().pose();
+        final List<RopePath> ropes = paths;
+        collector.submitCustomGeometry(poseStack, RenderTypes.GRAPPLE_ROPE, (pose, consumer) -> {
+            for (RopePath path : ropes) {
+                renderRope(pose.pose(), consumer, level, path);
+            }
+        });
         for (RopePath path : paths) {
-            renderRope(matrix, consumer, level, path);
-        }
-        bufferSource.endBatch(RenderTypes.GRAPPLE_ROPE);
-
-        VertexConsumer tipConsumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(TIP_TEXTURE_LOCATION));
-        for (RopePath path : paths) {
-            renderTip(poseStack, tipConsumer, level, path);
+            renderTip(poseStack, collector, level, path);
         }
         poseStack.popPose();
-        bufferSource.endBatch(RenderType.entityCutoutNoCull(TIP_TEXTURE_LOCATION));
     }
 
-    private static void renderTip(PoseStack poseStack, VertexConsumer consumer, Level level, RopePath path) {
+    private static void renderTip(PoseStack poseStack, SubmitNodeCollector collector, Level level, RopePath path) {
         List<Vec3> points = path.points();
         if (points.size() < 2) return;
         if (tipModel == null) {
@@ -110,11 +109,12 @@ public class GrappleRopeRenderer {
 
         poseStack.pushPose();
         poseStack.translate(end.x, end.y, end.z);
-        poseStack.mulPose(MathUtil.rotation(Vec3f.YP, (float) Math.atan2(up.x, up.z)));
-        poseStack.mulPose(MathUtil.rotation(Vec3f.XP, (float) Math.atan2(horizontal, up.y)));
+        // 26.x PoseStack#mulPose takes a matrix, not a quaternion.
+        poseStack.mulPose(new Matrix4f().rotation(MathUtil.rotation(Vec3f.YP, (float) Math.atan2(up.x, up.z))));
+        poseStack.mulPose(new Matrix4f().rotation(MathUtil.rotation(Vec3f.XP, (float) Math.atan2(horizontal, up.y))));
 
         poseStack.scale(-1f, -1f, 1f);
-        tipModel.render(poseStack, consumer, lightAt(level, end), OverlayTexture.NO_OVERLAY);
+        tipModel.submit(poseStack, collector, TIP_RENDER_TYPE, lightAt(level, end), OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 
@@ -329,9 +329,9 @@ public class GrappleRopeRenderer {
     }
 
     private static int lightAlong(int startLight, int endLight, float phase) {
-        return LightTexture.pack(
-                (int) Mth.lerp(phase, LightTexture.block(startLight), LightTexture.block(endLight)),
-                (int) Mth.lerp(phase, LightTexture.sky(startLight), LightTexture.sky(endLight))
+        return LightCoordsUtil.pack(
+                (int) Mth.lerp(phase, LightCoordsUtil.block(startLight), LightCoordsUtil.block(endLight)),
+                (int) Mth.lerp(phase, LightCoordsUtil.sky(startLight), LightCoordsUtil.sky(endLight))
         );
     }
 
@@ -397,6 +397,6 @@ public class GrappleRopeRenderer {
         BlockPos pos = new BlockPos(
                 Mth.floor(position.x), Mth.floor(position.y), Mth.floor(position.z)
         );
-        return LightTexture.pack(level.getBrightness(LightLayer.BLOCK, pos), level.getBrightness(LightLayer.SKY, pos));
+        return LightCoordsUtil.pack(level.getBrightness(LightLayer.BLOCK, pos), level.getBrightness(LightLayer.SKY, pos));
     }
 }

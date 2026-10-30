@@ -1,125 +1,129 @@
 package com.alrex.parcool.client.renderer.entity.layers;
 
+import com.alrex.parcool.client.renderer.entity.ParCoolModelPoser;
 import com.alrex.parcool.common.item.armor.EquipAble;
+
 import com.alrex.parcool.extern.AdditionalMods;
+import com.alrex.parcool.fabric.compat.IAvatarRenderStateEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import javax.annotation.Nonnull;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
+/**
+ * Draws ParCool equipment (traceur gloves and boots) on players. 26.x layers only get a render
+ * state; the player comes from IAvatarRenderStateEntity. Known difference to upstream: no
+ * enchantment glint on the equipment model.
+ */
 @Environment(EnvType.CLIENT)
-public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> extends RenderLayer<T, M> {
-    private final A innerLayer;
-    private final A outerLayer;
+public class ParCoolGeneralEquipmentLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+    // One model per slot and layer, each baked separately (as vanilla's armor layer does): submits are
+    // drawn later, so models must not share parts whose visibility differs per slot.
+    private final Map<EquipmentSlot, EquipmentModel> innerModels = new EnumMap<>(EquipmentSlot.class);
+    private final Map<EquipmentSlot, EquipmentModel> outerModels = new EnumMap<>(EquipmentSlot.class);
 
-    public ParCoolGeneralEquipmentLayer(RenderLayerParent<T, M> parent, A innerLayer, A outerLayer) {
+    public ParCoolGeneralEquipmentLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, Supplier<ModelPart> innerLayer, Supplier<ModelPart> outerLayer) {
         super(parent);
-        this.innerLayer = innerLayer;
-        this.outerLayer = outerLayer;
+        for (var slot : EquipmentSlot.values()) {
+            innerModels.put(slot, new EquipmentModel(innerLayer.get(), slot));
+            outerModels.put(slot, new EquipmentModel(outerLayer.get(), slot));
+        }
     }
 
     @Override
-    public void render(
-            @Nonnull PoseStack poseStack,
-            @Nonnull MultiBufferSource buffer,
-            int packedLight,
-            @Nonnull T entity,
-            float limbSwing,
-            float limbSwingAmount,
-            float partialTicks,
-            float ageInTicks,
-            float netHeadYaw,
-            float headPitch
-    ) {
-        if (!shouldRenderModel(entity)) return;
+    public void submit(@Nonnull PoseStack poseStack, @Nonnull SubmitNodeCollector collector, int packedLight, @Nonnull AvatarRenderState state, float yRot, float xRot) {
+        var entity = ((IAvatarRenderStateEntity) state).parcool$getPlayer();
+        if (entity == null || !shouldRenderModel(entity)) return;
         for (var slot : EquipmentSlot.values()) {
             var itemStack = entity.getItemBySlot(slot);
             if (!(itemStack.getItem() instanceof EquipAble equipAble)) continue;
             for (var layer : EquipmentRenderLayer.values()) {
-                renderEquipment(poseStack, buffer, equipAble, itemStack, entity, slot, layer, packedLight);
+                renderEquipment(poseStack, collector, equipAble, itemStack, entity, state, slot, layer, packedLight);
             }
         }
-        if (entity instanceof Player player && AdditionalMods.curios().isInstalled()) {
-            AdditionalMods.curios().getRenderAbleGeneralEquipments(player).forEach(itemStack -> {
+        if (AdditionalMods.curios().isInstalled()) {
+            AdditionalMods.curios().getRenderAbleGeneralEquipments(entity).forEach(itemStack -> {
                 if (!(itemStack.getItem() instanceof EquipAble equipAble)) return;
                 var slot = equipAble.getEquipmentSlot();
                 for (var layer : EquipmentRenderLayer.values()) {
-                    renderEquipment(poseStack, buffer, equipAble, itemStack, entity, slot, layer, packedLight);
+                    renderEquipment(poseStack, collector, equipAble, itemStack, entity, state, slot, layer, packedLight);
                 }
             });
         }
     }
 
-    private void renderEquipment(
-            PoseStack poseStack,
-            MultiBufferSource multiBufferSource,
-            EquipAble equipAble,
-            ItemStack itemStack,
-            T entity,
-            EquipmentSlot slot,
-            EquipmentRenderLayer layer,
-            int light
-    ) {
+    private void renderEquipment(PoseStack poseStack, SubmitNodeCollector collector, EquipAble equipAble, ItemStack itemStack,
+                                 LivingEntity entity, AvatarRenderState state, EquipmentSlot slot, EquipmentRenderLayer layer, int light) {
         var texture = equipAble.getEquipmentTexture(entity, slot, layer);
         if (texture == null) return;
         var model = switch (layer) {
-            case INNER -> innerLayer;
-            case OUTER -> outerLayer;
+            case INNER -> innerModels.get(slot);
+            case OUTER -> outerModels.get(slot);
         };
-        setPartVisibility(model, slot);
-        this.getParentModel().copyPropertiesTo(model);
-        if (equipAble.hasCustomEquipmentColor()) {
-            var color = equipAble.getCustomEquipmentColor(itemStack);
-            renderModel(poseStack, multiBufferSource, light, itemStack.hasFoil(), model, color, texture);
-        } else {
-            renderModel(poseStack, multiBufferSource, light, itemStack.hasFoil(), model, ~0, texture);
-        }
+        int color = equipAble.hasCustomEquipmentColor() ? equipAble.getCustomEquipmentColor(itemStack) : ~0;
+        model.setupAnim(state);
+        renderColoredCutoutModel(model, texture, poseStack, collector, light, state, color, 0);
     }
 
-    protected void setPartVisibility(A model, EquipmentSlot slot) {
-        model.setAllVisible(false);
+    static void setPartVisibility(HumanoidModel<?> model, EquipmentSlot slot) {
+        for (var part : model.allParts()) part.visible = false;
+        model.root().visible = true;
         switch (slot) {
-            case HEAD:
+            case HEAD -> {
                 model.head.visible = true;
                 model.hat.visible = true;
-                break;
-            case CHEST, MAINHAND, OFFHAND:
+            }
+            case CHEST, MAINHAND, OFFHAND -> {
                 model.body.visible = true;
                 model.rightArm.visible = true;
                 model.leftArm.visible = true;
-                break;
-            case LEGS:
+            }
+            case LEGS -> {
                 model.body.visible = true;
                 model.rightLeg.visible = true;
                 model.leftLeg.visible = true;
-                break;
-            case FEET:
+            }
+            case FEET -> {
                 model.rightLeg.visible = true;
                 model.leftLeg.visible = true;
+            }
+            default -> {
+            }
         }
     }
 
-    private void renderModel(PoseStack stack, MultiBufferSource bufferSource, int packedLight, boolean hasFoil, Model model, int color, Identifier textureLocation) {
-        var vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferSource, RenderType.armorCutoutNoCull(textureLocation), hasFoil);
-        model.renderToBuffer(stack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, color);
+    private boolean shouldRenderModel(Player player) {
+        return !AdditionalMods.epicFight().isBattleMode(player);
     }
 
-    private boolean shouldRenderModel(Entity entity) {
-        return !(entity instanceof Player player) || !AdditionalMods.epicFight().isBattleMode(player);
+    /** Poses itself with ParCool's animation, like the player model it is drawn over. */
+    private static final class EquipmentModel extends HumanoidModel<AvatarRenderState> {
+        private final EquipmentSlot slot;
+
+        EquipmentModel(ModelPart root, EquipmentSlot slot) {
+            super(root);
+            this.slot = slot;
+        }
+
+        @Override
+        public void setupAnim(@Nonnull AvatarRenderState state) {
+            ParCoolModelPoser.setupAnim(this, state, () -> super.setupAnim(state));
+            setPartVisibility(this, slot);
+        }
     }
 }

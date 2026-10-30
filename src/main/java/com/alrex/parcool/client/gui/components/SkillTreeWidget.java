@@ -147,7 +147,7 @@ public class SkillTreeWidget extends AbstractWidget {
         boolean mouseIsOutOfWidget = mouseX < getX() || getX() + width < mouseX || mouseY < getY() || getY() + height < mouseY;
         poseStack.pushMatrix();
         {
-            GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
+            GuiRenderUtil.enableScissorTestInGuiCoordinate(graphics, getX(), getY(), width, height);
             int mouseXScaled = mouseIsOutOfWidget ? -1 : (int) getMouseXInContent(mouseX);
             int mouseYScaled = mouseIsOutOfWidget ? -1 : (int) getMouseYInContent(mouseY);
 
@@ -160,7 +160,7 @@ public class SkillTreeWidget extends AbstractWidget {
             for (var widget : icons) {
                 widget.extractRenderState(graphics, mouseXScaled, mouseYScaled, partialTick);
             }
-            RenderSystem.disableScissor();
+            graphics.disableScissor();
         }
         poseStack.popMatrix();
     }
@@ -174,8 +174,6 @@ public class SkillTreeWidget extends AbstractWidget {
         double mouseX = event.x();
         double mouseY = event.y();
         int mouseButton = event.button();
-        double dragX = dragX;
-        double dragY = dragY;
         scrollX -= dragX / scale;
         scrollY -= dragY / scale;
         limitScroll();
@@ -261,13 +259,11 @@ public class SkillTreeWidget extends AbstractWidget {
         @Override
         public void extractContents(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             if (entry.isVisible(parkourability)) {
-                if (isHovered)
-                    RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
-                else
+                int tint = isHovered ? GuiRenderUtil.tint(0.9f, 0.9f, 0.9f, 1f) : ~0;
                 graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ParCoolTextures.guiSprite(entry.isUnlocked(parkourability)
                                 ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED
                                 : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_LOCKED
-                        ), this.getX(), this.getY(), this.width, this.height);
+                        ), this.getX(), this.getY(), this.width, this.height, tint);
                 if (visible) {
                     graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ParCoolTextures.action(entry.getActionEntry()), this.getX(), this.getY(), this.width, this.height);
                 }

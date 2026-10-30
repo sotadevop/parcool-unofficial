@@ -51,7 +51,7 @@ public class ScrollableWidgetGroup extends WidgetGroup {
     @Override
     public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
-        GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
+        GuiRenderUtil.enableScissorTestInGuiCoordinate(graphics, getX(), getY(), width, height);
         var poseStack = graphics.pose();
         poseStack.pushMatrix();
         {
@@ -59,7 +59,7 @@ public class ScrollableWidgetGroup extends WidgetGroup {
             super.extractWidgetRenderState(graphics, mouseX + scrollX, mouseY + scrollY, partial);
         }
         poseStack.popMatrix();
-        RenderSystem.disableScissor();
+        graphics.disableScissor();
     }
 
     @Override

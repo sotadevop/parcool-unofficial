@@ -14,7 +14,7 @@ public class GuiHelper {
         var parkourability = Parkourability.get(player);
         Minecraft.getInstance().gui.setScreen(new ParCoolSkillTreeScreen(
                 parkourability, parkourability.getSkillTrees(),
-                player.getInventory().contains(itemStack -> itemStack.is(ParCoolItems.PARCOOL_GUIDE))
+                player.getInventory().contains(itemStack -> itemStack.is(ParCoolItems.PARCOOL_GUIDE.get()))
         ));
     }
 

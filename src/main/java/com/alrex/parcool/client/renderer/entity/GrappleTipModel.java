@@ -1,5 +1,8 @@
 package com.alrex.parcool.client.renderer.entity;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -38,7 +41,7 @@ public class GrappleTipModel {
         return LayerDefinition.create(mesh, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
-    public void render(PoseStack poseStack, VertexConsumer consumer, int light, int overlay) {
-        tip.render(poseStack, consumer, light, overlay);
+    public void submit(PoseStack poseStack, SubmitNodeCollector collector, RenderType renderType, int light, int overlay) {
+        collector.submitModelPart(tip, poseStack, renderType, light, overlay, null);
     }
 }

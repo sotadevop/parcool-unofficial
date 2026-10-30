@@ -1,5 +1,8 @@
 package com.alrex.parcool.client.hud.stamina;
 
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
+import com.alrex.parcool.client.hud.HUDRegistry;
+
 import net.minecraft.client.renderer.RenderPipelines;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolMobEffects;
@@ -58,7 +61,7 @@ public class LightStaminaHUD implements IStaminaHUD {
         final int width = guiGraphics.guiWidth();
         final int height = guiGraphics.guiHeight();
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
-        int baseY = height - Minecraft.getInstance().gui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
+        int baseY = height - HudStatusBarHeightRegistry.getHeight(HUDRegistry.STAMINA_ID) + ParCool.getConfig().client().staminaHud.offsetVertical().get();
 		for (int i = 0; i < 10; i++) {
 			TextureAtlasSprite staminaSprite;
 			int x = baseX - i * 8 - 9;
@@ -101,6 +104,5 @@ public class LightStaminaHUD implements IStaminaHUD {
 
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, staminaSprite, x, baseY + offsetY, 9, 9);
 		}
-        Minecraft.getInstance().gui.rightHeight += 10;
 	}
 }

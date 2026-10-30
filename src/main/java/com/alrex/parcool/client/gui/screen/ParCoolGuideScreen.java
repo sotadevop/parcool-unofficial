@@ -59,7 +59,7 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
                             content,
                             colors.onSurface(),
                             pageStack::pushPage,
-                            (url) -> Minecraft.getInstance().gui.setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, url), url, false))
+                            (url) -> Minecraft.getInstance().gui.setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, url), java.net.URI.create(url), false))
                     )
             );
         }

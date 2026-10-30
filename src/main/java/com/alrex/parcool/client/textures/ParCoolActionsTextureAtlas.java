@@ -1,23 +1,14 @@
 package com.alrex.parcool.client.textures;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.action.ActionEntry;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.TextureAtlasHolder;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
-@Environment(EnvType.CLIENT)
-public class ParCoolActionsTextureAtlas extends TextureAtlasHolder {
-    public static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/action_icons.png");
+/** Kept for call sites; the sprites are in the vanilla GUI atlas (see ParCoolTextures). */
+public final class ParCoolActionsTextureAtlas {
+    public static final Identifier TEXTURE_LOCATION = AtlasIds.GUI;
 
-    protected ParCoolActionsTextureAtlas(TextureManager manager) {
-        super(manager, TEXTURE_LOCATION, ParCool.resourceLocation("parcool_actions"));
-    }
-
-    public TextureAtlasSprite getSprite(ActionEntry<?> entry) {
-        return getSprite(entry.id());
+    private ParCoolActionsTextureAtlas() {
     }
 }

@@ -103,7 +103,7 @@ public class MarkdownWidget extends AbstractWidget {
         var poseStack = graphics.pose();
         poseStack.pushMatrix();
         {
-            GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
+            GuiRenderUtil.enableScissorTestInGuiCoordinate(graphics, getX(), getY(), width, height);
 
             var mouseXInContent = mouseX - getX();
             if (mouseXInContent < 0 || width < mouseXInContent) mouseXInContent = -1;
@@ -115,7 +115,7 @@ public class MarkdownWidget extends AbstractWidget {
             for (var widget : contentRendererWidgets) {
                 widget.extractRenderState(graphics, mouseXInContent, mouseYInContent, partial);
             }
-            RenderSystem.disableScissor();
+            graphics.disableScissor();
         }
         poseStack.popMatrix();
     }
@@ -277,7 +277,7 @@ public class MarkdownWidget extends AbstractWidget {
                         }
                         textStyle = style.withItalic(true);
                     } else if (text instanceof MarkdownText.ExtensionMCItemName itemName) {
-                        var item = BuiltInRegistries.ITEM.get(itemName.id());
+                        var item = BuiltInRegistries.ITEM.getValue(itemName.id());
                         str = I18n.get(item.getDescriptionId());
                         textStyle = style.withItalic(true);
                     }
@@ -378,8 +378,7 @@ public class MarkdownWidget extends AbstractWidget {
             }
             poseStack.popMatrix();
             if (bottomLine) {
-                RenderSystem.setShaderColor(1f, 1f, 1f, 0.4f);
-                graphics.horizontalLine(getX(), getX() + width, getY() + Mth.ceil(widget.getHeight() * scale), textColor());
+                graphics.horizontalLine(getX(), getX() + width, getY() + Mth.ceil(widget.getHeight() * scale), GuiRenderUtil.scaleAlpha(textColor(), 0.4f));
             }
         }
     }
@@ -391,8 +390,7 @@ public class MarkdownWidget extends AbstractWidget {
 
         @Override
         public void extractWidgetRenderState(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
-            RenderSystem.setShaderColor(1, 1, 1, 0.5f);
-            graphics.horizontalLine(getX() + 5, getX() + width - 5, getY() + 1, textColor());
+            graphics.horizontalLine(getX() + 5, getX() + width - 5, getY() + 1, GuiRenderUtil.scaleAlpha(textColor(), 0.5f));
         }
     }
 
@@ -543,7 +541,7 @@ public class MarkdownWidget extends AbstractWidget {
             scale = width / 127f;
             setHeight((int) (scale * 20f));
             recipes = new ArrayList<>();
-            var outputPotion = BuiltInRegistries.POTION.get(content.potionId());
+            var outputPotion = BuiltInRegistries.POTION.getValue(content.potionId());
             if (outputPotion == null) return;
             var connection = Minecraft.getInstance().getConnection();
             if (connection != null) {

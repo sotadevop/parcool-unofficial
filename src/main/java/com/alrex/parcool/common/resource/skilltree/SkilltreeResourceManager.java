@@ -1,5 +1,8 @@
 package com.alrex.parcool.common.resource.skilltree;
 
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.resources.FileToIdConverter;
+
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.skilltree.SkillTree;
@@ -19,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class SkilltreeResourceManager extends SimpleJsonResourceReloadListener {
+public class SkilltreeResourceManager extends SimpleJsonResourceReloadListener<JsonElement> {
     @Nullable
     private static SkilltreeResourceManager INSTANCE = null;
 
@@ -34,7 +37,7 @@ public class SkilltreeResourceManager extends SimpleJsonResourceReloadListener {
     private List<SkillTree> skillTrees;
 
     public SkilltreeResourceManager(ActionRegistry actionRegistry) {
-        super(GSON, "parcool/skilltree");
+        super(ExtraCodecs.JSON, FileToIdConverter.json("parcool/skilltree"));
         this.actionRegistry = actionRegistry;
     }
 

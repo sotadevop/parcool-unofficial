@@ -137,9 +137,9 @@ public class ParCoolTabletScreen extends Screen {
         poseStack.pushMatrix();
         {
             graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_LOCATION, frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, 256, 256);
-            GuiRenderUtil.enableScissorTestInGuiCoordinate(frameOffsetX + 22, frameOffsetY + 7, 224, font.lineHeight + 5);
-            graphics.text(font, topBarText, frameOffsetX + 23, frameOffsetY + 8, 0x37474F, false);
-            RenderSystem.disableScissor();
+            GuiRenderUtil.enableScissorTestInGuiCoordinate(graphics, frameOffsetX + 22, frameOffsetY + 7, 224, font.lineHeight + 5);
+            graphics.text(font, topBarText, frameOffsetX + 23, frameOffsetY + 8, 0xFF37474F, false);
+            graphics.disableScissor();
         }
         poseStack.popMatrix();
     }
@@ -181,10 +181,8 @@ public class ParCoolTabletScreen extends Screen {
 
         @Override
         public void extractContents(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
-            if (isHovered) {
-                RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 1f);
-            }
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height);
+            int tint = isHovered ? GuiRenderUtil.tint(0.8f, 0.8f, 0.8f, 1f) : ~0;
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, getX(), getY(), width, height, tint);
         }
 
         @Override

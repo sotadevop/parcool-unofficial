@@ -1,9 +1,10 @@
 package com.alrex.parcool.client.textures;
 
+import net.minecraft.data.AtlasIds;
+
 import com.alrex.parcool.ParCool;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,8 +12,8 @@ import net.fabricmc.api.Environment;
 import javax.annotation.Nonnull;
 
 @Environment(EnvType.CLIENT)
-public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
-    public static final Identifier TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/gui.png");
+public final class ParCoolGuiTextureAtlas {
+    public static final Identifier TEXTURE_LOCATION = AtlasIds.GUI;
 
     public static final Identifier BREWING_RECIPE_BOX = register("icon/brewing_recipe_box");
     public static final Identifier STAMINA_FULL = register("hud/stamina_full");
@@ -57,15 +58,9 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final Identifier BUTTON_EXPAND = register("icon/button_expand");
     public static final Identifier BUTTON_SHRINK = register("icon/button_shrink");
 
-    public ParCoolGuiTextureAtlas(TextureManager manager) {
-        super(manager, TEXTURE_LOCATION, ParCool.resourceLocation("gui_sprites"));
+    private ParCoolGuiTextureAtlas() {
     }
 
-    @Nonnull
-    @Override
-    public TextureAtlasSprite getSprite(@Nonnull Identifier spriteId) {
-        return super.getSprite(spriteId);
-    }
 
     private static Identifier register(String path) {
         return ParCool.resourceLocation(path);

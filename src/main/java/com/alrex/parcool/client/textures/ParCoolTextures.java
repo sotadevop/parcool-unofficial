@@ -1,48 +1,42 @@
 package com.alrex.parcool.client.textures;
 
 import com.alrex.parcool.api.action.ActionEntry;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.Identifier;
+import com.alrex.parcool.fabric.compat.event.RegisterClientReloadListenersEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import com.alrex.parcool.fabric.compat.event.RegisterClientReloadListenersEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
 
+/**
+ * Upstream stitched three atlases of its own (TextureAtlasHolder, removed in 26.x). The vanilla GUI
+ * atlas already collects textures/gui/sprites from every namespace, so ParCool's GUI sprites, action
+ * icons (gui/sprites/parcool_actions) and guide images (gui/sprites/parcool_guide) are taken from it.
+ */
 @Environment(EnvType.CLIENT)
 public class ParCoolTextures {
-    private static ParCoolTextures INSTANCE;
-
-    private final ParCoolActionsTextureAtlas actionsTextureAtlas;
-    private final ParCoolGuiTextureAtlas guiTextureAtlas;
-    private final ParCoolGuideImageTextureAtlas guideImageTextureAtlas;
+    private ParCoolTextures() {
+    }
 
     public static void init(RegisterClientReloadListenersEvent event) {
-        INSTANCE = new ParCoolTextures(Minecraft.getInstance().getTextureManager());
-        event.registerReloadListener(INSTANCE.actionsTextureAtlas);
-        event.registerReloadListener(INSTANCE.guiTextureAtlas);
-        event.registerReloadListener(INSTANCE.guideImageTextureAtlas);
+        // Nothing to register: the GUI atlas is reloaded by vanilla.
     }
 
-    public static ParCoolTextures instance() {
-        return INSTANCE;
-    }
-
-    protected ParCoolTextures(TextureManager manager) {
-        actionsTextureAtlas = new ParCoolActionsTextureAtlas(manager);
-        guiTextureAtlas = new ParCoolGuiTextureAtlas(manager);
-        guideImageTextureAtlas = new ParCoolGuideImageTextureAtlas(manager);
+    private static TextureAtlas guiAtlas() {
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI);
     }
 
     public static TextureAtlasSprite guiSprite(Identifier spriteId) {
-        return INSTANCE.guiTextureAtlas.getSprite(spriteId);
+        return guiAtlas().getSprite(spriteId);
     }
 
     public static TextureAtlasSprite guideResourceSprite(Identifier spriteId) {
-        return INSTANCE.guideImageTextureAtlas.getSprite(spriteId);
+        return guiAtlas().getSprite(spriteId.withPrefix("parcool_guide/"));
     }
 
     public static TextureAtlasSprite action(ActionEntry<?> entry) {
-        return INSTANCE.actionsTextureAtlas.getSprite(entry);
+        return guiAtlas().getSprite(entry.id().withPrefix("parcool_actions/"));
     }
 }

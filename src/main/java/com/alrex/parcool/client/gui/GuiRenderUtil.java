@@ -1,6 +1,5 @@
 package com.alrex.parcool.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,16 +11,21 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class GuiRenderUtil {
-    public static void enableScissorTestInGuiCoordinate(double x, double y, double width, double height) {
-        var window = Minecraft.getInstance().getWindow();
-        var guiScale = window.getGuiScale();
+    // 26.x clips through the GUI graphics' scissor stack in GUI coordinates; the old version set the
+    // GL scissor in window pixels directly.
+    public static void enableScissorTestInGuiCoordinate(GuiGraphicsExtractor graphics, double x, double y, double width, double height) {
+        graphics.enableScissor(Mth.floor(x), Mth.floor(y), Mth.ceil(x + width), Mth.ceil(y + height));
+    }
 
-        RenderSystem.enableScissor(
-                (int) (guiScale * x),
-                window.getHeight() - (int) (guiScale * (y + height)),
-                Mth.ceil(width * guiScale),
-                Mth.ceil(height * guiScale)
-        );
+    // RenderSystem#setShaderColor is gone in 26.x: the tint is now part of each draw call's colour.
+    public static int tint(float r, float g, float b, float a) {
+        return (Math.round(a * 255) & 0xFF) << 24 | (Math.round(r * 255) & 0xFF) << 16
+                | (Math.round(g * 255) & 0xFF) << 8 | (Math.round(b * 255) & 0xFF);
+    }
+
+    public static int scaleAlpha(int argb, float factor) {
+        int alpha = Math.round(((argb >>> 24) & 0xFF) * factor);
+        return (alpha & 0xFF) << 24 | (argb & 0xFFFFFF);
     }
 
     public static void renderScaledGuiItem(GuiGraphicsExtractor graphics, ItemStack itemStack, float notScaledX, float notScaledY, int scaledX, int scaledY, float scale) {

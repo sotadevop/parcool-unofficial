@@ -55,9 +55,9 @@ public class ParCoolGuidePageList extends AbstractWidget {
         }
         this.innerHeight = innerHeight;
         var txtColor = pageStyle.getColor();
-        this.textColor = txtColor != null ? txtColor.getValue() : ~0;
+        this.textColor = txtColor != null ? txtColor.getValue() | 0xFF000000 : ~0;
         txtColor = groupStyle.getColor();
-        this.groupColor = txtColor != null ? txtColor.getValue() : ~0;
+        this.groupColor = txtColor != null ? txtColor.getValue() | 0xFF000000 : ~0;
         this.lineColor = lineColor;
     }
 
@@ -100,7 +100,7 @@ public class ParCoolGuidePageList extends AbstractWidget {
         mouseX -= getX();
         mouseY = (int) (mouseY - getY() + scrollY);
         hoveredItem = null;
-        GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
+        GuiRenderUtil.enableScissorTestInGuiCoordinate(graphics, getX(), getY(), width, height);
         var poseStack = graphics.pose();
         poseStack.pushMatrix();
         {
@@ -111,8 +111,7 @@ public class ParCoolGuidePageList extends AbstractWidget {
                 graphics.fill(1, currentY - 1 + ROW_HEIGHT / 2, 3, currentY + 1 + ROW_HEIGHT / 2, groupColor);
                 currentY += ROW_HEIGHT;
                 for (var page : group.getB()) {
-                    RenderSystem.setShaderColor(1f, 1f, 1f, 0.2f);
-                    graphics.horizontalLine(5, width - 10, currentY, lineColor);
+                    graphics.horizontalLine(5, width - 10, currentY, GuiRenderUtil.scaleAlpha(lineColor, 0.2f));
                     currentY += 1;
 
                     if (0 < mouseX && mouseX < width && currentY < mouseY && mouseY < currentY + ROW_HEIGHT) {
@@ -127,6 +126,6 @@ public class ParCoolGuidePageList extends AbstractWidget {
             }
         }
         poseStack.popMatrix();
-        RenderSystem.disableScissor();
+        graphics.disableScissor();
     }
 }

@@ -6,6 +6,8 @@
   "minVersion": "0.8",
   "client": [
     "client.AbstractClientPlayerMixin",
+    "client.AvatarRenderStateEntityMixin",
+    "client.AvatarRenderStateExtractorMixin",
     "client.CameraMixin",
     "client.ClientLevelMixin",
     "client.ItemInHandRendererMixin",
