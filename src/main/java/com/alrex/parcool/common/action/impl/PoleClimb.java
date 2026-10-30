@@ -100,7 +100,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
             var wallVec = currentWallDirection.asVec();
             var moveVec = player.position().add(
                     wallVec.x * 0.01,
-                    InputUtil.getInputVectorInWorld(player, player.input).dot(wallVec) * 0.12,
+                    inputAlongWall(player, wallVec) * 0.12,
                     wallVec.z * 0.01
             );
             if (currentWallDirection.alongToAxis()) {
@@ -112,6 +112,13 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
             }
             return moveVec;
         });
+    }
+
+    // Kept out of the lambda above: passing a LocalPlayer where a Player is expected makes the JVM
+    // verifier load LocalPlayer, which a dedicated server cannot do. This method is stripped there.
+    @Environment(EnvType.CLIENT)
+    private double inputAlongWall(LocalPlayer player, Vec3 wallVec) {
+        return InputUtil.getInputVectorInWorld(player, player.input).dot(wallVec);
     }
 
     @Environment(EnvType.CLIENT)
