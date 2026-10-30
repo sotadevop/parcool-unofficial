@@ -224,7 +224,8 @@ public class ParCoolConfig {
             {
 				enableSkillTree = builder
 						.comment("Enable Skilltree, if disabled all actions are available without learning")
-						.define("enable_skill_tree", true);
+						// Fabric port: off by default, so every action is available from the start.
+						.define("enable_skill_tree", false);
 				enableSkillTreeUi = builder
 						.comment("Enable Skilltree Gui, if disabled the skilltree ui is redirected into other ui")
 						.define("enable_skill_tree_ui", true);
