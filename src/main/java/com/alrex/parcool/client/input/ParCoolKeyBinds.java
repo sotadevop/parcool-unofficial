@@ -142,14 +142,14 @@ public class ParCoolKeyBinds {
     public static final Input OPEN_SETTING_SKILLTREE = register(withModifier(new KeyMapping("key.parcool.open_setting_skilltree", InputConstants.Type.KEYBOARD, InputConstants.KEY_P, KEY_CATEGORY), InputConstants.KEY_LALT));
 	public static final Input ENABLE = register(withModifier(new KeyMapping("key.parcool.enable", InputConstants.Type.KEYBOARD, InputConstants.KEY_P, KEY_CATEGORY), InputConstants.KEY_LCONTROL));
 
-    public static final LogicalInput JUMP = listen(Minecraft.getInstance().options.keyJump::isDown);
-    public static final LogicalInput USE_ITEM = listen(Minecraft.getInstance().options.keyUse::isDown);
-    public static final LogicalInput ATTACK = listen(Minecraft.getInstance().options.keyAttack::isDown);
-	public static final LogicalInput SHIFT = listen(Minecraft.getInstance().options.keyShift::isDown);
-    public static final LogicalInput MOVEMENT_FORWARD = listen(Minecraft.getInstance().options.keyUp::isDown);
-    public static final LogicalInput MOVEMENT_BACK = listen(Minecraft.getInstance().options.keyDown::isDown);
-    public static final LogicalInput MOVEMENT_RIGHT = listen(Minecraft.getInstance().options.keyRight::isDown);
-    public static final LogicalInput MOVEMENT_LEFT = listen(Minecraft.getInstance().options.keyLeft::isDown);
+    public static final LogicalInput JUMP = listen(() -> Minecraft.getInstance().options.keyJump.isDown());
+    public static final LogicalInput USE_ITEM = listen(() -> Minecraft.getInstance().options.keyUse.isDown());
+    public static final LogicalInput ATTACK = listen(() -> Minecraft.getInstance().options.keyAttack.isDown());
+	public static final LogicalInput SHIFT = listen(() -> Minecraft.getInstance().options.keyShift.isDown());
+    public static final LogicalInput MOVEMENT_FORWARD = listen(() -> Minecraft.getInstance().options.keyUp.isDown());
+    public static final LogicalInput MOVEMENT_BACK = listen(() -> Minecraft.getInstance().options.keyDown.isDown());
+    public static final LogicalInput MOVEMENT_RIGHT = listen(() -> Minecraft.getInstance().options.keyRight.isDown());
+    public static final LogicalInput MOVEMENT_LEFT = listen(() -> Minecraft.getInstance().options.keyLeft.isDown());
 
     public static InputState getMovementInput(LogicalMovement movement) {
 		var input = AdditionalMods.getLogicalKey(movement);

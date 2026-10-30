@@ -28,7 +28,7 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
     private Parkourability parcool$parkourability = null;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    public void onInit(Level p_250508_, BlockPos p_250289_, float p_251702_, GameProfile p_252153_, CallbackInfo ci) {
+    public void onInit(Level p_250508_, GameProfile p_252153_, CallbackInfo ci) {
         parcool$parkourability = new Parkourability((Player) (Object) this, ParCool.getActionRegistry());
     }
 

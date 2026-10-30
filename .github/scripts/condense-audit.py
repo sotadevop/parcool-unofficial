@@ -7,7 +7,7 @@ KEEP = re.compile(
     r"PARCOOL_MIXIN_AUDIT|Mixin apply for mod parcool|parcool-common\.mixins\.json|Expected|but found|"
     r"Critical injection|No refMap|could not find|Could not find|Unable to locate|InvalidInjection|"
     r"InvalidMixin|InvalidAccessor|Caused by|Exception in thread|crash report|FATAL|NoSuchMethod|"
-    r"NoSuchField|ClassNotFound|NoClassDefFound|at com\.alrex")
+    r"NoSuchField|ClassNotFound|NoClassDefFound|at (\S+//)?com\.alrex|BootstrapMethodError")
 DROP = re.compile(r"DEBUG|Mixing |Renaming|Selecting|Preparing|^\s*/\*\s+(org\.spongepowered|net\.fabricmc|java\.base|knot//)")
 
 for path in sys.argv[1:]:

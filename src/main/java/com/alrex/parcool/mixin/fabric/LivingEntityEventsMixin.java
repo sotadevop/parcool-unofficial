@@ -31,7 +31,7 @@ public abstract class LivingEntityEventsMixin {
     }
 
     @ModifyReturnValue(method = "getVisibilityPercent", at = @At("RETURN"))
-    private double parcool$visibilityEvent(double visibility, Entity lookingEntity) {
+    private double parcool$visibilityEvent(double visibility, ServerLevel level, Entity lookingEntity) {
         return FabricEventBridge.fireVisibility((LivingEntity) (Object) this, visibility);
     }
 
