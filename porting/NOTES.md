@@ -46,6 +46,37 @@ upstream calls). That keeps the diff to upstream small, so later 4.0.x releases 
 - Zipline ropes: each segment is drawn once (upstream drew it twice in an inner loop).
 - Stamina HUD height: registered with HudStatusBarHeightRegistry, so it stacks with the air bar.
 
+## Status (2026-10-30)
+
+- Done: registration, networking, config, events, actions, blocks/block entities, items, recipes,
+  tooltips, input, commands. Build errors 370 -> about 140, all in rendering and GUI drawing.
+- Next phase: rendering. Files: PlayerRendererMixin, PlayerModelMixin, PlayerItemInHandLayerMixin,
+  ItemInHandRendererMixin, LivingRendererMixin, ParCoolGeneralEquipmentLayer, GrappleRopeRenderer,
+  GrappleTargetOverlay, the three *TextureAtlas classes, MarkdownWidget and the GUI widgets.
+
+## 26.3 facts already looked up (no need to probe again)
+
+- Gone: MultiBufferSource, ItemInHandRenderer, ItemRenderer, LightTexture, TextureAtlasHolder,
+  LayeredDraw, Equipable, SimpleCraftingRecipeSerializer, PotionBrewing class, block codecs.
+- Replacements: SubmitNodeCollector (+ OrderedSubmitNodeCollector), FirstPersonHandsAndItemsRenderer,
+  ItemModelResolver/ItemStackRenderState, LightCoordsUtil, AtlasManager/SpriteGetter
+  (client/resources/model/sprite), Fabric LevelRenderEvents (+ LevelRenderContext),
+  HudStatusBarHeightRegistry, ArgumentTypeRegistry, Equippable via Item.Properties#equippable.
+- Player model: client/model/player/PlayerModel; renderer AvatarRenderer with AvatarRenderState
+  (extends HumanoidRenderState extends ArmedEntityRenderState). HumanoidModel<T extends HumanoidRenderState>.
+- Camera: entity(), position(), forwardVector()/upVector()/leftVector() return Vector3fc.
+- Blocks: neighborChanged(BlockState, Level, BlockPos, Block, Orientation, boolean);
+  updateShape(BlockState, LevelReader, ScheduledTickAccess, BlockPos, Direction, BlockPos, BlockState, RandomSource);
+  removal side effects in BlockEntity#preRemoveSideEffects; PushReaction.POPPED (DESTROY is gone).
+- Block entity data: saveAdditional(ValueOutput) / loadAdditional(ValueInput); keys kept as in 4.0.
+- Input: ClientInput#keyPresses is the immutable record Input(forward, backward, left, right, jump, shift, sprint).
+- GUI: GuiGraphicsExtractor#enableScissor/disableScissor; RenderSystem#setShaderColor is gone.
+- Dyes: DataComponents.DYE on the stack; DyedItemColor(int).
+
+## Deliberate fixes to upstream bugs
+
+- Dye recipe: upstream summed unmasked colour shifts, so green and blue overflowed; channels are masked.
+
 ## Open
 
 - Traceur gloves arm pose (upstream: IClientItemExtensions#getArmPose) -> 26.3 render state.

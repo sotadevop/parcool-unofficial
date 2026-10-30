@@ -43,8 +43,6 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
 
 
     @Nonnull
-
-    @Nonnull
     @Override
     public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter getter, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         return SHAPES[state.getValue(FACING).ordinal()];
