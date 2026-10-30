@@ -46,13 +46,20 @@ upstream calls). That keeps the diff to upstream small, so later 4.0.x releases 
 - Zipline ropes: each segment is drawn once (upstream drew it twice in an inner loop).
 - Stamina HUD height: registered with HudStatusBarHeightRegistry, so it stacks with the air bar.
 
-## Status (2026-10-30)
+## Status (2026-10-30, end of day)
 
-- Done: registration, networking, config, events, actions, blocks/block entities, items, recipes,
-  tooltips, input, commands. Build errors 370 -> about 140, all in rendering and GUI drawing.
-- Next phase: rendering. Files: PlayerRendererMixin, PlayerModelMixin, PlayerItemInHandLayerMixin,
-  ItemInHandRendererMixin, LivingRendererMixin, ParCoolGeneralEquipmentLayer, GrappleRopeRenderer,
-  GrappleTargetOverlay, the three *TextureAtlas classes, MarkdownWidget and the GUI widgets.
+- Compiles; mixin audit passes on a dedicated server and a client. Waiting for the in-game test.
+- All actions available from the start: `enable_skill_tree` defaults to false (server config).
+- CI scans shared classes for lambdas that touch client classes (`.github/scripts/client-refs.py`).
+  The 14 it lists are checked: only PoleClimb's was a real server crash (fixed); the rest are in
+  client-only classes or do not make the verifier load a client class.
+
+## Known differences to upstream 4.0
+
+- Guide book recipe and brewing boxes are filled in singleplayer only (since 1.21.2 the client does
+  not receive recipes; the guide reads the integrated server's).
+- No enchantment glint on the equipment model.
+- Mod integrations (Curios, Epic Fight, ...) are stubs.
 
 ## 26.3 facts already looked up (no need to probe again)
 
