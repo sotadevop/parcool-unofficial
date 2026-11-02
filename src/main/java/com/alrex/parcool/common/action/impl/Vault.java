@@ -121,10 +121,10 @@ public class Vault extends ContinuableAction {
 
         // try to get over full block
         var vaultingHeight = baseBB.getYsize() * ((1. + 0.01) / 1.8);
-        if (checkCollision(player, vaultMaxMovement, baseBB.move(0, vaultingHeight, 0))) {
+        if (isBlockedAbove(player, vaultMovement, vaultMaxMovement, baseBB.move(0, vaultingHeight, 0))) {
             // try to get over fence
             vaultingHeight = baseBB.getYsize() * ((1.5 + 0.01) / 1.8);
-            if (checkCollision(player, vaultMaxMovement, baseBB.move(0, vaultingHeight, 0))) {
+            if (isBlockedAbove(player, vaultMovement, vaultMaxMovement, baseBB.move(0, vaultingHeight, 0))) {
                 return false;
             }
         }
@@ -154,6 +154,16 @@ public class Vault extends ContinuableAction {
 
     private static boolean checkHVecDifferent(Vec3 a, Vec3 b) {
         return Math.abs(a.x - b.x) > 1e-4 || Math.abs(a.z - b.z) > 1e-4;
+    }
+
+    /**
+     * Fabric port fix (also an upstream bug): collision is resolved one axis at a time, so a long diagonal
+     * step can clear a 1-block-thick wall along one axis before moving along the other, and a doorway
+     * frame then looked "free above" and started a Vault. The raised box must also pass with the same
+     * short step that found the obstacle, so a wall that blocks low also blocks high.
+     */
+    private static boolean isBlockedAbove(Player player, Vec3 shortMovement, Vec3 longMovement, AABB raisedBox) {
+        return checkCollision(player, shortMovement, raisedBox) || checkCollision(player, longMovement, raisedBox);
     }
 
     private static boolean checkCollision(Player player, Vec3 movement, AABB boundingBox) {
