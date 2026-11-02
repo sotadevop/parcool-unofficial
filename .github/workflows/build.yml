@@ -1,5 +1,5 @@
-# Builds the mod on every push and keeps the Fabric jar as a downloadable artifact.
-# It never publishes anything: no tokens or secrets are used.
+# Builds the mod on every push and keeps the Fabric jar as a downloadable artifact. Pushes to port/4.0
+# also refresh the "dev-4.0" pre-release (see dev-build). Only the per-run github.token is used.
 name: Build
 
 on:
@@ -167,3 +167,30 @@ jobs:
             tail -n +2 "$notes" > body.md
             gh release edit "$TAG" --title "$(head -1 "$notes" | sed 's/^# //')" --notes-file body.md
           fi
+
+  # Every push to port/4.0 that builds and passes the audit replaces the rolling "dev-4.0"
+  # pre-release with that jar. Release files can be fetched through the REST API, unlike build
+  # artifacts (served from a separate storage host), so a working session can hand the jar over.
+  dev-build:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/port/4.0'
+    needs: [build, mixin-audit]
+    runs-on: ubuntu-24.04
+    concurrency: dev-build
+    permissions:
+      contents: write
+    steps:
+      - name: Download jar
+        uses: actions/download-artifact@v4
+        with:
+          name: parcool-fabric
+          path: dist
+
+      - name: Replace the dev pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dev-4.0 --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
+          gh release create dev-4.0 dist/*.jar --repo "$GITHUB_REPOSITORY" \
+            --prerelease --latest=false --target "$GITHUB_SHA" \
+            --title "ParCool 4.0 for 26.3 - dev build" \
+            --notes "Untested development build of the ParCool 4.0 Fabric port, commit ${GITHUB_SHA::7}. Replaced on every push; use the regular releases for normal play."

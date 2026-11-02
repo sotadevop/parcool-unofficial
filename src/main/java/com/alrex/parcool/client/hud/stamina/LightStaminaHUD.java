@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.hud.stamina;
 
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
 import com.alrex.parcool.client.hud.HUDRegistry;
 
@@ -61,7 +63,10 @@ public class LightStaminaHUD implements IStaminaHUD {
         final int width = guiGraphics.guiWidth();
         final int height = guiGraphics.guiHeight();
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
-        int baseY = height - HudStatusBarHeightRegistry.getHeight(HUDRegistry.STAMINA_ID) + ParCool.getConfig().client().staminaHud.offsetVertical().get();
+        // One row (10 px) above the hunger bar, wherever Fabric places that bar; the stamina row's own
+        // height is registered in HUDRegistry so the air bubbles stack above it.
+        int baseY = height - HudStatusBarHeightRegistry.getHeight(VanillaHudElements.FOOD_BAR) - 10
+                + ParCool.getConfig().client().staminaHud.offsetVertical().get();
 		for (int i = 0; i < 10; i++) {
 			TextureAtlasSprite staminaSprite;
 			int x = baseX - i * 8 - 9;

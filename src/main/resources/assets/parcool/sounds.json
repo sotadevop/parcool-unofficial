@@ -182,9 +182,10 @@
   "zipline.set": {
     "subtitle": "subtitle.parcool.zipline.set",
     "sounds": [
-      "entity/leashknot/place1",
-      "entity/leashknot/place2",
-      "entity/leashknot/place3"
+      {
+        "name": "minecraft:entity.lead.tied",
+        "type": "event"
+      }
     ]
   },
   "zipline.remove": {
