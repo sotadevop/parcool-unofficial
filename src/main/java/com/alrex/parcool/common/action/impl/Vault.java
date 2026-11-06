@@ -33,6 +33,8 @@ public class Vault extends ContinuableAction {
     // only for local client
     private float vaultHeight;
     private Vec3 obstacleDistance;
+    /** Port fix: set when the player gets stuck during the vault, which ends it right away. */
+    private boolean stuck;
 
     public Vault(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
@@ -97,7 +99,40 @@ public class Vault extends ContinuableAction {
     @Override
     public boolean canContinue() {
         var duration = propertyDuration.get();
-        return duration != null && getDoingTick() < duration;
+        return duration != null && getDoingTick() < duration && !stuck;
+    }
+
+    /**
+     * Port fix: the move point gives the player the full remaining distance as speed every tick. If
+     * he is blocked (a wall behind the step, a ceiling), the speed keeps growing. A blocked tick
+     * after the jump phase ends the vault instead.
+     */
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void onWorkingTickInLocalClient() {
+        var player = parkourability.player();
+        int jumpDuration = Mth.ceil(propertyDuration.getOrDefaultIfNull((byte) MAX_DURATION) * MOVE_DURATION_SCALE);
+        if (getDoingTick() > jumpDuration && (player.horizontalCollision || player.verticalCollision && player.getDeltaMovement().y > 0)) {
+            stuck = true;
+        }
+    }
+
+    /**
+     * Port fix: when the vault ends, upward speed left over from the move point is removed and the
+     * forward speed is capped to normal running speed, so the player never gets launched.
+     */
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void onStopInLocalClient() {
+        stuck = false;
+        var player = parkourability.player();
+        var motion = player.getDeltaMovement();
+        double max = EntityUtil.getHorizontalMaximumDeltaMovementValue(player);
+        var horizontal = new Vec3(motion.x, 0, motion.z);
+        if (horizontal.lengthSqr() > max * max) {
+            horizontal = horizontal.normalize().scale(max);
+        }
+        player.setDeltaMovement(horizontal.x, Math.min(motion.y, 0), horizontal.z);
     }
 
     @Override
@@ -133,6 +168,10 @@ public class Vault extends ContinuableAction {
         if (this.obstacleDistance.lengthSqr() < Mth.square(player.getBbWidth() * 1.5)) {
             this.obstacleDistance = obstacleDistance.normalize().scale(player.getBbWidth() * 1.5);
         }
+        // Port fix: only vault when there is room for the player at the top of the vault, behind the obstacle.
+        var landing = player.getBoundingBox().move(obstacleDistance.x * 1.5, vaultingHeight, obstacleDistance.z * 1.5);
+        if (!player.level().noCollision(player, landing)) return false;
+        this.stuck = false;
         this.propertyDuration.set((byte) duration);
         this.propertyVaultType.set(getVaultType(vaultMovement, player.level().getRandom()));
         return true;
