@@ -192,7 +192,7 @@ public class SkillTreeWidget extends AbstractWidget {
         double mouseX = event.x();
         double mouseY = event.y();
         int button = event.button();
-        if (button == 0) {
+        if (button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) {
             for (var icon : icons) {
                 if (icon.isHoveredOrFocused()) {
                     return icon.mouseClicked(new MouseButtonEvent(getMouseXInContent(mouseX), getMouseYInContent(mouseY), new MouseButtonInfo(button, 0)), false);

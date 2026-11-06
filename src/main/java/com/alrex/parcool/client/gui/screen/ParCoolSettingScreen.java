@@ -424,7 +424,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                 double mouseX = event.x();
                 double mouseY = event.y();
                 int click = event.button();
-                if (click == 0) {
+                if (click == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) {
                     TabSelectionList.this.setSelected(this);
                     return true;
                 } else {

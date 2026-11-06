@@ -166,7 +166,7 @@ public class ParCoolTabletScreen extends Screen {
             com.alrex.parcool.ParCool.LOGGER.info("[ParCool debug] click {},{} button {} -> {} handled={}", (int) mouseX, (int) mouseY, button, listener.getClass().getSimpleName(), handled);
             if (handled) {
                 this.setFocused(listener);
-                if (button == 0) this.setDragging(true);
+                if (button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) this.setDragging(true);
                 return true;
             }
         }
