@@ -54,7 +54,6 @@ public record SkilltreePacket(List<SkillTree> skillTrees) implements CustomPacke
         public void handleInLogicalClient(SkilltreePacket packet, IPayloadContext context) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
-            com.alrex.parcool.ParCool.LOGGER.info("[ParCool debug] client received {} skill trees", packet.skillTrees.size());
             Parkourability.get(player).syncSkillTree(packet.skillTrees);
         }
     };

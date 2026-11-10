@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 public class GuiHelper {
     public static void openSkillTreeGui(Player player) {
         var parkourability = Parkourability.get(player);
-        com.alrex.parcool.ParCool.LOGGER.info("[ParCool debug] opening skill tree with {} trees", parkourability.getSkillTrees().size());
         Minecraft.getInstance().gui.setScreen(new ParCoolSkillTreeScreen(
                 parkourability, parkourability.getSkillTrees(),
                 player.getInventory().contains(itemStack -> itemStack.is(ParCoolItems.PARCOOL_GUIDE.get()))

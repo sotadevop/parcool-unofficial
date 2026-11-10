@@ -30,7 +30,7 @@ import net.minecraft.resources.Identifier;
 import com.alrex.parcool.fabric.compat.event.ParCoolEventBus;
 
 public class ParCool implements ModInitializer {
-	/** Shared logger (also used by the temporary [ParCool debug] lines). */
+	/** Shared logger. */
 	public static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
 	public static final String MOD_ID = "parcool";
 

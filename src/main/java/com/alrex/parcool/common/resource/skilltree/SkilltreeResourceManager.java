@@ -55,7 +55,6 @@ public class SkilltreeResourceManager extends SimpleJsonResourceReloadListener<J
         });
         arrayList.trimToSize();
         skillTrees = Collections.unmodifiableList(arrayList);
-        com.alrex.parcool.ParCool.LOGGER.info("[ParCool debug] server loaded {} skill trees", skillTrees.size());
     }
 
     public List<SkillTree> getSkillTrees() {

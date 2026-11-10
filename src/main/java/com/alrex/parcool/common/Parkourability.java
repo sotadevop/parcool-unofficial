@@ -138,7 +138,6 @@ public class Parkourability {
 		if (skillTreeDirty) {
 			if (player instanceof ServerPlayer serverPlayer)
 				{
-					com.alrex.parcool.ParCool.LOGGER.info("[ParCool debug] server sends {} skill trees", skillTrees.size());
 					PacketDistributor.sendToPlayer(serverPlayer, new SkilltreePacket(skillTrees));
 				}
 			skillTreeDirty = false;

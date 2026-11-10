@@ -156,14 +156,12 @@ public class ParCoolTabletScreen extends Screen {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        com.alrex.parcool.ParCool.LOGGER.info("[ParCool debug] screen click at {},{} reached {} with {} children", (int) event.x(), (int) event.y(), getClass().getSimpleName(), children().size());
         double mouseX = event.x();
         double mouseY = event.y();
         int button = event.button();
         for (var iterator = this.children().listIterator(this.children().size()); iterator.hasPrevious(); ) {
             var listener = iterator.previous();
             boolean handled = listener.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), false);
-            com.alrex.parcool.ParCool.LOGGER.info("[ParCool debug] click {},{} button {} -> {} handled={}", (int) mouseX, (int) mouseY, button, listener.getClass().getSimpleName(), handled);
             if (handled) {
                 this.setFocused(listener);
                 if (button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) this.setDragging(true);

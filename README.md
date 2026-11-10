@@ -1,3 +1,5 @@
+> **Unofficial Fabric port for Minecraft 26.3** of ParCool! 4.0.1.5. Builds and releases: see this repository's Releases (tags `mc26.3-...`). Requires Fabric API and Forge Config API Port. All actions are available from the start; the skill tree can be switched on in the server config. Porting notes: [porting/](./porting/).
+
 ![ParCool_Logo](./parcool_logo.png)
 
 # ParCool MOD
